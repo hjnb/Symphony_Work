@@ -1,0 +1,18 @@
+C:\Users\yoshi\AppData\Local\Temporary Projects\SymphonyWork\bin\Debug\SymphonyWork.exe
+C:\Users\yoshi\AppData\Local\Temporary Projects\SymphonyWork\bin\Debug\SymphonyWork.pdb
+C:\Users\yoshi\AppData\Local\Temporary Projects\SymphonyWork\bin\Debug\SymphonyWork.xml
+C:\Users\yoshi\AppData\Local\Temporary Projects\SymphonyWork\obj\x86\Debug\SymphonyWork.TopForm.resources
+C:\Users\yoshi\AppData\Local\Temporary Projects\SymphonyWork\obj\x86\Debug\SymphonyWork.Resources.resources
+C:\Users\yoshi\AppData\Local\Temporary Projects\SymphonyWork\obj\x86\Debug\SymphonyWork.vbproj.GenerateResource.Cache
+C:\Users\yoshi\AppData\Local\Temporary Projects\SymphonyWork\obj\x86\Debug\SymphonyWork.exe
+C:\Users\yoshi\AppData\Local\Temporary Projects\SymphonyWork\obj\x86\Debug\SymphonyWork.xml
+C:\Users\yoshi\AppData\Local\Temporary Projects\SymphonyWork\obj\x86\Debug\SymphonyWork.pdb
+C:\Users\yoshi\documents\visual studio 2010\Projects\SymphonyWork\SymphonyWork\obj\x86\Debug\SymphonyWork.exe
+C:\Users\yoshi\documents\visual studio 2010\Projects\SymphonyWork\SymphonyWork\obj\x86\Debug\SymphonyWork.xml
+C:\Users\yoshi\documents\visual studio 2010\Projects\SymphonyWork\SymphonyWork\obj\x86\Debug\SymphonyWork.pdb
+C:\Users\yoshi\documents\visual studio 2010\Projects\SymphonyWork\SymphonyWork\bin\Debug\SymphonyWork.exe
+C:\Users\yoshi\documents\visual studio 2010\Projects\SymphonyWork\SymphonyWork\bin\Debug\SymphonyWork.pdb
+C:\Users\yoshi\documents\visual studio 2010\Projects\SymphonyWork\SymphonyWork\bin\Debug\SymphonyWork.xml
+C:\Users\yoshi\documents\visual studio 2010\Projects\SymphonyWork\SymphonyWork\obj\x86\Debug\SymphonyWork.TopForm.resources
+C:\Users\yoshi\documents\visual studio 2010\Projects\SymphonyWork\SymphonyWork\obj\x86\Debug\SymphonyWork.Resources.resources
+C:\Users\yoshi\documents\visual studio 2010\Projects\SymphonyWork\SymphonyWork\obj\x86\Debug\SymphonyWork.vbproj.GenerateResource.Cache
