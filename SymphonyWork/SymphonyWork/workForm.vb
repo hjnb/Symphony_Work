@@ -7,6 +7,8 @@ Public Class workForm
     Private adapter As OleDbDataAdapter
     Private bs As BindingSource
 
+    Private dayCharArray() As String = {"日", "月", "火", "水", "木", "金", "土"}
+
     Private Sub workForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.WindowState = FormWindowState.Maximized
         Me.MaximizeBox = False
@@ -20,7 +22,10 @@ Public Class workForm
         Dim reader As OleDbDataReader
         Dim yoteiDay(31) As String
         Dim henkouDay(31) As String
+        Dim year As Integer = CInt(ymStr.Split("/")(0))
+        Dim month As Integer = CInt(ymStr.Split("/")(1))
         bs = New BindingSource()
+        addDayCharRow(bs, year, month)
 
         cn = New OleDbConnection(TopForm.DB_Work)
         sqlCm = cn.CreateCommand
@@ -69,7 +74,18 @@ Public Class workForm
 
     End Sub
 
+    Private Sub addDayCharRow(bs As BindingSource, year As Integer, month As Integer)
+        Dim daysInMonth As Integer = DateTime.DaysInMonth(year, month)
+        Dim dt As DateTime = New DateTime(year, month, 1)
+        Dim weekNumber As Integer = CInt(dt.DayOfWeek)
+        Dim dayArray(31) As String
 
+        For i As Integer = 1 To daysInMonth
+            dayArray(i) = dayCharArray((weekNumber + (i - 1)) Mod 7)
+        Next
+
+        bs.Insert(0, New workData("", "", "", "", dayArray))
+    End Sub
 
     Private Sub rbtnF_MouseClick(sender As Object, e As MouseEventArgs) Handles rbtn2F.MouseClick, rbtn3F.MouseClick
         If sender Is rbtn2F Then
@@ -81,7 +97,7 @@ Public Class workForm
 
     Private Sub btnRowAdd_Click(sender As Object, e As EventArgs) Handles btnRowAdd.Click
         Dim selectedRowIndex As Integer = If(IsNothing(dgvWork.CurrentRow), -1, dgvWork.CurrentRow.Index)
-        If selectedRowIndex = -1 Then
+        If selectedRowIndex = -1 OrElse selectedRowIndex = 0 Then
             Return
         Else
             bs.Insert(selectedRowIndex, New workData("変更"))
@@ -91,7 +107,7 @@ Public Class workForm
 
     Private Sub btnRowDelete_Click(sender As Object, e As EventArgs) Handles btnRowDelete.Click
         Dim selectedRowIndex As Integer = If(IsNothing(dgvWork.CurrentRow), -1, dgvWork.CurrentRow.Index)
-        If selectedRowIndex = -1 Then
+        If selectedRowIndex = -1 OrElse selectedRowIndex = 0 Then
             Return
         Else
             bs.RemoveAt(selectedRowIndex)
