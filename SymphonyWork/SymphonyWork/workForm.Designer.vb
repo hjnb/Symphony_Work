@@ -39,7 +39,7 @@ Partial Class workForm
         Me.dgvWork.Location = New System.Drawing.Point(50, 91)
         Me.dgvWork.Name = "dgvWork"
         Me.dgvWork.RowTemplate.Height = 21
-        Me.dgvWork.Size = New System.Drawing.Size(1096, 509)
+        Me.dgvWork.Size = New System.Drawing.Size(926, 630)
         Me.dgvWork.TabIndex = 0
         '
         'rbtn3F
@@ -113,7 +113,7 @@ Partial Class workForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1189, 624)
+        Me.ClientSize = New System.Drawing.Size(1189, 733)
         Me.Controls.Add(Me.btnDelete)
         Me.Controls.Add(Me.btnPrint)
         Me.Controls.Add(Me.btnRegist)

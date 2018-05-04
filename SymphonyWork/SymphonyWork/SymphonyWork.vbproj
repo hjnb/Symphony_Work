@@ -94,7 +94,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="workData.vb" />
     <Compile Include="workForm.Designer.vb">
       <DependentUpon>workForm.vb</DependentUpon>
     </Compile>
