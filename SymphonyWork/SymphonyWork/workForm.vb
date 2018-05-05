@@ -6,6 +6,11 @@ Public Class workForm
     Private sqlCm As OleDbCommand
     Private adapter As OleDbDataAdapter
     Private dt As DataTable
+    Private disableCellStyle As DataGridViewCellStyle
+    Private namColumnCellStyle As DataGridViewCellStyle
+    Private sundayColumnCellStyle As DataGridViewCellStyle
+    Private sundayCharCellStyle As DataGridViewCellStyle
+    Private Const MAX_ROW_COUNT As Integer = 50
 
     Private dayCharArray() As String = {"日", "月", "火", "水", "木", "金", "土"}
 
@@ -13,6 +18,8 @@ Public Class workForm
         Me.WindowState = FormWindowState.Maximized
         Me.MaximizeBox = False
         Me.MinimizeBox = False
+
+        createCellStyles()
 
         '当月のデータを表示
         'とりあえず今は仮でこれ
@@ -42,6 +49,35 @@ Public Class workForm
         settingDgv(dgvWork)
         dgvWork.DataSource = dt
         settingDgvColumns(dgvWork)
+        setReadonlyCell(dgvWork)
+    End Sub
+
+    Private Sub createCellStyles()
+        '曜日の行、(予定or変更)の列のスタイル
+        disableCellStyle = New DataGridViewCellStyle()
+        disableCellStyle.BackColor = Color.FromKnownColor(KnownColor.Control)
+        disableCellStyle.SelectionBackColor = Color.FromKnownColor(KnownColor.Control)
+        disableCellStyle.SelectionForeColor = Color.Black
+        disableCellStyle.Font = New Font("MS UI Gothic", 9, FontStyle.Bold)
+
+        '氏名の列のスタイル
+        namColumnCellStyle = New DataGridViewCellStyle()
+        namColumnCellStyle.ForeColor = Color.Blue
+        namColumnCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+
+        '日曜日の列のスタイル
+        sundayColumnCellStyle = New DataGridViewCellStyle()
+        sundayColumnCellStyle.BackColor = Color.FromArgb(255, 200, 200)
+        sundayColumnCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+        '日の文字のセルのスタイル
+        sundayCharCellStyle = New DataGridViewCellStyle()
+        sundayCharCellStyle.BackColor = Color.FromArgb(255, 200, 200)
+        sundayCharCellStyle.SelectionBackColor = Color.FromArgb(255, 200, 200)
+        sundayCharCellStyle.SelectionForeColor = Color.Black
+        sundayCharCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+        sundayCharCellStyle.Font = New Font("MS UI Gothic", 9, FontStyle.Bold)
+
     End Sub
 
     Private Sub addHenkouRow(dt As DataTable)
@@ -68,14 +104,30 @@ Public Class workForm
         Next
     End Sub
 
+    Private Sub addDayCharRow(dt As DataTable, year As Integer, month As Integer)
+        Dim daysInMonth As Integer = DateTime.DaysInMonth(year, month)
+        Dim firstDay As DateTime = New DateTime(year, month, 1)
+        Dim weekNumber As Integer = CInt(firstDay.DayOfWeek)
+        Dim row As DataRow = dt.NewRow()
+
+        For i As Integer = 1 To daysInMonth
+            row("Y" & i) = dayCharArray((weekNumber + (i - 1)) Mod 7)
+        Next
+
+        dt.Rows.InsertAt(row, 0)
+    End Sub
+
     Private Sub addBlankRow(dt As DataTable)
         Dim rowCount As Integer = dt.Rows.Count
-        If rowCount = 51 Then
+        If rowCount = MAX_ROW_COUNT + 1 Then
             Return
         End If
 
-        For i As Integer = rowCount To 50
+        For i As Integer = rowCount To MAX_ROW_COUNT
             Dim row As DataRow = dt.NewRow()
+            If i Mod 2 = 1 Then
+                row("Seq") = i + 1
+            End If
             dt.Rows.Add(row)
         Next
     End Sub
@@ -113,39 +165,39 @@ Public Class workForm
                 .Columns("J" & i).Visible = False
             Next
 
-            'ユニット
+            'ユニット列
             With .Columns("Unt")
-                .Width = 35
+                .Width = 34
                 .HeaderText = "ﾕﾆｯﾄ"
                 .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             End With
 
-            'R
+            'R列
             With .Columns("Rdr")
-                .Width = 20
+                .Width = 19
                 .HeaderText = "R"
                 .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             End With
 
-            '氏名
+            '氏名列
             With .Columns("Nam")
                 .Width = 90
                 .HeaderText = "氏名"
                 .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+                .DefaultCellStyle = namColumnCellStyle
             End With
 
-            '予定
+            '予定or変更列
             With .Columns("type")
                 .Frozen = True
-                .ReadOnly = True
-                .Width = 30
+                .Width = 32
                 .HeaderText = ""
-                .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .DefaultCellStyle = disableCellStyle
             End With
 
+            'Y1～Y31の列
             For i As Integer = 1 To 31
                 With .Columns("Y" & i)
                     .Width = 43
@@ -155,25 +207,39 @@ Public Class workForm
                 End With
             Next
 
+            '日曜日の列
+            For i As Integer = 1 To 31
+                If Not IsDBNull(dt.Rows(0).Item("Y" & i)) AndAlso dt.Rows(0).Item("Y" & i) = "日" Then
+                    dgv("Y" & i, 0).Style = sundayCharCellStyle
+                    dgv.Columns("Y" & i).DefaultCellStyle = sundayColumnCellStyle
+                End If
+            Next
+
+            '日曜日以外の曜日の行
+            For Each cell As DataGridViewCell In dgv.Rows(0).Cells
+                If IsDBNull(cell.Value) OrElse cell.Value <> "日" Then
+                    cell.Style = disableCellStyle
+                End If
+            Next
+
         End With
     End Sub
 
     Private Sub setReadonlyCell(dgv As DataGridView)
+        With dgv
+            '曜日の行
+            .Rows(0).ReadOnly = True
 
-    End Sub
+            '予定or変更の列
+            .Columns("type").ReadOnly = True
 
-    Private Sub addDayCharRow(dt As DataTable, year As Integer, month As Integer)
-        Dim daysInMonth As Integer = DateTime.DaysInMonth(year, month)
-        Dim firstDay As DateTime = New DateTime(year, month, 1)
-        Dim weekNumber As Integer = CInt(firstDay.DayOfWeek)
-        Dim dayArray(31) As String
-        Dim row As DataRow = dt.NewRow()
-
-        For i As Integer = 1 To daysInMonth
-            row("Y" & i) = dayCharArray((weekNumber + (i - 1)) Mod 7)
-        Next
-
-        dt.Rows.InsertAt(row, 0)
+            '変更の行のﾕﾆｯﾄ、R、Nam列のセル
+            For i As Integer = 2 To dgv.Rows.Count - 1 Step 2
+                dgv("Unt", i).ReadOnly = True
+                dgv("Rdr", i).ReadOnly = True
+                dgv("Nam", i).ReadOnly = True
+            Next
+        End With
     End Sub
 
     Private Sub rbtnF_MouseClick(sender As Object, e As MouseEventArgs) Handles rbtn2F.MouseClick, rbtn3F.MouseClick
@@ -188,14 +254,35 @@ Public Class workForm
         Dim selectedRowIndex As Integer = If(IsNothing(dgvWork.CurrentRow), -1, dgvWork.CurrentRow.Index)
         If selectedRowIndex = -1 OrElse selectedRowIndex = 0 Then
             Return
+        ElseIf Not IsDBNull(dt.Rows(MAX_ROW_COUNT - 1).Item("Nam")) AndAlso dt.Rows(MAX_ROW_COUNT - 1).Item("Nam") <> "" Then
+            MsgBox("行挿入できません。")
+            Return
         Else
+            '変更の行を選択してる場合は予定の行を選択しているindexとする
+            If selectedRowIndex Mod 2 = 0 Then
+                selectedRowIndex -= 1
+            End If
+
             Dim row1 As DataRow = dt.NewRow()
             Dim row2 As DataRow = dt.NewRow()
-            row1("Type") = "変更"
-            row2("Type") = "予定"
+            row2("Seq") = selectedRowIndex + 1
 
+            '行追加
             dt.Rows.InsertAt(row1, selectedRowIndex)
             dt.Rows.InsertAt(row2, selectedRowIndex)
+            '追加した行(変更の行)のreadonly設定
+            dgvWork("Unt", selectedRowIndex + 1).ReadOnly = True
+            dgvWork("Rdr", selectedRowIndex + 1).ReadOnly = True
+            dgvWork("Nam", selectedRowIndex + 1).ReadOnly = True
+
+            '追加された行以降のSeqの値を更新
+            For i As Integer = selectedRowIndex + 2 To MAX_ROW_COUNT - 1 Step 2
+                dt.Rows(i).Item("Seq") += 2
+            Next
+
+            '下から２行削除
+            dt.Rows.RemoveAt(MAX_ROW_COUNT + 2)
+            dt.Rows.RemoveAt(MAX_ROW_COUNT + 1)
         End If
     End Sub
 
@@ -204,8 +291,29 @@ Public Class workForm
         If selectedRowIndex = -1 OrElse selectedRowIndex = 0 Then
             Return
         Else
+            '変更の行を選択してる場合は予定の行を選択しているindexとする
+            If selectedRowIndex Mod 2 = 0 Then
+                selectedRowIndex -= 1
+            End If
+
+            '行削除
             dt.Rows.RemoveAt(selectedRowIndex)
             dt.Rows.RemoveAt(selectedRowIndex)
+
+            '削除された行以降のSeqの値を更新
+            For i As Integer = selectedRowIndex To MAX_ROW_COUNT - 3 Step 2
+                dt.Rows(i).Item("Seq") -= 2
+            Next
+
+            '下に２行追加
+            Dim row As DataRow = dt.NewRow()
+            row("Seq") = MAX_ROW_COUNT
+            dt.Rows.Add(row)
+            dt.Rows.Add(dt.NewRow())
+            '追加した行(変更の行)のreadonly設定
+            dgvWork("Unt", MAX_ROW_COUNT).ReadOnly = True
+            dgvWork("Rdr", MAX_ROW_COUNT).ReadOnly = True
+            dgvWork("Nam", MAX_ROW_COUNT).ReadOnly = True
         End If
     End Sub
 
