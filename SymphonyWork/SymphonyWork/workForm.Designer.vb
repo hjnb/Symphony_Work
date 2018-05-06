@@ -39,7 +39,7 @@ Partial Class workForm
         Me.dgvWork.Location = New System.Drawing.Point(50, 91)
         Me.dgvWork.Name = "dgvWork"
         Me.dgvWork.RowTemplate.Height = 21
-        Me.dgvWork.Size = New System.Drawing.Size(926, 630)
+        Me.dgvWork.Size = New System.Drawing.Size(977, 630)
         Me.dgvWork.TabIndex = 0
         '
         'rbtn3F

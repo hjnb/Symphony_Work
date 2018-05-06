@@ -10,8 +10,13 @@ Public Class workForm
     Private namColumnCellStyle As DataGridViewCellStyle
     Private sundayColumnCellStyle As DataGridViewCellStyle
     Private sundayCharCellStyle As DataGridViewCellStyle
+    Private workChangeCellStyle As DataGridViewCellStyle
+    Private editBeforeCellValue As String
     Private Const MAX_ROW_COUNT As Integer = 50
 
+    Private unitDictionary2F As Dictionary(Of String, String)
+    Private unitDictionary3F As Dictionary(Of String, String)
+    Private wordDictionary As Dictionary(Of String, String)
     Private dayCharArray() As String = {"日", "月", "火", "水", "木", "金", "土"}
 
     Private Sub workForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -20,6 +25,7 @@ Public Class workForm
         Me.MinimizeBox = False
 
         createCellStyles()
+        createDictionary()
 
         '当月のデータを表示
         'とりあえず今は仮でこれ
@@ -45,11 +51,52 @@ Public Class workForm
         addDayCharRow(dt, year, month)
         addTypeColumn(dt)
         addBlankRow(dt)
+        setSeqValue(dt)
 
         settingDgv(dgvWork)
         dgvWork.DataSource = dt
-        settingDgvColumns(dgvWork)
+        settingDgvColumnsAndRows(dgvWork)
         setReadonlyCell(dgvWork)
+    End Sub
+
+    Private Sub createDictionary()
+        'ﾕﾆｯﾄ(2F)の連想配列作成
+        unitDictionary2F = New Dictionary(Of String, String)
+        unitDictionary2F.Add("※", "00")
+        unitDictionary2F.Add("星", "21")
+        unitDictionary2F.Add("森", "22")
+        unitDictionary2F.Add("空", "23")
+
+        'ﾕﾆｯﾄ(3F)の連想配列作成
+        unitDictionary3F = New Dictionary(Of String, String)
+        unitDictionary3F.Add("※", "00")
+        unitDictionary3F.Add("月", "31")
+        unitDictionary3F.Add("花", "32")
+        unitDictionary3F.Add("海", "33")
+
+        'Y1～Y31の列のセルの入力文字変換連想配列
+        wordDictionary = New Dictionary(Of String, String)
+        wordDictionary.Add("0", "")
+        wordDictionary.Add("1", "早")
+        wordDictionary.Add("2", "日早")
+        wordDictionary.Add("3", "日")
+        wordDictionary.Add("4", "日遅")
+        wordDictionary.Add("5", "遅")
+        wordDictionary.Add("6", "遅々")
+        wordDictionary.Add("7", "夜")
+        wordDictionary.Add("8", "深")
+        wordDictionary.Add("10", "半")
+        wordDictionary.Add("11", "半Ａ")
+        wordDictionary.Add("12", "半Ｂ")
+        wordDictionary.Add("13", "半夜")
+        wordDictionary.Add("21", "半行")
+        wordDictionary.Add("22", "研")
+        wordDictionary.Add("31", "有")
+        wordDictionary.Add("32", "公")
+        wordDictionary.Add("33", "明")
+        wordDictionary.Add("34", "希")
+        wordDictionary.Add("35", "産")
+        wordDictionary.Add("36", "特")
     End Sub
 
     Private Sub createCellStyles()
@@ -77,6 +124,11 @@ Public Class workForm
         sundayCharCellStyle.SelectionForeColor = Color.Black
         sundayCharCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
         sundayCharCellStyle.Font = New Font("MS UI Gothic", 9, FontStyle.Bold)
+
+        'Y1～Y31列の変更の行のスタイル
+        workChangeCellStyle = New DataGridViewCellStyle()
+        workChangeCellStyle.ForeColor = Color.Red
+        workChangeCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
 
     End Sub
 
@@ -125,9 +177,6 @@ Public Class workForm
 
         For i As Integer = rowCount To MAX_ROW_COUNT
             Dim row As DataRow = dt.NewRow()
-            If i Mod 2 = 1 Then
-                row("Seq") = i + 1
-            End If
             dt.Rows.Add(row)
         Next
     End Sub
@@ -150,7 +199,7 @@ Public Class workForm
         End With
     End Sub
 
-    Private Sub settingDgvColumns(dgv As DataGridView)
+    Private Sub settingDgvColumnsAndRows(dgv As DataGridView)
         With dgv
             '並び替えができないようにする
             For Each c As DataGridViewColumn In dgv.Columns
@@ -164,6 +213,12 @@ Public Class workForm
             For i As Integer = 1 To 31
                 .Columns("J" & i).Visible = False
             Next
+
+            '行固定
+            .Rows(0).Frozen = True
+
+            '列固定
+            .Columns("type").Frozen = True
 
             'ユニット列
             With .Columns("Unt")
@@ -191,7 +246,6 @@ Public Class workForm
 
             '予定or変更列
             With .Columns("type")
-                .Frozen = True
                 .Width = 32
                 .HeaderText = ""
                 .DefaultCellStyle = disableCellStyle
@@ -200,11 +254,18 @@ Public Class workForm
             'Y1～Y31の列
             For i As Integer = 1 To 31
                 With .Columns("Y" & i)
-                    .Width = 43
+                    .Width = 46
                     .HeaderText = i.ToString()
                     .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                     .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
                 End With
+            Next
+
+            'Y1～Y31の列の変更の行
+            For i As Integer = 2 To MAX_ROW_COUNT Step 2
+                For j As Integer = 1 To 31
+                    dgv("Y" & j, i).Style = workChangeCellStyle
+                Next
             Next
 
             '日曜日の列
@@ -240,6 +301,20 @@ Public Class workForm
                 dgv("Nam", i).ReadOnly = True
             Next
         End With
+    End Sub
+
+    Private Sub setSeqValue(dt As DataTable)
+        For i As Integer = 1 To MAX_ROW_COUNT Step 2
+            dt.Rows(i).Item("Seq") = i + 1
+        Next
+    End Sub
+
+    Private Sub setAddState(dt As DataTable)
+        For Each row As DataRow In dt.Rows
+            If Not IsDBNull(row("Nam")) AndAlso row("Nam") <> "" Then
+                row.SetAdded()
+            End If
+        Next
     End Sub
 
     Private Sub rbtnF_MouseClick(sender As Object, e As MouseEventArgs) Handles rbtn2F.MouseClick, rbtn3F.MouseClick
@@ -328,14 +403,6 @@ Public Class workForm
         cn.Dispose()
     End Sub
 
-    Private Sub setAddState(dt As DataTable)
-        For Each row As DataRow In dt.Rows
-            If Not IsDBNull(row("Nam")) AndAlso row("Nam") <> "" Then
-                row.SetAdded()
-            End If
-        Next
-    End Sub
-
     Private Sub btnRegist_Click(sender As Object, e As EventArgs) Handles btnRegist.Click
         Dim floar As String = If(rbtn2F.Checked = True, "2", "3")
         dt.AcceptChanges()
@@ -344,4 +411,45 @@ Public Class workForm
         adapter.Update(dt)
         MsgBox("登録しました。")
     End Sub
+
+    Private Sub dgvWork_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvWork.CellBeginEdit
+        editBeforeCellValue = If(IsDBNull(dgvWork(e.ColumnIndex, e.RowIndex).Value), "", dgvWork(e.ColumnIndex, e.RowIndex).Value)
+    End Sub
+
+    Private Sub dgvWork_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWork.CellEndEdit
+        If dgvWork.Columns(e.ColumnIndex).Name = "Unt" Then
+            'ﾕﾆｯﾄ列の編集終了時、Seq2列のセルに対応した値を設定
+            Dim inputStr As String = If(IsDBNull(dgvWork(e.ColumnIndex, e.RowIndex).Value), "", dgvWork(e.ColumnIndex, e.RowIndex).Value)
+            Try
+                If rbtn2F.Checked = True Then
+                    dgvWork("Seq2", e.RowIndex).Value = unitDictionary2F(inputStr)
+                Else
+                    dgvWork("Seq2", e.RowIndex).Value = unitDictionary3F(inputStr)
+                End If
+            Catch ex As KeyNotFoundException
+                dgvWork(e.ColumnIndex, e.RowIndex).Value = editBeforeCellValue
+                MsgBox("正しいﾕﾆｯﾄ名を入力してください。")
+            End Try
+        ElseIf 7 <= e.ColumnIndex AndAlso e.ColumnIndex <= 37 Then
+            'Y1～Y31列の編集終了時の処理
+            If e.RowIndex Mod 2 = 1 Then
+                '予定の行の場合、値の変換処理をする
+                Try
+                    dgvWork(e.ColumnIndex, e.RowIndex).Value = wordDictionary(dgvWork(e.ColumnIndex, e.RowIndex).Value)
+                Catch ex As KeyNotFoundException
+                    '何もしない
+                End Try
+            Else
+                '変更の行の場合、値の変換処理をして、入力しているY列に対応する非表示のJ列の値を置き換える
+                Try
+                    dgvWork(e.ColumnIndex, e.RowIndex).Value = wordDictionary(dgvWork(e.ColumnIndex, e.RowIndex).Value)
+                    dgvWork(e.ColumnIndex + 31, e.RowIndex - 1).Value = dgvWork(e.ColumnIndex, e.RowIndex).Value
+                Catch ex As KeyNotFoundException
+                    dgvWork(e.ColumnIndex + 31, e.RowIndex - 1).Value = dgvWork(e.ColumnIndex, e.RowIndex).Value
+                End Try
+            End If
+
+        End If
+    End Sub
+
 End Class
