@@ -72,6 +72,12 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSV作成.Designer.vb">
+      <DependentUpon>CSV作成.vb</DependentUpon>
+    </Compile>
+    <Compile Include="CSV作成.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="TopForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -94,10 +100,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="workForm.Designer.vb">
-      <DependentUpon>workForm.vb</DependentUpon>
+    <Compile Include="Util.vb" />
+    <Compile Include="勤務割.Designer.vb">
+      <DependentUpon>勤務割.vb</DependentUpon>
     </Compile>
-    <Compile Include="workForm.vb">
+    <Compile Include="勤務割.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="週間表.Designer.vb">
+      <DependentUpon>週間表.vb</DependentUpon>
+    </Compile>
+    <Compile Include="週間表.vb">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
@@ -111,8 +124,11 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="workForm.resx">
-      <DependentUpon>workForm.vb</DependentUpon>
+    <EmbeddedResource Include="勤務割.resx">
+      <DependentUpon>勤務割.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="週間表.resx">
+      <DependentUpon>週間表.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
