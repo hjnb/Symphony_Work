@@ -1,3 +1,2069 @@
-﻿Public Class 週間表
+﻿Imports System.Data.OleDb
+Imports System.Runtime.InteropServices
+Public Class 週間表
+    Private DGV1Table As DataTable
+    Private DGV2Table As DataTable
+    Private cellStyle1 As DataGridViewCellStyle
+    Private cellStyle2 As DataGridViewCellStyle
+    Private clearCellStyle As DataGridViewCellStyle
+    Private whiteCellStyle As DataGridViewCellStyle
 
+    Private Sub MadeStyle()
+        '文字の大きさ指定
+        cellStyle1 = New DataGridViewCellStyle()
+        cellStyle1.Font = New Font("MS UI Gothic", 6)
+        cellStyle1.ForeColor = Color.Blue
+        cellStyle1.BackColor = Color.FromArgb(234, 234, 234)
+        cellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+        cellStyle2 = New DataGridViewCellStyle()
+        cellStyle2.Font = New Font("MS UI Gothic", 8)
+        cellStyle2.ForeColor = Color.Blue
+        cellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+        clearCellStyle = New DataGridViewCellStyle()
+        'clearCellStyle.Font = New Font("MS UI Gothic", 8)
+        clearCellStyle.BackColor = Color.FromArgb(234, 234, 234)
+        clearCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+        whiteCellStyle = New DataGridViewCellStyle()
+        whiteCellStyle.Font = New Font("MS UI Gothic", 8)
+        whiteCellStyle.BackColor = Color.FromArgb(255, 255, 255)
+        whiteCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+    End Sub
+
+    Private Sub 週間表_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+        If e.Alt = True Then
+            If e.KeyCode = Keys.F12 Then
+                btnTouroku.Visible = True
+                btnSakujo.Visible = True
+                btnInnsatu.Visible = True
+                btnTorikomi.Visible = True
+                Dim Staff As New 職員リスト()
+                Staff.Owner = Me
+                Staff.Show()
+            End If
+        End If
+    End Sub
+
+    Private Sub 週間表_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        MadeStyle()
+        Me.WindowState = FormWindowState.Maximized
+        'DataGridView1の設定
+        Dim Cn As New OleDbConnection(TopForm.DB_Work)
+        Dim SQLCm As OleDbCommand = Cn.CreateCommand
+        Dim Adapter As New OleDbDataAdapter(SQLCm)
+        DGV1Table = New DataTable()
+        Util.EnableDoubleBuffering(DataGridView1)
+
+        With DataGridView1
+            .RowTemplate.Height = 20
+            .AllowUserToAddRows = False '行追加禁止
+            .AllowUserToResizeColumns = False '列の幅をユーザーが変更できないようにする
+            .AllowUserToResizeRows = False '行の高さをユーザーが変更できないようにする
+            .AllowUserToDeleteRows = False
+            .RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing
+            .ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
+            .ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .ColumnHeadersVisible = False
+            .RowHeadersVisible = False
+            .DefaultCellStyle.SelectionForeColor = Color.Black
+            .DefaultCellStyle.Font = New Font("MS UI Gothic", 7)
+        End With
+
+        'DataGridView1列作成
+        For i As Integer = 0 To 28
+            DGV1Table.Columns.Add("a" & i, Type.GetType("System.String"))
+        Next
+
+        'DataGridView1行作成
+        For i As Integer = 1 To 39
+            DGV1Table.Rows.Add(DGV1Table.NewRow())
+        Next
+
+        'DataGridView1空を表示
+        DataGridView1.DataSource = DGV1Table
+
+        'DataGridView1列の設定
+        For c As Integer = 0 To 28
+            If c = 0 Then
+                DataGridView1.Columns(c).Width = 30
+            ElseIf c Mod 2 = 0 Then
+                DataGridView1.Columns(c).Width = 45
+                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            ElseIf c = 1 OrElse c = 5 OrElse c = 9 OrElse c = 13 OrElse c = 17 OrElse c = 21 OrElse c = 25 Then
+                DataGridView1.Columns(c).Width = 28
+            ElseIf c = 3 OrElse c = 7 OrElse c = 11 OrElse c = 15 OrElse c = 19 OrElse c = 23 OrElse c = 27 Then
+                DataGridView1.Columns(c).Width = 17
+            End If
+        Next
+
+        'DataGridView1の行の設定
+        For r As Integer = 0 To 38
+            DataGridView1.Rows(r).Height = 15
+        Next
+
+        'DataGridView2の設定
+        Dim SQLCm2 As OleDbCommand = Cn.CreateCommand
+        Dim Adapter2 As New OleDbDataAdapter(SQLCm2)
+        DGV2Table = New DataTable()
+        Util.EnableDoubleBuffering(DataGridView2)
+
+        With DataGridView2
+            .RowTemplate.Height = 20
+            .AllowUserToAddRows = False '行追加禁止
+            .AllowUserToResizeColumns = False '列の幅をユーザーが変更できないようにする
+            .AllowUserToResizeRows = False '行の高さをユーザーが変更できないようにする
+            .AllowUserToDeleteRows = False
+            .RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing
+            .ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
+            .ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .ColumnHeadersVisible = False
+            .RowHeadersVisible = False
+            .DefaultCellStyle.SelectionForeColor = Color.Black
+        End With
+
+        'DataGridView2の列作成
+        For i As Integer = 0 To 6
+            DGV2Table.Columns.Add("a" & i, Type.GetType("System.String"))
+        Next
+
+        'DataGridView2の行作成
+        For i As Integer = 1 To 7
+            DGV2Table.Rows.Add(DGV2Table.NewRow())
+        Next
+
+        'DataGridView2の空を表示
+        DataGridView2.DataSource = DGV2Table
+
+        'DataGridView2の列の設定
+        For c As Integer = 0 To 6
+            DataGridView2.Columns(c).Width = 135
+        Next
+
+        'DataGridView2の行の設定
+        For r As Integer = 0 To 6
+            DataGridView2.Rows(r).Height = 15
+        Next
+
+        KeyPreview = True
+
+        '日付の設定
+        Dim ymd As Date = Today
+        Dim weekNumber As DayOfWeek = ymd.DayOfWeek
+        For i As Integer = 0 To 6
+            If weekNumber = i Then
+                ymd = ymd.AddDays(-i)
+                ChangeWareki(ymd)
+            End If
+        Next
+        lblYmd.Text = lblYmd.Text & "（日）"
+
+        '各セルのスタイルの設定
+        With DataGridView1
+            For i = 0 To 1
+                With .Rows(i)
+                    .ReadOnly = True
+                    .DefaultCellStyle = clearCellStyle
+                End With
+            Next
+            With .Rows(6)
+                .ReadOnly = True
+                .DefaultCellStyle = clearCellStyle
+            End With
+            With .Columns(0)
+                .ReadOnly = True
+                .DefaultCellStyle = clearCellStyle
+            End With
+            For i As Integer = 1 To 28 Step 2
+                .Columns(i).ReadOnly = True
+                .Columns(i).DefaultCellStyle = cellStyle1
+            Next
+        End With
+
+        For row As Integer = 11 To 23
+            If row = 11 OrElse row = 16 OrElse row = 21 OrElse row = 22 OrElse row = 23 Then
+                For col As Integer = 1 To 28
+                    DataGridView1(col, row).Style = whiteCellStyle
+                    DataGridView1(col, row).ReadOnly = False
+                Next
+            End If
+        Next
+
+        '各セルの固定値部分の設定
+        Dim Youbi() As String = {"日", "月", "火", "水", "木", "金", "土"}
+        For i As Integer = 0 To 6
+            DataGridView1(i * 4 + 3, 0).Value = Youbi(i)
+            DataGridView1(i * 4 + 2, 1).Value = "入浴"
+            DataGridView1(i * 4 + 4, 1).Value = "着脱"
+            DataGridView1(i * 4 + 2, 6).Value = "ＡＭ"
+            DataGridView1(i * 4 + 4, 6).Value = "ＰＭ"
+            DataGridView1(i * 4 + 3, 0).Style = cellStyle2
+            DataGridView1(i * 4 + 2, 1).Style = cellStyle2
+            DataGridView1(i * 4 + 4, 1).Style = cellStyle2
+            DataGridView1(i * 4 + 2, 6).Style = cellStyle2
+            DataGridView1(i * 4 + 4, 6).Style = cellStyle2
+            For r As Integer = 1 To 3
+                DataGridView1(i * 4 + 1, r * 5 + 2).Value = "早"
+                DataGridView1(i * 4 + 1, r * 5 + 3).Value = "日早"
+                DataGridView1(i * 4 + 1, r * 5 + 4).Value = "遅"
+                DataGridView1(i * 4 + 1, r * 5 + 5).Value = "遅々"
+                DataGridView1(i * 4 + 1, r * 5 + 19).Value = "朝"
+                DataGridView1(i * 4 + 1, r * 5 + 21).Value = "昼"
+                DataGridView1(i * 4 + 1, r * 5 + 23).Value = "夕"
+                DataGridView1(i * 4 + 1, r * 5 + 2).Style = cellStyle2
+                DataGridView1(i * 4 + 1, r * 5 + 3).Style = cellStyle1
+                DataGridView1(i * 4 + 1, r * 5 + 4).Style = cellStyle2
+                DataGridView1(i * 4 + 1, r * 5 + 5).Style = cellStyle1
+                DataGridView1(i * 4 + 1, r * 5 + 19).Style = cellStyle2
+                DataGridView1(i * 4 + 1, r * 5 + 21).Style = cellStyle2
+                DataGridView1(i * 4 + 1, r * 5 + 23).Style = cellStyle2
+            Next
+        Next
+        DataGridView1(0, 2).Value = "午前"
+        DataGridView1(0, 4).Value = "午前"
+        DataGridView1(0, 8).Value = "森"
+        DataGridView1(0, 11).Value = "ﾊﾟｰﾄ"
+        DataGridView1(0, 13).Value = "星"
+        DataGridView1(0, 16).Value = "ﾊﾟｰﾄ"
+        DataGridView1(0, 18).Value = "空"
+        DataGridView1(0, 21).Value = "ﾊﾟｰﾄ"
+        DataGridView1(0, 22).Value = "夜勤"
+        DataGridView1(0, 23).Value = "深夜"
+        DataGridView1(0, 26).Value = "森"
+        DataGridView1(0, 31).Value = "星"
+        DataGridView1(0, 36).Value = "空"
+        DataGridView1(0, 2).Style = cellStyle2
+        DataGridView1(0, 4).Style = cellStyle2
+        DataGridView1(0, 8).Style = cellStyle2
+        DataGridView1(0, 11).Style = cellStyle2
+        DataGridView1(0, 13).Style = cellStyle2
+        DataGridView1(0, 16).Style = cellStyle2
+        DataGridView1(0, 18).Style = cellStyle2
+        DataGridView1(0, 21).Style = cellStyle2
+        DataGridView1(0, 22).Style = cellStyle2
+        DataGridView1(0, 23).Style = cellStyle2
+        DataGridView1(0, 26).Style = cellStyle2
+        DataGridView1(0, 31).Style = cellStyle2
+        DataGridView1(0, 36).Style = cellStyle2
+
+
+
+    End Sub
+
+    Private Sub DataGridView_CellPainting(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellPaintingEventArgs) Handles DataGridView1.CellPainting, DataGridView2.CellPainting
+        '選択したセルに枠を付ける
+        If e.ColumnIndex >= 0 AndAlso e.RowIndex >= 0 AndAlso (e.PaintParts And DataGridViewPaintParts.Background) = DataGridViewPaintParts.Background Then
+            e.Graphics.FillRectangle(New SolidBrush(e.CellStyle.BackColor), e.CellBounds)
+
+            If (e.PaintParts And DataGridViewPaintParts.SelectionBackground) = DataGridViewPaintParts.SelectionBackground AndAlso (e.State And DataGridViewElementStates.Selected) = DataGridViewElementStates.Selected Then
+                e.Graphics.DrawRectangle(New Pen(Color.Black, 2I), e.CellBounds.X + 1I, e.CellBounds.Y + 1I, e.CellBounds.Width - 3I, e.CellBounds.Height - 3I)
+            End If
+
+            Dim pParts As DataGridViewPaintParts = e.PaintParts And Not DataGridViewPaintParts.Background
+            e.Paint(e.ClipBounds, pParts)
+            e.Handled = True
+        End If
+    End Sub
+
+    Public Sub ChangeWareki(ymd As Date)
+        Dim wareki As String = ""
+        If ymd <= "2019/04/30" Then
+            wareki = "H"
+            Dim YY As String = (Val(Strings.Left(ymd, 4)) - 1988)
+            If YY.Length = 1 Then
+                YY = "0" & (Val(Strings.Left(ymd, 4)) - 1988)
+            End If
+            lblYmd.Text = wareki & YY & "/" & Strings.Right(ymd, 5)
+        ElseIf ymd > "2019/04/30" Then
+            wareki = "X"
+            Dim YY As String = (Val(Strings.Left(ymd, 4)) - 2018)
+            If YY.Length = 1 Then
+                YY = "0" & (Val(Strings.Left(ymd, 4)) - 2018)
+            End If
+            lblYmd.Text = wareki & YY & "/" & Strings.Right(ymd, 5)
+        End If
+    End Sub
+
+    Private Sub rbn2F_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles rbn2F.CheckedChanged
+        rbn2F.BackColor = Color.Yellow
+        rbn3F.BackColor = SystemColors.Control
+
+    End Sub
+
+    Private Sub rbn3F_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles rbn3F.CheckedChanged
+        rbn2F.BackColor = SystemColors.Control
+        rbn3F.BackColor = Color.Yellow
+
+        ChangeForm()
+    End Sub
+
+    Private Sub ChangeForm()
+        '2階と3階で共通の部分
+        DataGridView1.Columns.Clear()
+
+        Dim Cn As New OleDbConnection(TopForm.DB_Work)
+        Dim SQLCm As OleDbCommand = Cn.CreateCommand
+        Dim Adapter As New OleDbDataAdapter(SQLCm)
+        DGV1Table = New DataTable()
+        Util.EnableDoubleBuffering(DataGridView1)
+
+        With DataGridView1
+            .RowTemplate.Height = 20
+            .AllowUserToAddRows = False '行追加禁止
+            .AllowUserToResizeColumns = False '列の幅をユーザーが変更できないようにする
+            .AllowUserToResizeRows = False '行の高さをユーザーが変更できないようにする
+            .AllowUserToDeleteRows = False
+            .RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing
+            .ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
+            .ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .ColumnHeadersVisible = False
+            .RowHeadersVisible = False
+            .DefaultCellStyle.SelectionForeColor = Color.Black
+            .DefaultCellStyle.Font = New Font("MS UI Gothic", 7)
+        End With
+
+        'DataGridView1列作成
+        For i As Integer = 0 To 28
+            DGV1Table.Columns.Add("a" & i, Type.GetType("System.String"))
+        Next
+
+
+        If rbn2F.Checked = True Then    '2階の情報を表示
+            Label52.Location = New Point(32, 74)
+            Label1.Location = New Point(32, 103)
+            Label2.Location = New Point(32, 134)
+            Label3.Location = New Point(32, 149)
+            Label4.Location = New Point(32, 223)
+            Label5.Location = New Point(32, 298)
+            Label6.Location = New Point(32, 373)
+            Label7.Location = New Point(32, 403)
+            Label8.Location = New Point(32, 478)
+            Label9.Location = New Point(32, 554)
+
+            For i As Integer = 10 To 16
+                Controls("Label" & i).Size = New Size(2, 588)
+            Next
+
+            DataGridView1.Location = New Point(32, 43)
+            DataGridView1.Size = New Size(978, 588)
+            DataGridView2.Location = New Point(62, 630)
+
+            'DataGridView1行作成
+            For i As Integer = 1 To 39
+                DGV1Table.Rows.Add(DGV1Table.NewRow())
+            Next
+        ElseIf rbn3F.Checked = True Then    '3階の情報を表示
+            Label52.Location = New Point(32, 72)
+            Label1.Location = New Point(32, 100)
+            Label2.Location = New Point(32, 128)
+            Label3.Location = New Point(32, 142)
+            Label4.Location = New Point(32, 212)
+            Label5.Location = New Point(32, 282)
+            Label6.Location = New Point(32, 365)
+            Label7.Location = New Point(32, 393)
+            Label8.Location = New Point(32, 491)
+            Label9.Location = New Point(32, 589)
+            For i As Integer = 10 To 16
+                Controls("Label" & i).Size = New Size(2, 605)
+            Next
+
+            DataGridView1.Location = New Point(32, 43)
+            DataGridView1.Size = New Size(978, 605)
+            DataGridView2.Location = New Point(62, 647)
+
+            'DataGridView1行作成
+            For i As Integer = 1 To 43
+                DGV1Table.Rows.Add(DGV1Table.NewRow())
+            Next
+        End If
+
+        '2階と3階で共通の部分
+
+        'DataGridView1空を表示
+        DataGridView1.DataSource = DGV1Table
+
+        'DataGridView1列の設定
+        For c As Integer = 0 To 28
+            If c = 0 Then
+                DataGridView1.Columns(c).Width = 30
+            ElseIf c Mod 2 = 0 Then
+                DataGridView1.Columns(c).Width = 45
+                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            ElseIf c = 1 OrElse c = 5 OrElse c = 9 OrElse c = 13 OrElse c = 17 OrElse c = 21 OrElse c = 25 Then
+                DataGridView1.Columns(c).Width = 28
+            ElseIf c = 3 OrElse c = 7 OrElse c = 11 OrElse c = 15 OrElse c = 19 OrElse c = 23 OrElse c = 27 Then
+                DataGridView1.Columns(c).Width = 17
+            End If
+        Next
+
+        If rbn2F.Checked = True Then    '2階の情報を表示
+            'DataGridView1行の設定
+            For r As Integer = 0 To 38
+                DataGridView1.Rows(r).Height = 15
+            Next
+        ElseIf rbn3F.Checked = True Then    '3階の情報を表示
+            'DataGridView1行の設定
+            For r As Integer = 0 To 42
+                DataGridView1.Rows(r).Height = 14
+            Next
+        End If
+
+        '2階と3階で共通の部分
+
+        '各セルのスタイルの設定
+        With DataGridView1
+            For i = 0 To 1
+                With .Rows(i)
+                    .ReadOnly = True
+                    .DefaultCellStyle = clearCellStyle
+                End With
+            Next
+            With .Rows(6)
+                .ReadOnly = True
+                .DefaultCellStyle = clearCellStyle
+            End With
+            With .Columns(0)
+                .ReadOnly = True
+                .DefaultCellStyle = clearCellStyle
+            End With
+            For i As Integer = 1 To 28 Step 2
+                .Columns(i).ReadOnly = True
+                .Columns(i).DefaultCellStyle = cellStyle1
+            Next
+        End With
+
+        For row As Integer = 11 To 23
+            If row = 11 OrElse row = 16 OrElse row = 21 OrElse row = 22 OrElse row = 23 Then
+                For col As Integer = 1 To 28
+                    DataGridView1(col, row).Style = whiteCellStyle
+                    DataGridView1(col, row).ReadOnly = False
+                Next
+            End If
+        Next
+
+        If rbn2F.Checked = True Then    '2階の情報を表示
+            '各セルの固定値部分の設定
+            Dim Youbi() As String = {"日", "月", "火", "水", "木", "金", "土"}
+            For i As Integer = 0 To 6
+                DataGridView1(i * 4 + 3, 0).Value = Youbi(i)
+                DataGridView1(i * 4 + 2, 1).Value = "入浴"
+                DataGridView1(i * 4 + 4, 1).Value = "着脱"
+                DataGridView1(i * 4 + 2, 6).Value = "ＡＭ"
+                DataGridView1(i * 4 + 4, 6).Value = "ＰＭ"
+                DataGridView1(i * 4 + 3, 0).Style = cellStyle2
+                DataGridView1(i * 4 + 2, 1).Style = cellStyle2
+                DataGridView1(i * 4 + 4, 1).Style = cellStyle2
+                DataGridView1(i * 4 + 2, 6).Style = cellStyle2
+                DataGridView1(i * 4 + 4, 6).Style = cellStyle2
+                For r As Integer = 1 To 3
+                    DataGridView1(i * 4 + 1, r * 5 + 2).Value = "早"
+                    DataGridView1(i * 4 + 1, r * 5 + 3).Value = "日早"
+                    DataGridView1(i * 4 + 1, r * 5 + 4).Value = "遅"
+                    DataGridView1(i * 4 + 1, r * 5 + 5).Value = "遅々"
+                    DataGridView1(i * 4 + 1, r * 5 + 19).Value = "朝"
+                    DataGridView1(i * 4 + 1, r * 5 + 21).Value = "昼"
+                    DataGridView1(i * 4 + 1, r * 5 + 23).Value = "夕"
+                    DataGridView1(i * 4 + 1, r * 5 + 2).Style = cellStyle2
+                    DataGridView1(i * 4 + 1, r * 5 + 3).Style = cellStyle1
+                    DataGridView1(i * 4 + 1, r * 5 + 4).Style = cellStyle2
+                    DataGridView1(i * 4 + 1, r * 5 + 5).Style = cellStyle1
+                    DataGridView1(i * 4 + 1, r * 5 + 19).Style = cellStyle2
+                    DataGridView1(i * 4 + 1, r * 5 + 21).Style = cellStyle2
+                    DataGridView1(i * 4 + 1, r * 5 + 23).Style = cellStyle2
+                Next
+            Next
+            DataGridView1(0, 2).Value = "午前"
+            DataGridView1(0, 4).Value = "午前"
+            DataGridView1(0, 8).Value = "森"
+            DataGridView1(0, 11).Value = "ﾊﾟｰﾄ"
+            DataGridView1(0, 13).Value = "星"
+            DataGridView1(0, 16).Value = "ﾊﾟｰﾄ"
+            DataGridView1(0, 18).Value = "空"
+            DataGridView1(0, 21).Value = "ﾊﾟｰﾄ"
+            DataGridView1(0, 22).Value = "夜勤"
+            DataGridView1(0, 23).Value = "深夜"
+            DataGridView1(0, 26).Value = "森"
+            DataGridView1(0, 31).Value = "星"
+            DataGridView1(0, 36).Value = "空"
+            DataGridView1(0, 2).Style = cellStyle2
+            DataGridView1(0, 4).Style = cellStyle2
+            DataGridView1(0, 8).Style = cellStyle2
+            DataGridView1(0, 11).Style = cellStyle2
+            DataGridView1(0, 13).Style = cellStyle2
+            DataGridView1(0, 16).Style = cellStyle2
+            DataGridView1(0, 18).Style = cellStyle2
+            DataGridView1(0, 21).Style = cellStyle2
+            DataGridView1(0, 22).Style = cellStyle2
+            DataGridView1(0, 23).Style = cellStyle2
+            DataGridView1(0, 26).Style = cellStyle2
+            DataGridView1(0, 31).Style = cellStyle2
+            DataGridView1(0, 36).Style = cellStyle2
+
+        ElseIf rbn3F.Checked = True Then    '3階の情報を表示
+
+            
+
+            '各セルの固定値部分の設定
+            Dim Youbi() As String = {"日", "月", "火", "水", "木", "金", "土"}
+            For i As Integer = 0 To 6
+                DataGridView1(i * 4 + 3, 0).Value = Youbi(i)
+                DataGridView1(i * 4 + 2, 1).Value = "入浴"
+                DataGridView1(i * 4 + 4, 1).Value = "着脱"
+                DataGridView1(i * 4 + 2, 6).Value = "ＡＭ"
+                DataGridView1(i * 4 + 4, 6).Value = "ＰＭ"
+                DataGridView1(i * 4 + 3, 0).Style = cellStyle2
+                DataGridView1(i * 4 + 2, 1).Style = cellStyle2
+                DataGridView1(i * 4 + 4, 1).Style = cellStyle2
+                DataGridView1(i * 4 + 2, 6).Style = cellStyle2
+                DataGridView1(i * 4 + 4, 6).Style = cellStyle2
+                DataGridView1(i * 4 + 1, 24).Style = whiteCellStyle
+                DataGridView1(i * 4 + 1, 24).ReadOnly = False
+                DataGridView1(i * 4 + 3, 24).Style = whiteCellStyle
+                DataGridView1(i * 4 + 3, 24).ReadOnly = False
+                For r As Integer = 1 To 3
+                    DataGridView1(i * 4 + 1, r * 5 + 2).Value = "早"
+                    DataGridView1(i * 4 + 1, r * 5 + 3).Value = "日早"
+                    DataGridView1(i * 4 + 1, r * 5 + 4).Value = "遅"
+                    DataGridView1(i * 4 + 1, r * 5 + 5).Value = "遅々"
+                    DataGridView1(i * 4 + 1, r * 7 + 18).Value = "朝"
+                    DataGridView1(i * 4 + 1, r * 5 + 2).Style = cellStyle2
+                    DataGridView1(i * 4 + 1, r * 5 + 3).Style = cellStyle1
+                    DataGridView1(i * 4 + 1, r * 5 + 4).Style = cellStyle2
+                    DataGridView1(i * 4 + 1, r * 5 + 5).Style = cellStyle1
+                    DataGridView1(i * 4 + 1, r * 7 + 18).Style = cellStyle2
+                    If r = 1 OrElse r = 2 Then
+                        DataGridView1(i * 4 + 1, r * 7 + 21).Value = "昼"
+                        DataGridView1(i * 4 + 1, r * 7 + 23).Value = "夕"
+                        DataGridView1(i * 4 + 1, r * 7 + 21).Style = cellStyle2
+                        DataGridView1(i * 4 + 1, r * 7 + 23).Style = cellStyle2
+                    ElseIf r = 3 Then
+                        DataGridView1(i * 4 + 1, r * 7 + 19).Value = "昼"
+                        DataGridView1(i * 4 + 1, r * 7 + 21).Value = "夕"
+                        DataGridView1(i * 4 + 1, r * 7 + 19).Style = cellStyle2
+                        DataGridView1(i * 4 + 1, r * 7 + 21).Style = cellStyle2
+                    End If
+                Next
+            Next
+
+            DataGridView1(0, 2).Value = "午前"
+            DataGridView1(0, 4).Value = "午前"
+            DataGridView1(0, 9).Value = "月"
+            DataGridView1(0, 11).Value = "ﾊﾟｰﾄ"
+            DataGridView1(0, 14).Value = "花"
+            DataGridView1(0, 16).Value = "ﾊﾟｰﾄ"
+            DataGridView1(0, 19).Value = "海"
+            DataGridView1(0, 21).Value = "ﾊﾟｰﾄ"
+            DataGridView1(0, 22).Value = "ﾊﾟｰﾄ"
+            DataGridView1(0, 23).Value = "夜勤"
+            DataGridView1(0, 24).Value = "深夜"
+            DataGridView1(0, 28).Value = "月"
+            DataGridView1(0, 35).Value = "花"
+            DataGridView1(0, 40).Value = "海"
+            DataGridView1(0, 2).Style = cellStyle2
+            DataGridView1(0, 4).Style = cellStyle2
+            DataGridView1(0, 9).Style = cellStyle2
+            DataGridView1(0, 11).Style = cellStyle2
+            DataGridView1(0, 14).Style = cellStyle2
+            DataGridView1(0, 16).Style = cellStyle2
+            DataGridView1(0, 19).Style = cellStyle2
+            DataGridView1(0, 21).Style = cellStyle2
+            DataGridView1(0, 22).Style = cellStyle2
+            DataGridView1(0, 23).Style = cellStyle2
+            DataGridView1(0, 24).Style = cellStyle2
+            DataGridView1(0, 28).Style = cellStyle2
+            DataGridView1(0, 35).Style = cellStyle2
+            DataGridView1(0, 40).Style = cellStyle2
+
+        End If
+
+        '2階と3階で共通の部分
+        For i As Integer = 0 To 6
+            DataGridView1(4 * i + 2, 0).Value = Val(Strings.Mid(lblYmd.Text, 8, 2)) + i
+        Next
+
+        Dim Seireki As Integer
+        If Strings.Left(lblYmd.Text, 1) = "H" Then
+            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
+        ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
+            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
+        End If
+        Dim Getumatu As Integer = Date.DaysInMonth(Seireki, Val(Strings.Mid(lblYmd.Text, 5, 2)))
+
+        For i As Integer = 0 To 6
+            If Val(DataGridView1(4 * i + 2, 0).Value) > Getumatu Then
+                DataGridView1(4 * i + 2, 0).Value = Val(DataGridView1(4 * i + 2, 0).Value) - Getumatu
+            End If
+        Next
+
+        DataIndication()
+
+    End Sub
+
+    Private Sub btnUp_Click(sender As System.Object, e As System.EventArgs) Handles btnUp.Click
+        Dim ymd As Date = Strings.Left(lblYmd.Text, 9)
+        ymd = ymd.AddDays(7)
+        ChangeWareki(ymd)
+        lblYmd.Text = lblYmd.Text & "（日）"
+    End Sub
+
+    Private Sub btnDown_Click(sender As System.Object, e As System.EventArgs) Handles btnDown.Click
+        Dim ymd As Date = CType(Strings.Left(lblYmd.Text, 9), Date)
+        ymd = ymd.AddDays(-7)
+        ChangeWareki(ymd)
+        lblYmd.Text = lblYmd.Text & "（日）"
+    End Sub
+
+    Private Sub lblYmd_TextChanged(sender As Object, e As System.EventArgs) Handles lblYmd.TextChanged
+        If Strings.Left(lblYmd.Text, 9) = "H30.12.31" Then
+            Return
+        End If
+        For i As Integer = 0 To 6
+            DataGridView1(4 * i + 2, 0).Value = Val(Strings.Mid(lblYmd.Text, 8, 2)) + i
+        Next
+
+        Dim Seireki As Integer
+        If Strings.Left(lblYmd.Text, 1) = "H" Then
+            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
+        ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
+            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
+        End If
+        Dim Getumatu As Integer = Date.DaysInMonth(Seireki, Val(Strings.Mid(lblYmd.Text, 5, 2)))
+
+        For i As Integer = 0 To 6
+            If Val(DataGridView1(4 * i + 2, 0).Value) > Getumatu Then
+                DataGridView1(4 * i + 2, 0).Value = Val(DataGridView1(4 * i + 2, 0).Value) - Getumatu
+            End If
+        Next
+
+        DataIndication()
+    End Sub
+
+    Private Sub DataClear()
+        If rbn2F.Checked = True Then
+            For column As Integer = 1 To 28
+                If column Mod 2 = 0 Then    '偶数列
+                    For row As Integer = 2 To 38    '入力可能な行をチェック
+                        If row <> 6 Then    '6行目だけ入力する場所がないので外す
+                            DataGridView1(column, row).Value = ""
+                            DataGridView1(column, row).Style.BackColor = Color.White
+                        End If
+                    Next
+                Else
+                    For row As Integer = 11 To 23
+                        If row = 11 OrElse row = 16 OrElse row = 21 OrElse row = 22 OrElse row = 23 Then
+                            DataGridView1(column, row).Value = ""
+                        End If
+                    Next
+                End If
+            Next
+        ElseIf rbn3F.Checked = True Then
+            For column As Integer = 1 To 28
+                If column Mod 2 = 0 Then    '偶数列
+                    For row As Integer = 2 To 42    '入力可能な行をチェック
+                        If row <> 6 Then    '6行目だけ入力する場所がないので外す
+                            DataGridView1(column, row).Value = ""
+                            DataGridView1(column, row).Style.BackColor = Color.White
+                        End If
+                    Next
+                Else
+                    For row As Integer = 11 To 23
+                        If row = 11 OrElse row = 16 OrElse row = 21 OrElse row = 22 OrElse row = 23 Then
+                            DataGridView1(column, row).Value = ""
+                        End If
+                    Next
+                End If
+            Next
+        End If
+        
+
+        For c2 As Integer = 0 To 6
+            For r2 As Integer = 0 To 6
+                DataGridView2(c2, r2).Value = ""
+            Next
+        Next
+    End Sub
+
+    Private Sub DataIndication()
+        DataClear()
+
+        If rbn2F.Checked = True Then    '2階
+            Dim Seireki As Integer
+            If Strings.Left(lblYmd.Text, 1) = "H" Then
+                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
+            ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
+                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
+            End If
+            Dim Ymd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+            Dim YmdAdd7 As Date = Ymd.AddDays(6)
+
+            Dim cnn As New ADODB.Connection
+            Dim rs As New ADODB.Recordset
+            Dim sql As String = "select * from SHyo WHERE #" & Ymd & "# <= Ymd and Ymd <= #" & YmdAdd7 & "# order by Ymd"
+            cnn.Open(TopForm.DB_Work)
+            rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+            'Datagridview1への表示
+            Dim ColumnsNo As Integer = 0
+            While Not rs.EOF
+                For RowNo As Integer = 2 To 38
+                    If RowNo <= 5 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
+                        If rs.Fields(RowNo + 88).Value = 1 Then
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        End If
+                        If rs.Fields(RowNo + 124).Value = 1 Then
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        End If
+                    ElseIf 7 <= RowNo And RowNo <= 10 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 2).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 8).Value
+                    ElseIf RowNo = 11 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 2).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 3).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 8).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 9).Value
+                    ElseIf 12 <= RowNo And RowNo <= 15 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 9).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 15).Value
+                    ElseIf RowNo = 16 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 9).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 10).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 15).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 16).Value
+                    ElseIf 17 <= RowNo And RowNo <= 20 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 16).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 22).Value
+                    ElseIf RowNo = 21 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 16).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 17).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 22).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 23).Value
+                    ElseIf RowNo = 22 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 23).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 24).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 25).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 26).Value
+                    ElseIf RowNo = 23 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 26).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 27).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 28).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 29).Value
+                    ElseIf RowNo = 24 Or RowNo = 25 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 36).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 38).Value
+                    ElseIf RowNo = 26 Or RowNo = 27 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 38).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 40).Value
+                    ElseIf RowNo = 28 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 40).Value
+                    ElseIf RowNo = 29 Or RowNo = 30 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 41).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 43).Value
+                    ElseIf RowNo = 31 Or RowNo = 32 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 43).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 45).Value
+                    ElseIf RowNo = 33 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 45).Value
+                    ElseIf RowNo = 34 Or RowNo = 35 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 46).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 48).Value
+                    ElseIf RowNo = 36 Or RowNo = 37 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 48).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 50).Value
+                    ElseIf RowNo = 38 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 50).Value
+                    End If
+                    '色付け処理
+                    If rs.Fields(RowNo + 87).Value = "1" Then
+                        DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                    ElseIf rs.Fields(RowNo + 123).Value = "1" Then
+                        DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                    End If
+                Next
+
+                'Datagridview2への表示
+                For rowno2 As Integer = 1 To 7
+                    DGV2Table.Rows(rowno2 - 1).Item("a" & ColumnsNo) = rs.Fields(rowno2 + 52).Value
+                Next
+
+                rs.MoveNext()
+
+                ColumnsNo = ColumnsNo + 1
+            End While
+            cnn.Close()
+
+        ElseIf rbn3F.Checked = True Then    '3階
+            Dim Seireki As Integer
+            If Strings.Left(lblYmd.Text, 1) = "H" Then
+                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
+            ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
+                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
+            End If
+            Dim Ymd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+            Dim YmdAdd7 As Date = Ymd.AddDays(6)
+
+            Dim cnn As New ADODB.Connection
+            Dim rs As New ADODB.Recordset
+            Dim sql As String = "select * from SHyo3 WHERE #" & Ymd & "# <= Ymd and Ymd <= #" & YmdAdd7 & "# order by Ymd"
+            cnn.Open(TopForm.DB_Work)
+            rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+            'Datagridview1への表示
+            Dim ColumnsNo As Integer = 0
+            While Not rs.EOF
+                For RowNo As Integer = 2 To 42
+                    If RowNo <= 5 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
+                        If rs.Fields(RowNo + 98).Value = 1 Then
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        End If
+                        If rs.Fields(RowNo + 138).Value = 1 Then
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        End If
+                    ElseIf 7 <= RowNo And RowNo <= 10 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 2).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 8).Value
+                    ElseIf RowNo = 11 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 2).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 3).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 8).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 9).Value
+                    ElseIf 12 <= RowNo And RowNo <= 15 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 9).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 15).Value
+                    ElseIf RowNo = 16 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 9).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 10).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 15).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 16).Value
+                    ElseIf 17 <= RowNo And RowNo <= 20 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 16).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 22).Value
+                    ElseIf RowNo = 21 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 16).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 17).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 22).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 23).Value
+                    ElseIf RowNo = 22 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 17).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 18).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 25).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 26).Value
+                    ElseIf RowNo = 23 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 26).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 27).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 28).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 29).Value
+                    ElseIf RowNo = 24 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 29).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 30).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 31).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 32).Value
+                    ElseIf RowNo = 25 Or RowNo = 26 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 39).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 41).Value
+                    ElseIf RowNo = 27 Or RowNo = 28 Or RowNo = 29 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 41).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 44).Value
+                    ElseIf RowNo = 30 Or RowNo = 31 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 44).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 46).Value
+                    ElseIf RowNo = 32 Or RowNo = 33 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 46).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 48).Value
+                    ElseIf RowNo = 34 Or RowNo = 35 Or RowNo = 36 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 48).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 51).Value
+                    ElseIf RowNo = 37 Or RowNo = 38 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 51).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 53).Value
+                    ElseIf RowNo = 39 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 53).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 54).Value
+                    ElseIf RowNo = 40 Or RowNo = 41 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 54).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 56).Value
+                    ElseIf RowNo = 42 Then
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 56).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 57).Value
+                    End If
+                    '色付け処理
+                    If rs.Fields(RowNo + 97).Value = "1" Then
+                        DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                    End If
+                    If rs.Fields(RowNo + 137).Value = "1" Then
+                        DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                    End If
+                Next
+
+                'Datagridview2への表示
+                For rowno2 As Integer = 1 To 7
+                    DGV2Table.Rows(rowno2 - 1).Item("a" & ColumnsNo) = rs.Fields(rowno2 + 56).Value
+                Next
+
+                rs.MoveNext()
+
+                ColumnsNo = ColumnsNo + 1
+            End While
+            cnn.Close()
+        End If
+
+    End Sub
+
+    Private Sub btnTouroku_Click(sender As System.Object, e As System.EventArgs) Handles btnTouroku.Click
+        Dim cnn As New ADODB.Connection
+        cnn.Open(TopForm.DB_Work)
+        Dim Seireki As Integer
+        If Strings.Left(lblYmd.Text, 1) = "H" Then
+            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
+        ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
+            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
+        End If
+        Dim Honjitu As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+        'データ削除
+        Dim DelYmd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+        Dim DelYmdAdd7 As Date = DelYmd.AddDays(6)
+        Dim SQL As String = ""
+        If rbn2F.Checked = True Then
+            SQL = "DELETE FROM SHyo WHERE #" & DelYmd & "# <= Ymd and Ymd <= #" & DelYmdAdd7 & "#"
+        ElseIf rbn3F.Checked = True Then
+            SQL = "DELETE FROM SHyo3 WHERE #" & DelYmd & "# <= Ymd and Ymd <= #" & DelYmdAdd7 & "#"
+        End If
+        cnn.Execute(SQL)
+        'データ登録
+        If rbn2F.Checked = True Then    '2階の登録
+            Dim ymd, nyuam1, nyuam2, nyupm1, nyupm2, tyaam1, tyaam2, tyapm1, tyapm2, moram1, moram2, moram3, moram4, morampk, moramp, morpm1, morpm2, morpm3, morpm4, morpmpk, morpmp, hosam1, hosam2, hosam3, hosam4, hosampk, hosamp, hospm1, hospm2, hospm3, hospm4, hospmpk, hospmp, soram1, soram2, soram3, soram4, sorampk, soramp, sorpm1, sorpm2, sorpm3, sorpm4, sorpmpk, sorpmp, yak1k, yak1, yak2k, yak2, sin1k, sin1, sin2k, sin2, gyo1, gyo2, gyo3, gyo4, gyo5, gyo6, gyo7, mora1, mora2, mora3, mora4, morh1, morh2, morh3, morh4, mory1, mory2, hosa1, hosa2, hosa3, hosa4, hosh1, hosh2, hosh3, hosh4, hosy1, hosy2, sora1, sora2, sora3, sora4, sorh1, sorh2, sorh3, sorh4, sory1, sory2 As String
+            Dim cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39 As Integer
+
+            For dd As Integer = 0 To 6
+                If dd = 0 Then
+                    ymd = Honjitu
+                Else
+                    ymd = Honjitu.AddDays(dd)
+                End If
+                nyuam1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 2).Value)
+                nyuam2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 3).Value)
+                nyupm1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 4).Value)
+                nyupm2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 5).Value)
+                tyaam1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 2).Value)
+                tyaam2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 3).Value)
+                tyapm1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 4).Value)
+                tyapm2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 5).Value)
+                moram1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 7).Value)
+                moram2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 8).Value)
+                moram3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 9).Value)
+                moram4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 10).Value)
+                morampk = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 11).Value)
+                moramp = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 11).Value)
+                morpm1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 7).Value)
+                morpm2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 8).Value)
+                morpm3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 9).Value)
+                morpm4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 10).Value)
+                morpmpk = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 11).Value)
+                morpmp = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 11).Value)
+                hosam1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 12).Value)
+                hosam2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 13).Value)
+                hosam3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 14).Value)
+                hosam4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 15).Value)
+                hosampk = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 16).Value)
+                hosamp = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 16).Value)
+                hospm1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 12).Value)
+                hospm2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 13).Value)
+                hospm3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 14).Value)
+                hospm4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 15).Value)
+                hospmpk = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 16).Value)
+                hospmp = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 16).Value)
+                soram1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 17).Value)
+                soram2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 18).Value)
+                soram3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 19).Value)
+                soram4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 20).Value)
+                sorampk = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 21).Value)
+                soramp = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 21).Value)
+                sorpm1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 17).Value)
+                sorpm2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 18).Value)
+                sorpm3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 19).Value)
+                sorpm4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 20).Value)
+                sorpmpk = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 21).Value)
+                sorpmp = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 21).Value)
+                yak1k = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 22).Value)
+                yak1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 22).Value)
+                yak2k = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 22).Value)
+                yak2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 22).Value)
+                sin1k = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 23).Value)
+                sin1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 23).Value)
+                sin2k = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 23).Value)
+                sin2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 23).Value)
+                gyo1 = Util.checkDBNullValue(DataGridView2(dd, 0).Value)
+                gyo2 = Util.checkDBNullValue(DataGridView2(dd, 1).Value)
+                gyo3 = Util.checkDBNullValue(DataGridView2(dd, 2).Value)
+                gyo4 = Util.checkDBNullValue(DataGridView2(dd, 3).Value)
+                gyo5 = Util.checkDBNullValue(DataGridView2(dd, 4).Value)
+                gyo6 = Util.checkDBNullValue(DataGridView2(dd, 5).Value)
+                gyo7 = Util.checkDBNullValue(DataGridView2(dd, 6).Value)
+                mora1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 24).Value)
+                mora2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 25).Value)
+                mora3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 24).Value)
+                mora4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 25).Value)
+                morh1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 26).Value)
+                morh2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 27).Value)
+                morh3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 26).Value)
+                morh4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 27).Value)
+                mory1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 28).Value)
+                mory2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 28).Value)
+                hosa1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 29).Value)
+                hosa2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 30).Value)
+                hosa3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 29).Value)
+                hosa4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 30).Value)
+                hosh1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 31).Value)
+                hosh2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 32).Value)
+                hosh3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 31).Value)
+                hosh4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 32).Value)
+                hosy1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 33).Value)
+                hosy2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 33).Value)
+                sora1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 34).Value)
+                sora2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 35).Value)
+                sora3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 34).Value)
+                sora4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 35).Value)
+                sorh1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 36).Value)
+                sorh2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 37).Value)
+                sorh3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 36).Value)
+                sorh4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 37).Value)
+                sory1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 38).Value)
+                sory2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 38).Value)
+                If DataGridView1(dd * 4 + 2, 2).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra3 = 1
+                Else
+                    cra3 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 3).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra4 = 1
+                Else
+                    cra4 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 4).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra5 = 1
+                Else
+                    cra5 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 5).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra6 = 1
+                Else
+                    cra6 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 7).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra8 = 1
+                Else
+                    cra8 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 8).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra9 = 1
+                Else
+                    cra9 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 9).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra10 = 1
+                Else
+                    cra10 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 10).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra11 = 1
+                Else
+                    cra11 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 11).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra12 = 1
+                Else
+                    cra12 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 12).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra13 = 1
+                Else
+                    cra13 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 13).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra14 = 1
+                Else
+                    cra14 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 14).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra15 = 1
+                Else
+                    cra15 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 15).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra16 = 1
+                Else
+                    cra16 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 16).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra17 = 1
+                Else
+                    cra17 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 17).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra18 = 1
+                Else
+                    cra18 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 18).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra19 = 1
+                Else
+                    cra19 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 19).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra20 = 1
+                Else
+                    cra20 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 20).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra21 = 1
+                Else
+                    cra21 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 21).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra22 = 1
+                Else
+                    cra22 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 22).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra23 = 1
+                Else
+                    cra23 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 23).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra24 = 1
+                Else
+                    cra24 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 24).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra25 = 1
+                Else
+                    cra25 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 25).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra26 = 1
+                Else
+                    cra26 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 26).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra27 = 1
+                Else
+                    cra27 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 27).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra28 = 1
+                Else
+                    cra28 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 28).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra29 = 1
+                Else
+                    cra29 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 29).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra30 = 1
+                Else
+                    cra30 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 30).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra31 = 1
+                Else
+                    cra31 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 31).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra32 = 1
+                Else
+                    cra32 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 32).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra33 = 1
+                Else
+                    cra33 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 33).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra34 = 1
+                Else
+                    cra34 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 34).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra35 = 1
+                Else
+                    cra35 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 35).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra36 = 1
+                Else
+                    cra36 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 36).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra37 = 1
+                Else
+                    cra37 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 37).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra38 = 1
+                Else
+                    cra38 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 38).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra39 = 1
+                Else
+                    cra39 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 2).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb3 = 1
+                Else
+                    crb3 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 3).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb4 = 1
+                Else
+                    crb4 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 4).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb5 = 1
+                Else
+                    crb5 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 5).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb6 = 1
+                Else
+                    crb6 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 7).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb8 = 1
+                Else
+                    crb8 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 8).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb9 = 1
+                Else
+                    crb9 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 9).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb10 = 1
+                Else
+                    crb10 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 10).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb11 = 1
+                Else
+                    crb11 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 11).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb12 = 1
+                Else
+                    crb12 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 12).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb13 = 1
+                Else
+                    crb13 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 13).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb14 = 1
+                Else
+                    crb14 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 14).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb15 = 1
+                Else
+                    crb15 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 15).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb16 = 1
+                Else
+                    crb16 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 16).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb17 = 1
+                Else
+                    crb17 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 17).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb18 = 1
+                Else
+                    crb18 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 18).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb19 = 1
+                Else
+                    crb19 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 19).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb20 = 1
+                Else
+                    crb20 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 20).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb21 = 1
+                Else
+                    crb21 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 21).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb22 = 1
+                Else
+                    crb22 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 22).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb23 = 1
+                Else
+                    crb23 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 23).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb24 = 1
+                Else
+                    crb24 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 24).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb25 = 1
+                Else
+                    crb25 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 25).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb26 = 1
+                Else
+                    crb26 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 26).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb27 = 1
+                Else
+                    crb27 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 27).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb28 = 1
+                Else
+                    crb28 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 28).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb29 = 1
+                Else
+                    crb29 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 29).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb30 = 1
+                Else
+                    crb30 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 30).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb31 = 1
+                Else
+                    crb31 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 31).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb32 = 1
+                Else
+                    crb32 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 32).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb33 = 1
+                Else
+                    crb33 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 33).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb34 = 1
+                Else
+                    crb34 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 34).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb35 = 1
+                Else
+                    crb35 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 35).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb36 = 1
+                Else
+                    crb36 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 36).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb37 = 1
+                Else
+                    crb37 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 37).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb38 = 1
+                Else
+                    crb38 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 38).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb39 = 1
+                Else
+                    crb39 = 0
+                End If
+
+
+                'Dim SQL As String = ""
+                SQL = "INSERT INTO SHyo VALUES ('" & ymd & "', '" & nyuam1 & "', '" & nyuam2 & "', '" & nyupm1 & "', '" & nyupm2 & "', '" & tyaam1 & "', '" & tyaam2 & "', '" & tyapm1 & "', '" & tyapm2 & "', '" & moram1 & "', '" & moram2 & "', '" & moram3 & "', '" & moram4 & "', '" & morampk & "', '" & moramp & "', '" & morpm1 & "', '" & morpm2 & "', '" & morpm3 & "', '" & morpm4 & "', '" & morpmpk & "', '" & morpmp & "', '" & hosam1 & "', '" & hosam2 & "', '" & hosam3 & "', '" & hosam4 & "', '" & hosampk & "', '" & hosamp & "', '" & hospm1 & "', '" & hospm2 & "', '" & hospm3 & "', '" & hospm4 & "', '" & hospmpk & "', '" & hospmp & "', '" & soram1 & "', '" & soram2 & "', '" & soram3 & "', '" & soram4 & "', '" & sorampk & "', '" & soramp & "', '" & sorpm1 & "', '" & sorpm2 & "', '" & sorpm3 & "', '" & sorpm4 & "', '" & sorpmpk & "', '" & sorpmp & "', '" & yak1k & "', '" & yak1 & "', '" & yak2k & "', '" & yak2 & "', '" & sin1k & "', '" & sin1 & "', '" & sin2k & "', '" & sin2 & "', '" & gyo1 & "', '" & gyo2 & "', '" & gyo3 & "', '" & gyo4 & "', '" & gyo5 & "', '" & gyo6 & "', '" & gyo7 & "', '" & mora1 & "', '" & mora2 & "', '" & mora3 & "', '" & mora4 & "', '" & morh1 & "', '" & morh2 & "', '" & morh3 & "', '" & morh4 & "', '" & mory1 & "', '" & mory2 & "', '" & hosa1 & "', '" & hosa2 & "', '" & hosa3 & "', '" & hosa4 & "', '" & hosh1 & "', '" & hosh2 & "', '" & hosh3 & "', '" & hosh4 & "', '" & hosy1 & "', '" & hosy2 & "', '" & sora1 & "', '" & sora2 & "', '" & sora3 & "', '" & sora4 & "', '" & sorh1 & "', '" & sorh2 & "', '" & sorh3 & "', '" & sorh4 & "', '" & sory1 & "', '" & sory2 & "', '" & cra3 & "', '" & cra4 & "', '" & cra5 & "', '" & cra6 & "', '" & cra8 & "', '" & cra9 & "', '" & cra10 & "', '" & cra11 & "', '" & cra12 & "', '" & cra13 & "', '" & cra14 & "', '" & cra15 & "', '" & cra16 & "', '" & cra17 & "', '" & cra18 & "', '" & cra19 & "', '" & cra20 & "', '" & cra21 & "', '" & cra22 & "', '" & cra23 & "', '" & cra24 & "', '" & cra25 & "', '" & cra26 & "', '" & cra27 & "', '" & cra28 & "', '" & cra29 & "', '" & cra30 & "', '" & cra31 & "', '" & cra32 & "', '" & cra33 & "', '" & cra34 & "', '" & cra35 & "', '" & cra36 & "', '" & cra37 & "', '" & cra38 & "', '" & cra39 & "', '" & crb3 & "', '" & crb4 & "', '" & crb5 & "', '" & crb6 & "', '" & crb8 & "', '" & crb9 & "', '" & crb10 & "', '" & crb11 & "', '" & crb12 & "', '" & crb13 & "', '" & crb14 & "', '" & crb15 & "', '" & crb16 & "', '" & crb17 & "', '" & crb18 & "', '" & crb19 & "', '" & crb20 & "', '" & crb21 & "', '" & crb22 & "', '" & crb23 & "', '" & crb24 & "', '" & crb25 & "', '" & crb26 & "', '" & crb27 & "', '" & crb28 & "', '" & crb29 & "', '" & crb30 & "', '" & crb31 & "', '" & crb32 & "', '" & crb33 & "', '" & crb34 & "', '" & crb35 & "', '" & crb36 & "', '" & crb37 & "', '" & crb38 & "', '" & crb39 & "')"
+
+                cnn.Execute(SQL)
+            Next
+        ElseIf rbn3F.Checked = True Then    '3階の登録
+            Dim ymd, nyuam1, nyuam2, nyupm1, nyupm2, tyaam1, tyaam2, tyapm1, tyapm2, tukam1, tukam2, tukam3, tukam4, tukampk, tukamp, tukpm1, tukpm2, tukpm3, tukpm4, tukpmpk, tukpmp, hanam1, hanam2, hanam3, hanam4, hanampk, hanamp, hanpm1, hanpm2, hanpm3, hanpm4, hanpmpk, hanpmp, umiam1, umiam2, umiam3, umiam4, umiampk, umiamp, umiampk2, umiamp2, umipm1, umipm2, umipm3, umipm4, umipmpk, umipmp, umipmpk2, umipmp2, yak1k, yak1, yak2k, yak2, sin1k, sin1, sin2k, sin2, gyo1, gyo2, gyo3, gyo4, gyo5, gyo6, gyo7, tuka1, tuka2, tuka3, tuka4, tukh1, tukh2, tukh3, tukh4, tukh5, tukh6, tuky1, tuky2, tuky3, tuky4, hana1, hana2, hana3, hana4, hanh1, hanh2, hanh3, hanh4, hanh5, hanh6, hany1, hany2, hany3, hany4, umia1, umia2, umih1, umih2, umih3, umih4, umiy1, umiy2 As String
+            Dim cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, cra40, cra41, cra42, cra43, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39, crb40, crb41, crb42, crb43 As Integer
+
+            For dd As Integer = 0 To 6
+                If dd = 0 Then
+                    ymd = Honjitu
+                Else
+                    ymd = Honjitu.AddDays(dd)
+                End If
+                nyuam1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 2).Value)
+                nyuam2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 3).Value)
+                nyupm1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 4).Value)
+                nyupm2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 5).Value)
+                tyaam1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 2).Value)
+                tyaam2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 3).Value)
+                tyapm1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 4).Value)
+                tyapm2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 5).Value)
+                tukam1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 7).Value)
+                tukam2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 8).Value)
+                tukam3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 9).Value)
+                tukam4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 10).Value)
+                tukampk = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 11).Value)
+                tukamp = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 11).Value)
+                tukpm1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 7).Value)
+                tukpm2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 8).Value)
+                tukpm3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 9).Value)
+                tukpm4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 10).Value)
+                tukpmpk = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 11).Value)
+                tukpmp = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 11).Value)
+                hanam1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 12).Value)
+                hanam2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 13).Value)
+                hanam3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 14).Value)
+                hanam4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 15).Value)
+                hanampk = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 16).Value)
+                hanamp = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 16).Value)
+                hanpm1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 12).Value)
+                hanpm2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 13).Value)
+                hanpm3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 14).Value)
+                hanpm4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 15).Value)
+                hanpmpk = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 16).Value)
+                hanpmp = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 16).Value)
+                umiam1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 17).Value)
+                umiam2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 18).Value)
+                umiam3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 19).Value)
+                umiam4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 20).Value)
+                umiampk = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 21).Value)
+                umiamp = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 21).Value)
+                umiampk2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 22).Value)
+                umiamp2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 22).Value)
+                umipm1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 17).Value)
+                umipm2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 18).Value)
+                umipm3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 19).Value)
+                umipm4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 20).Value)
+                umipmpk = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 21).Value)
+                umipmp = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 21).Value)
+                umipmpk2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 22).Value)
+                umipmp2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 22).Value)
+                yak1k = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 23).Value)
+                yak1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 23).Value)
+                yak2k = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 23).Value)
+                yak2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 23).Value)
+                sin1k = Util.checkDBNullValue(DataGridView1(dd * 4 + 1, 24).Value)
+                sin1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 24).Value)
+                sin2k = Util.checkDBNullValue(DataGridView1(dd * 4 + 3, 24).Value)
+                sin2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 24).Value)
+                gyo1 = Util.checkDBNullValue(DataGridView2(dd, 0).Value)
+                gyo2 = Util.checkDBNullValue(DataGridView2(dd, 1).Value)
+                gyo3 = Util.checkDBNullValue(DataGridView2(dd, 2).Value)
+                gyo4 = Util.checkDBNullValue(DataGridView2(dd, 3).Value)
+                gyo5 = Util.checkDBNullValue(DataGridView2(dd, 4).Value)
+                gyo6 = Util.checkDBNullValue(DataGridView2(dd, 5).Value)
+                gyo7 = Util.checkDBNullValue(DataGridView2(dd, 6).Value)
+                tuka1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 25).Value)
+                tuka2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 26).Value)
+                tuka3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 25).Value)
+                tuka4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 26).Value)
+                tukh1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 27).Value)
+                tukh2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 28).Value)
+                tukh3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 29).Value)
+                tukh4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 27).Value)
+                tukh5 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 28).Value)
+                tukh6 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 29).Value)
+                tuky1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 30).Value)
+                tuky2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 31).Value)
+                tuky3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 30).Value)
+                tuky4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 31).Value)
+                hana1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 32).Value)
+                hana2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 33).Value)
+                hana3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 32).Value)
+                hana4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 33).Value)
+                hanh1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 34).Value)
+                hanh2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 35).Value)
+                hanh3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 36).Value)
+                hanh4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 34).Value)
+                hanh5 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 35).Value)
+                hanh6 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 36).Value)
+                hany1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 37).Value)
+                hany2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 38).Value)
+                hany3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 37).Value)
+                hany4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 38).Value)
+                umia1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 39).Value)
+                umia2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 39).Value)
+                umih1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 40).Value)
+                umih2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 41).Value)
+                umih3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 40).Value)
+                umih4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 41).Value)
+                umiy1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 42).Value)
+                umiy2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 42).Value)
+                If DataGridView1(dd * 4 + 2, 2).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra3 = 1
+                Else
+                    cra3 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 3).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra4 = 1
+                Else
+                    cra4 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 4).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra5 = 1
+                Else
+                    cra5 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 5).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra6 = 1
+                Else
+                    cra6 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 7).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra8 = 1
+                Else
+                    cra8 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 8).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra9 = 1
+                Else
+                    cra9 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 9).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra10 = 1
+                Else
+                    cra10 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 10).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra11 = 1
+                Else
+                    cra11 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 11).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra12 = 1
+                Else
+                    cra12 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 12).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra13 = 1
+                Else
+                    cra13 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 13).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra14 = 1
+                Else
+                    cra14 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 14).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra15 = 1
+                Else
+                    cra15 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 15).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra16 = 1
+                Else
+                    cra16 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 16).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra17 = 1
+                Else
+                    cra17 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 17).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra18 = 1
+                Else
+                    cra18 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 18).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra19 = 1
+                Else
+                    cra19 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 19).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra20 = 1
+                Else
+                    cra20 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 20).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra21 = 1
+                Else
+                    cra21 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 21).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra22 = 1
+                Else
+                    cra22 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 22).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra23 = 1
+                Else
+                    cra23 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 23).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra24 = 1
+                Else
+                    cra24 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 24).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra25 = 1
+                Else
+                    cra25 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 25).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra26 = 1
+                Else
+                    cra26 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 26).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra27 = 1
+                Else
+                    cra27 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 27).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra28 = 1
+                Else
+                    cra28 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 28).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra29 = 1
+                Else
+                    cra29 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 29).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra30 = 1
+                Else
+                    cra30 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 30).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra31 = 1
+                Else
+                    cra31 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 31).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra32 = 1
+                Else
+                    cra32 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 32).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra33 = 1
+                Else
+                    cra33 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 33).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra34 = 1
+                Else
+                    cra34 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 34).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra35 = 1
+                Else
+                    cra35 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 35).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra36 = 1
+                Else
+                    cra36 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 36).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra37 = 1
+                Else
+                    cra37 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 37).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra38 = 1
+                Else
+                    cra38 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 38).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra39 = 1
+                Else
+                    cra39 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 39).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra40 = 1
+                Else
+                    cra40 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 40).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra41 = 1
+                Else
+                    cra41 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 41).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra42 = 1
+                Else
+                    cra42 = 0
+                End If
+                If DataGridView1(dd * 4 + 2, 42).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    cra43 = 1
+                Else
+                    cra43 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 2).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb3 = 1
+                Else
+                    crb3 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 3).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb4 = 1
+                Else
+                    crb4 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 4).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb5 = 1
+                Else
+                    crb5 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 5).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb6 = 1
+                Else
+                    crb6 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 7).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb8 = 1
+                Else
+                    crb8 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 8).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb9 = 1
+                Else
+                    crb9 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 9).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb10 = 1
+                Else
+                    crb10 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 10).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb11 = 1
+                Else
+                    crb11 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 11).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb12 = 1
+                Else
+                    crb12 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 12).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb13 = 1
+                Else
+                    crb13 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 13).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb14 = 1
+                Else
+                    crb14 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 14).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb15 = 1
+                Else
+                    crb15 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 15).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb16 = 1
+                Else
+                    crb16 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 16).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb17 = 1
+                Else
+                    crb17 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 17).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb18 = 1
+                Else
+                    crb18 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 18).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb19 = 1
+                Else
+                    crb19 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 19).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb20 = 1
+                Else
+                    crb20 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 20).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb21 = 1
+                Else
+                    crb21 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 21).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb22 = 1
+                Else
+                    crb22 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 22).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb23 = 1
+                Else
+                    crb23 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 23).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb24 = 1
+                Else
+                    crb24 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 24).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb25 = 1
+                Else
+                    crb25 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 25).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb26 = 1
+                Else
+                    crb26 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 26).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb27 = 1
+                Else
+                    crb27 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 27).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb28 = 1
+                Else
+                    crb28 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 28).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb29 = 1
+                Else
+                    crb29 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 29).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb30 = 1
+                Else
+                    crb30 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 30).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb31 = 1
+                Else
+                    crb31 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 31).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb32 = 1
+                Else
+                    crb32 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 32).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb33 = 1
+                Else
+                    crb33 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 33).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb34 = 1
+                Else
+                    crb34 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 34).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb35 = 1
+                Else
+                    crb35 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 35).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb36 = 1
+                Else
+                    crb36 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 36).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb37 = 1
+                Else
+                    crb37 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 37).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb38 = 1
+                Else
+                    crb38 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 38).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb39 = 1
+                Else
+                    crb39 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 39).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb40 = 1
+                Else
+                    crb40 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 40).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb41 = 1
+                Else
+                    crb41 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 41).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb42 = 1
+                Else
+                    crb42 = 0
+                End If
+                If DataGridView1(dd * 4 + 4, 42).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                    crb43 = 1
+                Else
+                    crb43 = 0
+                End If
+
+                'Dim SQL As String = ""
+                SQL = "INSERT INTO SHyo3 VALUES ('" & ymd & "', '" & nyuam1 & "', '" & nyuam2 & "', '" & nyupm1 & "', '" & nyupm2 & "', '" & tyaam1 & "', '" & tyaam2 & "', '" & tyapm1 & "', '" & tyapm2 & "', '" & tukam1 & "', '" & tukam2 & "', '" & tukam3 & "', '" & tukam4 & "', '" & tukampk & "', '" & tukamp & "', '" & tukpm1 & "', '" & tukpm2 & "', '" & tukpm3 & "', '" & tukpm4 & "', '" & tukpmpk & "', '" & tukpmp & "', '" & hanam1 & "', '" & hanam2 & "', '" & hanam3 & "', '" & hanam4 & "', '" & hanampk & "', '" & hanamp & "', '" & hanpm1 & "', '" & hanpm2 & "', '" & hanpm3 & "', '" & hanpm4 & "', '" & hanpmpk & "', '" & hanpmp & "', '" & umiam1 & "', '" & umiam2 & "', '" & umiam3 & "', '" & umiam4 & "', '" & umiampk & "', '" & umiamp & "', '" & umiampk2 & "', '" & umiamp2 & "', '" & umipm1 & "', '" & umipm2 & "', '" & umipm3 & "', '" & umipm4 & "', '" & umipmpk & "', '" & umipmp & "', '" & umipmpk2 & "', '" & umipmp2 & "', '" & yak1k & "', '" & yak1 & "', '" & yak2k & "', '" & yak2 & "', '" & sin1k & "', '" & sin1 & "', '" & sin2k & "', '" & sin2 & "', '" & gyo1 & "', '" & gyo2 & "', '" & gyo3 & "', '" & gyo4 & "', '" & gyo5 & "', '" & gyo6 & "', '" & gyo7 & "', '" & tuka1 & "', '" & tuka2 & "', '" & tuka3 & "', '" & tuka4 & "', '" & tukh1 & "', '" & tukh2 & "', '" & tukh3 & "', '" & tukh4 & "', '" & tukh5 & "', '" & tukh6 & "', '" & tuky1 & "', '" & tuky2 & "', '" & tuky3 & "', '" & tuky4 & "', '" & hana1 & "', '" & hana2 & "', '" & hana3 & "', '" & hana4 & "', '" & hanh1 & "', '" & hanh2 & "', '" & hanh3 & "', '" & hanh4 & "', '" & hanh5 & "', '" & hanh6 & "', '" & hany1 & "', '" & hany2 & "', '" & hany3 & "', '" & hany4 & "', '" & umia1 & "', '" & umia2 & "', '" & umih1 & "', '" & umih2 & "', '" & umih3 & "', '" & umih4 & "', '" & umiy1 & "', '" & umiy2 & "', '" & cra3 & "', '" & cra4 & "', '" & cra5 & "', '" & cra6 & "', '" & cra8 & "', '" & cra9 & "', '" & cra10 & "', '" & cra11 & "', '" & cra12 & "', '" & cra13 & "', '" & cra14 & "', '" & cra15 & "', '" & cra16 & "', '" & cra17 & "', '" & cra18 & "', '" & cra19 & "', '" & cra20 & "', '" & cra21 & "', '" & cra22 & "', '" & cra23 & "', '" & cra24 & "', '" & cra25 & "', '" & cra26 & "', '" & cra27 & "', '" & cra28 & "', '" & cra29 & "', '" & cra30 & "', '" & cra31 & "', '" & cra32 & "', '" & cra33 & "', '" & cra34 & "', '" & cra35 & "', '" & cra36 & "', '" & cra37 & "', '" & cra38 & "', '" & cra39 & "', '" & cra40 & "', '" & cra41 & "', '" & cra42 & "', '" & cra43 & "', '" & crb3 & "', '" & crb4 & "', '" & crb5 & "', '" & crb6 & "', '" & crb8 & "', '" & crb9 & "', '" & crb10 & "', '" & crb11 & "', '" & crb12 & "', '" & crb13 & "', '" & crb14 & "', '" & crb15 & "', '" & crb16 & "', '" & crb17 & "', '" & crb18 & "', '" & crb19 & "', '" & crb20 & "', '" & crb21 & "', '" & crb22 & "', '" & crb23 & "', '" & crb24 & "', '" & crb25 & "', '" & crb26 & "', '" & crb27 & "', '" & crb28 & "', '" & crb29 & "', '" & crb30 & "', '" & crb31 & "', '" & crb32 & "', '" & crb33 & "', '" & crb34 & "', '" & crb35 & "', '" & crb36 & "', '" & crb37 & "', '" & crb38 & "', '" & crb39 & "', '" & crb40 & "', '" & crb41 & "', '" & crb42 & "', '" & crb43 & "')"
+                cnn.Execute(SQL)
+            Next
+        End If
+        cnn.Close()
+
+    End Sub
+
+    Private Sub btnSakujo_Click(sender As System.Object, e As System.EventArgs) Handles btnSakujo.Click
+        If MsgBox("削除してよろしいですか？", MsgBoxStyle.YesNo + vbExclamation, "削除確認") = MsgBoxResult.Yes Then
+            Dim cnn As New ADODB.Connection
+            cnn.Open(TopForm.DB_Work)
+
+            Dim Seireki As Integer
+            If Strings.Left(lblYmd.Text, 1) = "H" Then
+                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
+            ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
+                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
+            End If
+            Dim Ymd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+            Dim YmdAdd7 As Date = Ymd.AddDays(6)
+
+            Dim SQL As String = ""
+            If rbn2F.Checked = True Then
+                SQL = "DELETE FROM SHyo WHERE #" & Ymd & "# <= Ymd and Ymd <= #" & YmdAdd7 & "#"
+            ElseIf rbn3F.Checked = True Then
+                SQL = "DELETE FROM SHyo3 WHERE #" & Ymd & "# <= Ymd and Ymd <= #" & YmdAdd7 & "#"
+            End If
+
+            cnn.Execute(SQL)
+            cnn.Close()
+
+            DataIndication()
+
+        End If
+    End Sub
+
+    Private Sub btnTorikomi_Click(sender As System.Object, e As System.EventArgs) Handles btnTorikomi.Click
+        Dim Seireki As Integer
+        If Strings.Left(lblYmd.Text, 1) = "H" Then
+            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
+        ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
+            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
+        End If
+        Dim Ymd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+        Dim YmdAdd7 As Date = Ymd.AddDays(6)
+
+        Dim cnn As New ADODB.Connection
+        Dim rs As New ADODB.Recordset
+
+        If rbn2F.Checked = True Then
+            If MsgBox("週間表3階の'入浴、夜勤等、特記事項'を取り込みますか？", MsgBoxStyle.YesNo + vbExclamation, "確認") = MsgBoxResult.Yes Then
+                Dim sql As String = "select * from SHyo3 WHERE #" & Ymd & "# <= Ymd and Ymd <= #" & YmdAdd7 & "# order by Ymd"
+                cnn.Open(TopForm.DB_Work)
+                rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+                'Datagridview1への表示
+                Dim ColumnsNo As Integer = 0
+                While Not rs.EOF
+                    For RowNo As Integer = 2 To 42
+                        If RowNo <= 5 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
+                            If rs.Fields(RowNo + 98).Value = 1 Then
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            End If
+                            If rs.Fields(RowNo + 138).Value = 1 Then
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            End If
+                        ElseIf RowNo = 22 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 27).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 28).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 29).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 30).Value
+                        ElseIf RowNo = 23 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 30).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 31).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 32).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 33).Value
+                        End If
+                        '色付け処理
+                        If rs.Fields(RowNo + 97).Value = "1" Then
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        End If
+                        If rs.Fields(RowNo + 137).Value = "1" Then
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        End If
+                    Next
+
+                    'Datagridview2への表示
+                    For rowno2 As Integer = 1 To 7
+                        DGV2Table.Rows(rowno2 - 1).Item("a" & ColumnsNo) = rs.Fields(rowno2 + 56).Value
+                    Next
+
+                    rs.MoveNext()
+
+                    ColumnsNo = ColumnsNo + 1
+                End While
+                cnn.Close()
+
+            End If
+        ElseIf rbn3F.Checked = True Then
+            If MsgBox("週間表2階の'入浴、夜勤等、特記事項'を取り込みますか？", MsgBoxStyle.YesNo + vbExclamation, "確認") = MsgBoxResult.Yes Then
+
+                Dim sql As String = "select * from SHyo WHERE #" & Ymd & "# <= Ymd and Ymd <= #" & YmdAdd7 & "# order by Ymd"
+                cnn.Open(TopForm.DB_Work)
+                rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+                'Datagridview1への表示
+                Dim ColumnsNo As Integer = 0
+                While Not rs.EOF
+                    For RowNo As Integer = 2 To 38
+                        If RowNo <= 5 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
+                            If rs.Fields(RowNo + 88).Value = 1 Then
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            End If
+                            If rs.Fields(RowNo + 124).Value = 1 Then
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            End If
+                        ElseIf RowNo = 23 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 22).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 23).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 24).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 25).Value
+                        ElseIf RowNo = 24 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 25).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 26).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 27).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 28).Value
+                        End If
+                        '色付け処理
+                        If rs.Fields(RowNo + 87).Value = "1" Then
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        ElseIf rs.Fields(RowNo + 123).Value = "1" Then
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        End If
+                    Next
+
+                    'Datagridview2への表示
+                    For rowno2 As Integer = 1 To 7
+                        DGV2Table.Rows(rowno2 - 1).Item("a" & ColumnsNo) = rs.Fields(rowno2 + 52).Value
+                    Next
+
+                    rs.MoveNext()
+
+                    ColumnsNo = ColumnsNo + 1
+                End While
+                cnn.Close()
+
+            End If
+        End If
+    End Sub
 End Class

@@ -109,11 +109,11 @@ Partial Class 勤務割
         Me.btnDelete.Text = "削除"
         Me.btnDelete.UseVisualStyleBackColor = True
         '
-        'workForm
+        '勤務割
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1189, 733)
+        Me.ClientSize = New System.Drawing.Size(1189, 747)
         Me.Controls.Add(Me.btnDelete)
         Me.Controls.Add(Me.btnPrint)
         Me.Controls.Add(Me.btnRegist)
@@ -122,7 +122,7 @@ Partial Class 勤務割
         Me.Controls.Add(Me.rbtn2F)
         Me.Controls.Add(Me.rbtn3F)
         Me.Controls.Add(Me.dgvWork)
-        Me.Name = "workForm"
+        Me.Name = "勤務割"
         Me.Text = "workForm"
         CType(Me.dgvWork, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
