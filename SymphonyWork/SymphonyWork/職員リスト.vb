@@ -52,6 +52,11 @@ Public Class 職員リスト
     Private Sub lstName_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lstName.SelectedIndexChanged
         Dim DGV1rowcount As Integer = DataGridView1.Rows.Count
         Dim cell As DataGridViewCell = CType(Me.Owner, 週間表).DataGridView1.CurrentCell
+
+        If cell.RowIndex < 2 OrElse cell.ColumnIndex = 0 OrElse (cell.ColumnIndex Mod 2) = 1 Then
+            Return
+        End If
+
         If btnPaint.Text = "PAINT" Then
             cell.Value = Strings.Left(lstName.Text, If(lstName.Text.IndexOf("　") >= 0, lstName.Text.IndexOf("　"), 3))
             cell.Style.BackColor = Color.FromArgb(255, 255, 255)

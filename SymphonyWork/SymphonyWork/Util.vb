@@ -6,12 +6,7 @@ Public Class Util
     ''' </summary>
     ''' <param name="control">対象のコントロール</param>
     Public Shared Sub EnableDoubleBuffering(control As Control)
-        control.GetType().InvokeMember( _
-            "DoubleBuffered", _
-            BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty, _
-            Nothing, _
-            control, _
-            New Object() {True})
+        control.GetType().InvokeMember("DoubleBuffered", BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty, Nothing, control, New Object() {True})
     End Sub
 
     ''' <summary>

@@ -27,7 +27,7 @@ Partial Class TopForm
         Me.btnCreateCSV = New System.Windows.Forms.Button()
         Me.btnArrangementDB = New System.Windows.Forms.Button()
         Me.rbtnPreview = New System.Windows.Forms.RadioButton()
-        Me.RadioButton1 = New System.Windows.Forms.RadioButton()
+        Me.rbtnPrintout = New System.Windows.Forms.RadioButton()
         Me.SuspendLayout()
         '
         'btnWork
@@ -90,22 +90,22 @@ Partial Class TopForm
         Me.rbtnPreview.Text = "プレビュー"
         Me.rbtnPreview.UseVisualStyleBackColor = True
         '
-        'RadioButton1
+        'rbtnPrintout
         '
-        Me.RadioButton1.AutoSize = True
-        Me.RadioButton1.Location = New System.Drawing.Point(688, 171)
-        Me.RadioButton1.Name = "RadioButton1"
-        Me.RadioButton1.Size = New System.Drawing.Size(47, 16)
-        Me.RadioButton1.TabIndex = 5
-        Me.RadioButton1.Text = "印刷"
-        Me.RadioButton1.UseVisualStyleBackColor = True
+        Me.rbtnPrintout.AutoSize = True
+        Me.rbtnPrintout.Location = New System.Drawing.Point(688, 171)
+        Me.rbtnPrintout.Name = "rbtnPrintout"
+        Me.rbtnPrintout.Size = New System.Drawing.Size(47, 16)
+        Me.rbtnPrintout.TabIndex = 5
+        Me.rbtnPrintout.Text = "印刷"
+        Me.rbtnPrintout.UseVisualStyleBackColor = True
         '
         'TopForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(936, 654)
-        Me.Controls.Add(Me.RadioButton1)
+        Me.Controls.Add(Me.rbtnPrintout)
         Me.Controls.Add(Me.rbtnPreview)
         Me.Controls.Add(Me.btnArrangementDB)
         Me.Controls.Add(Me.btnCreateCSV)
@@ -122,6 +122,6 @@ Partial Class TopForm
     Friend WithEvents btnCreateCSV As System.Windows.Forms.Button
     Friend WithEvents btnArrangementDB As System.Windows.Forms.Button
     Friend WithEvents rbtnPreview As System.Windows.Forms.RadioButton
-    Friend WithEvents RadioButton1 As System.Windows.Forms.RadioButton
+    Friend WithEvents rbtnPrintout As System.Windows.Forms.RadioButton
 
 End Class
