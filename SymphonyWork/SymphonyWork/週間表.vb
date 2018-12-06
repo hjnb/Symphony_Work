@@ -7,6 +7,8 @@ Public Class 週間表
     Private cellStyle2 As DataGridViewCellStyle
     Private clearCellStyle As DataGridViewCellStyle
     Private whiteCellStyle As DataGridViewCellStyle
+    Private Const HEISEI_Str As String = "H"
+    Private Const NEXT_WAREKI As String = "X"
 
     Private Sub MadeStyle()
         '文字の大きさ指定
@@ -278,7 +280,7 @@ Public Class 週間表
             End If
             Result = wareki & YY & "/" & Strings.Right(ymd, 5)
         ElseIf ymd > "2019/04/30" Then
-            wareki = "X"
+            wareki = NEXT_WAREKI
             Dim YY As String = (Val(Strings.Left(ymd, 4)) - 2018)
             If YY.Length = 1 Then
                 YY = "0" & (Val(Strings.Left(ymd, 4)) - 2018)
@@ -286,6 +288,17 @@ Public Class 週間表
             Result = wareki & YY & "/" & Strings.Right(ymd, 5)
         End If
         Return Result
+    End Function
+
+    Private Function ChangeSeireki(ymd As String) As String
+        Dim Seireki As Integer
+        If Strings.Left(ymd, 1) = "H" Then
+            Seireki = Val(Strings.Mid(ymd, 2, 2) + 1988)
+        ElseIf Strings.Left(ymd, 1) = NEXT_WAREKI Then
+            Seireki = Val(Strings.Mid(ymd, 2, 2) + 2018)
+        End If
+
+        Return Seireki
     End Function
 
     Private Sub rbn2F_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles rbn2F.CheckedChanged
@@ -604,13 +617,13 @@ Public Class 週間表
     End Sub
 
     Private Sub btnUp_Click(sender As System.Object, e As System.EventArgs) Handles btnUp.Click
-        Dim ymd As Date = Strings.Left(lblYmd.Text, 9)
+        Dim ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         ymd = ymd.AddDays(7)
         lblYmd.Text = ChangeWareki(ymd) & "（日）"
     End Sub
 
     Private Sub btnDown_Click(sender As System.Object, e As System.EventArgs) Handles btnDown.Click
-        Dim ymd As Date = CType(Strings.Left(lblYmd.Text, 9), Date)
+        Dim ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         ymd = ymd.AddDays(-7)
         lblYmd.Text = ChangeWareki(ymd) & "（日）"
     End Sub
@@ -623,13 +636,7 @@ Public Class 週間表
             DataGridView1(4 * i + 2, 0).Value = Val(Strings.Mid(lblYmd.Text, 8, 2)) + i
         Next
 
-        Dim Seireki As Integer
-        If Strings.Left(lblYmd.Text, 1) = "H" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
-        ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
-        End If
-        Dim Getumatu As Integer = Date.DaysInMonth(Seireki, Val(Strings.Mid(lblYmd.Text, 5, 2)))
+        Dim Getumatu As Integer = Date.DaysInMonth(ChangeSeireki(Strings.Left(lblYmd.Text, 9)), Val(Strings.Mid(lblYmd.Text, 5, 2)))
 
         For i As Integer = 0 To 6
             If Val(DataGridView1(4 * i + 2, 0).Value) > Getumatu Then
@@ -689,13 +696,7 @@ Public Class 週間表
         DataClear()
 
         If rbn2F.Checked = True Then    '2階
-            Dim Seireki As Integer
-            If Strings.Left(lblYmd.Text, 1) = "H" Then
-                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
-            ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
-                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
-            End If
-            Dim Ymd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+            Dim Ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
             Dim YmdAdd7 As Date = Ymd.AddDays(6)
 
             Dim cnn As New ADODB.Connection
@@ -801,13 +802,7 @@ Public Class 週間表
             cnn.Close()
 
         ElseIf rbn3F.Checked = True Then    '3階
-            Dim Seireki As Integer
-            If Strings.Left(lblYmd.Text, 1) = "H" Then
-                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
-            ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
-                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
-            End If
-            Dim Ymd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+            Dim Ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
             Dim YmdAdd7 As Date = Ymd.AddDays(6)
 
             Dim cnn As New ADODB.Connection
@@ -928,15 +923,9 @@ Public Class 週間表
 
         Dim cnn As New ADODB.Connection
         cnn.Open(TopForm.DB_Work)
-        Dim Seireki As Integer
-        If Strings.Left(lblYmd.Text, 1) = "H" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
-        ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
-        End If
-        Dim Honjitu As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+        Dim Honjitu As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         'データ削除
-        Dim DelYmd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+        Dim DelYmd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         Dim DelYmdAdd7 As Date = DelYmd.AddDays(6)
         Dim SQL As String = ""
         If rbn2F.Checked = True Then
@@ -1935,13 +1924,6 @@ Public Class 週間表
             Return
         End If
 
-        Dim Seireki As Integer
-        If Strings.Left(lblYmd.Text, 1) = "H" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
-        ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
-        End If
-
         Dim cnn As New ADODB.Connection
         Dim rs As New ADODB.Recordset
         Dim rsnextmonth As New ADODB.Recordset
@@ -1952,7 +1934,7 @@ Public Class 週間表
         Dim SQL2 As String = ""
         Dim updateSQL As String = ""
 
-        Dim M As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+        Dim M As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         M = M.AddMonths(1)
 
         SQL2 = "SELECT * FROM SNam"
@@ -1962,11 +1944,11 @@ Public Class 週間表
             Dim floar As String = 2
             Dim moriPwork1, moriPname1, moriPwork2, moriPname2, hosiPwork1, hosiPname1, hosiPwork2, hosiPname2, soraPwork1, soraPname1, soraPwork2, soraPname2 As String
             
-            SQL = "SELECT * FROM KinD WHERE YM='" & Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) and Rdr = '' order by Seq"
+            SQL = "SELECT * FROM KinD WHERE YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) and Rdr = '' order by Seq"
             rs.Open(SQL, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
 
             If DataGridView1(2, 0).Value > 22 Then
-                SQLnextmonth = "SELECT * FROM KinD WHERE YM='" & Seireki & "/" & Strings.Mid(M, 5, 2) & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) and Rdr = '' order by Seq"
+                SQLnextmonth = "SELECT * FROM KinD WHERE YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(M, 5, 2) & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) and Rdr = '' order by Seq"
                 rsnextmonth.Open(SQLnextmonth, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
             End If
 
@@ -1998,9 +1980,9 @@ Public Class 週間表
                             If partnamecheck(rs, rs2, partname(i)) = True Then
                                 Dim Hi As Integer = DataGridView1(4 * dd + 2, 0).Value
                                 If Val(DataGridView1(2, 0).Value) - Val(DataGridView1(4 * dd + 2, 0).Value) > 20 Then   '月またぎがある週
-                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & Seireki & "/" & Strings.Mid(M, 5, 2) & "')"
+                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(M, 5, 2) & "')"
                                 Else    '月またぎがない週
-                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "')"
+                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "')"
                                 End If
                                 listSQL.Add(updateSQL)
                             Else
@@ -2039,7 +2021,7 @@ Public Class 週間表
             Dim floar As String = 3
             Dim tukiPwork1, tukiPname1, tukiPwork2, tukiPname2, hanaPwork1, hanaPname1, hanaPwork2, hanaPname2, umiPwork1, umiPname1, umiPwork2, umiPname2, umiPwork3, umiPname3, umiPwork4, umiPname4 As String
 
-            SQL = "SELECT * FROM KinD WHERE YM='" & Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) and Rdr = '' order by Seq"
+            SQL = "SELECT * FROM KinD WHERE YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) and Rdr = '' order by Seq"
             rs.Open(SQL, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
 
             If rs.RecordCount <= 1 Then
@@ -2072,7 +2054,11 @@ Public Class 週間表
                         Else
                             If partnamecheck(rs, rs2, partname(i)) = True Then
                                 Dim Hi As Integer = DataGridView1(4 * dd + 2, 0).Value
-                                updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "')"
+                                If Val(DataGridView1(2, 0).Value) - Val(DataGridView1(4 * dd + 2, 0).Value) > 20 Then   '月またぎがある週
+                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(M, 5, 2) & "')"
+                                Else    '月またぎがない週
+                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "')"
+                                End If
                                 listSQL.Add(updateSQL)
                             Else
                                 If i = 0 OrElse i = 1 Then
@@ -2133,13 +2119,7 @@ Public Class 週間表
             Dim cnn As New ADODB.Connection
             cnn.Open(TopForm.DB_Work)
 
-            Dim Seireki As Integer
-            If Strings.Left(lblYmd.Text, 1) = "H" Then
-                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
-            ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
-                Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
-            End If
-            Dim Ymd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+            Dim Ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
             Dim YmdAdd7 As Date = Ymd.AddDays(6)
 
             Dim SQL As String = ""
@@ -2158,13 +2138,7 @@ Public Class 週間表
     End Sub
 
     Private Sub btnTorikomi_Click(sender As System.Object, e As System.EventArgs) Handles btnTorikomi.Click
-        Dim Seireki As Integer
-        If Strings.Left(lblYmd.Text, 1) = "H" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
-        ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
-        End If
-        Dim Ymd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+        Dim Ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         Dim YmdAdd7 As Date = Ymd.AddDays(6)
 
         Dim cnn As New ADODB.Connection
@@ -2276,13 +2250,7 @@ Public Class 週間表
     End Sub
 
     Private Sub btnInnsatu_Click(sender As System.Object, e As System.EventArgs) Handles btnInnsatu.Click
-        Dim Seireki As Integer
-        If Strings.Left(lblYmd.Text, 1) = "H" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
-        ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
-        End If
-        Dim Ymd As Date = Seireki & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+        Dim Ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         Dim YmdAdd7 As Date = Ymd.AddDays(6)
 
         If rbn2F.Checked = True Then        '2階の印刷
