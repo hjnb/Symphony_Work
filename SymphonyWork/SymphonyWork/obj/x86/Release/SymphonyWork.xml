@@ -6,7 +6,20 @@ SymphonyWork
 </name>
 </assembly>
 <members>
-<member name="M:SymphonyWork.Util.EnableDoubleBuffering(System.Windows.Forms.Control)">
+<member name="P:SymphonyWork.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:SymphonyWork.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:SymphonyWork.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member><member name="M:SymphonyWork.Util.EnableDoubleBuffering(System.Windows.Forms.Control)">
 	<summary>
  コントロールのDoubleBufferedプロパティをTrueにする
  </summary>
@@ -58,19 +71,6 @@ SymphonyWork
 	<param name="lpFileName">iniファイルパス</param>
 	<returns></returns>
 	<remarks></remarks>
-</member><member name="P:SymphonyWork.My.Resources.Resources.ResourceManager">
-	<summary>
-  Returns the cached ResourceManager instance used by this class.
-</summary>
-</member><member name="P:SymphonyWork.My.Resources.Resources.Culture">
-	<summary>
-  Overrides the current thread's CurrentUICulture property for all
-  resource lookups using this strongly typed resource class.
-</summary>
-</member><member name="T:SymphonyWork.My.Resources.Resources">
-	<summary>
-  A strongly-typed resource class, for looking up localized strings, etc.
-</summary>
 </member>
 </members>
 </doc>
