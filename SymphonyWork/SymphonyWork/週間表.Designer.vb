@@ -119,6 +119,7 @@ Partial Class 週間表
         'DataGridView2
         '
         Me.DataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.DataGridView2.ImeMode = System.Windows.Forms.ImeMode.Hiragana
         Me.DataGridView2.Location = New System.Drawing.Point(62, 630)
         Me.DataGridView2.Name = "DataGridView2"
         Me.DataGridView2.RowTemplate.Height = 21

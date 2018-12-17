@@ -1,19 +1,22 @@
 ﻿Imports System.Data.OleDb
 Imports System.Runtime.InteropServices
 Public Class 職員リスト
+    Public CellStylepink As DataGridViewCellStyle
+    Public CellStyleWhite As DataGridViewCellStyle
 
+    Private Sub madestyle()
+        CellStylepink = New DataGridViewCellStyle()
+        CellStylepink.BackColor = Color.FromArgb(255, 192, 255)
+        CellStylepink.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+        CellStyleWhite = New DataGridViewCellStyle()
+        CellStyleWhite.BackColor = Color.FromArgb(255, 255, 255)
+        CellStyleWhite.Alignment = DataGridViewContentAlignment.MiddleCenter
+    End Sub
     Private Sub 職員リスト_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         btnPaint.BackColor = Color.FromArgb(255, 192, 255)
 
-        'MsgBox(CType(Me.Owner, 週間表).lblYmd.Text)
-
-        Dim Seireki As Integer
-        If Strings.Left(CType(Me.Owner, 週間表).lblYmd.Text, 1) = "H" Then
-            Seireki = Val(Strings.Mid(CType(Me.Owner, 週間表).lblYmd.Text, 2, 2) + 1988)
-        ElseIf Strings.Left(CType(Me.Owner, 週間表).lblYmd.Text, 1) = "X" Then
-            Seireki = Val(Strings.Mid(CType(Me.Owner, 週間表).lblYmd.Text, 2, 2) + 2018)
-        End If
-        Dim Ym As String = Seireki & "/" & Strings.Mid(CType(Me.Owner, 週間表).lblYmd.Text, 5, 2)
+        Dim Ym As String = 週間表.ChangeSeireki(Strings.Left(CType(Me.Owner, 週間表).lblYmd.Text, 9)) & "/" & Strings.Mid(CType(Me.Owner, 週間表).lblYmd.Text, 5, 2)
 
         Dim reader As System.Data.OleDb.OleDbDataReader
         Dim Cn As New OleDbConnection(TopForm.DB_Work)
@@ -34,6 +37,8 @@ Public Class 職員リスト
         SQLCm1.CommandText = "SELECT * FROM SNam"
         Adapter1.Fill(Table1)
         DataGridView1.DataSource = Table1
+
+        madestyle()
 
     End Sub
 
@@ -59,7 +64,7 @@ Public Class 職員リスト
 
         If btnPaint.Text = "PAINT" Then
             cell.Value = Strings.Left(lstName.Text, If(lstName.Text.IndexOf("　") >= 0, lstName.Text.IndexOf("　"), 3))
-            cell.Style.BackColor = Color.FromArgb(255, 255, 255)
+            cell.Style = CellStyleWhite
             For i As Integer = 0 To DGV1rowcount - 1
                 If lstName.Text = DataGridView1(0, i).Value Then
                     cell.Value = DataGridView1(1, i).Value
@@ -67,14 +72,13 @@ Public Class 職員リスト
             Next
         Else
             cell.Value = Strings.Left(lstName.Text, If(lstName.Text.IndexOf("　") >= 0, lstName.Text.IndexOf("　"), 3))
-            cell.Style.BackColor = Color.FromArgb(255, 192, 255)
+            cell.Style = CellStylepink
             For i As Integer = 0 To DGV1rowcount - 1
                 If lstName.Text = DataGridView1(0, i).Value Then
                     cell.Value = DataGridView1(1, i).Value
                 End If
             Next
         End If
-
 
     End Sub
 End Class

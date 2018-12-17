@@ -7,8 +7,10 @@ Public Class 週間表
     Private cellStyle2 As DataGridViewCellStyle
     Private clearCellStyle As DataGridViewCellStyle
     Private whiteCellStyle As DataGridViewCellStyle
+    Private pinkCellStyle As DataGridViewCellStyle
     Private Const HEISEI_Str As String = "H"
     Private Const NEXT_WAREKI As String = "X"
+    Public cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, cra40, cra41, cra42, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39, crb40, crb41, crb42 As Integer
 
     Private Sub MadeStyle()
         '文字の大きさ指定
@@ -24,7 +26,6 @@ Public Class 週間表
         cellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter
 
         clearCellStyle = New DataGridViewCellStyle()
-        'clearCellStyle.Font = New Font("MS UI Gothic", 8)
         clearCellStyle.BackColor = Color.FromArgb(234, 234, 234)
         clearCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
 
@@ -32,6 +33,11 @@ Public Class 週間表
         whiteCellStyle.Font = New Font("MS UI Gothic", 8)
         whiteCellStyle.BackColor = Color.FromArgb(255, 255, 255)
         whiteCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+        pinkCellStyle = New DataGridViewCellStyle()
+        pinkCellStyle.Font = New Font("MS UI Gothic", 8)
+        pinkCellStyle.BackColor = Color.FromArgb(255, 192, 255)
+        pinkCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
 
     End Sub
 
@@ -113,7 +119,7 @@ Public Class 週間表
         Util.EnableDoubleBuffering(DataGridView2)
 
         With DataGridView2
-            .RowTemplate.Height = 20
+            '.RowTemplate.Height = 20
             .AllowUserToAddRows = False '行追加禁止
             .AllowUserToResizeColumns = False '列の幅をユーザーが変更できないようにする
             .AllowUserToResizeRows = False '行の高さをユーザーが変更できないようにする
@@ -124,6 +130,7 @@ Public Class 週間表
             .ColumnHeadersVisible = False
             .RowHeadersVisible = False
             .DefaultCellStyle.SelectionForeColor = Color.Black
+            .DefaultCellStyle.Font = New Font("MS UI Gothic", 8)
         End With
 
         'DataGridView2の列作成
@@ -223,34 +230,15 @@ Public Class 週間表
                 DataGridView1(i * 4 + 1, r * 5 + 23).Style = cellStyle2
             Next
         Next
-        DataGridView1(0, 2).Value = "午前"
-        DataGridView1(0, 4).Value = "午後"
-        DataGridView1(0, 8).Value = "森"
-        DataGridView1(0, 11).Value = "ﾊﾟｰﾄ"
-        DataGridView1(0, 13).Value = "星"
-        DataGridView1(0, 16).Value = "ﾊﾟｰﾄ"
-        DataGridView1(0, 18).Value = "空"
-        DataGridView1(0, 21).Value = "ﾊﾟｰﾄ"
-        DataGridView1(0, 22).Value = "夜勤"
-        DataGridView1(0, 23).Value = "深夜"
-        DataGridView1(0, 26).Value = "森"
-        DataGridView1(0, 31).Value = "星"
-        DataGridView1(0, 36).Value = "空"
-        DataGridView1(0, 2).Style = cellStyle2
-        DataGridView1(0, 4).Style = cellStyle2
-        DataGridView1(0, 8).Style = cellStyle2
-        DataGridView1(0, 11).Style = cellStyle2
-        DataGridView1(0, 13).Style = cellStyle2
-        DataGridView1(0, 16).Style = cellStyle2
-        DataGridView1(0, 18).Style = cellStyle2
-        DataGridView1(0, 21).Style = cellStyle2
-        DataGridView1(0, 22).Style = cellStyle2
-        DataGridView1(0, 23).Style = cellStyle2
-        DataGridView1(0, 26).Style = cellStyle2
-        DataGridView1(0, 31).Style = cellStyle2
-        DataGridView1(0, 36).Style = cellStyle2
 
+        Dim Moji As String() = {"午前", "午後", "森", "ﾊﾟｰﾄ", "星", "ﾊﾟｰﾄ", "空", "ﾊﾟｰﾄ", "夜勤", "深夜", "森", "星", "空"}
+        Dim Gyo As Integer() = {2, 4, 8, 11, 13, 16, 18, 21, 22, 23, 26, 31, 36}
 
+        For n As Integer = 0 To 12
+            DataGridView1(0, Gyo(n)).Style = cellStyle2
+            DataGridView1(0, Gyo(n)).Value = Moji(n)
+        Next
+        
 
     End Sub
 
@@ -290,7 +278,7 @@ Public Class 週間表
         Return Result
     End Function
 
-    Private Function ChangeSeireki(ymd As String) As String
+    Public Function ChangeSeireki(ymd As String) As String
         Dim Seireki As Integer
         If Strings.Left(ymd, 1) = "H" Then
             Seireki = Val(Strings.Mid(ymd, 2, 2) + 1988)
@@ -489,36 +477,34 @@ Public Class 週間表
                     DataGridView1(i * 4 + 1, r * 5 + 23).Style = cellStyle2
                 Next
             Next
-            DataGridView1(0, 2).Value = "午前"
-            DataGridView1(0, 4).Value = "午後"
-            DataGridView1(0, 8).Value = "森"
-            DataGridView1(0, 11).Value = "ﾊﾟｰﾄ"
-            DataGridView1(0, 13).Value = "星"
-            DataGridView1(0, 16).Value = "ﾊﾟｰﾄ"
-            DataGridView1(0, 18).Value = "空"
-            DataGridView1(0, 21).Value = "ﾊﾟｰﾄ"
-            DataGridView1(0, 22).Value = "夜勤"
-            DataGridView1(0, 23).Value = "深夜"
-            DataGridView1(0, 26).Value = "森"
-            DataGridView1(0, 31).Value = "星"
-            DataGridView1(0, 36).Value = "空"
-            DataGridView1(0, 2).Style = cellStyle2
-            DataGridView1(0, 4).Style = cellStyle2
-            DataGridView1(0, 8).Style = cellStyle2
-            DataGridView1(0, 11).Style = cellStyle2
-            DataGridView1(0, 13).Style = cellStyle2
-            DataGridView1(0, 16).Style = cellStyle2
-            DataGridView1(0, 18).Style = cellStyle2
-            DataGridView1(0, 21).Style = cellStyle2
-            DataGridView1(0, 22).Style = cellStyle2
-            DataGridView1(0, 23).Style = cellStyle2
-            DataGridView1(0, 26).Style = cellStyle2
-            DataGridView1(0, 31).Style = cellStyle2
-            DataGridView1(0, 36).Style = cellStyle2
+            'DataGridView1(0, 2).Value = "午前"
+            'DataGridView1(0, 4).Value = "午後"
+            'DataGridView1(0, 8).Value = "森"
+            'DataGridView1(0, 11).Value = "ﾊﾟｰﾄ"
+            'DataGridView1(0, 13).Value = "星"
+            'DataGridView1(0, 16).Value = "ﾊﾟｰﾄ"
+            'DataGridView1(0, 18).Value = "空"
+            'DataGridView1(0, 21).Value = "ﾊﾟｰﾄ"
+            'DataGridView1(0, 22).Value = "夜勤"
+            'DataGridView1(0, 23).Value = "深夜"
+            'DataGridView1(0, 26).Value = "森"
+            'DataGridView1(0, 31).Value = "星"
+            'DataGridView1(0, 36).Value = "空"
+            Dim Moji As String() = {"午前", "午後", "森", "ﾊﾟｰﾄ", "星", "ﾊﾟｰﾄ", "空", "ﾊﾟｰﾄ", "夜勤", "深夜", "森", "星", "空"}
+            Dim Gyo As Integer() = {2, 4, 8, 11, 13, 16, 18, 21, 22, 23, 26, 31, 36}
+
+            For n As Integer = 0 To 12
+                DataGridView1(0, Gyo(n)).Style = cellStyle2
+                DataGridView1(0, Gyo(n)).Value = Moji(n)
+            Next
 
         ElseIf rbn3F.Checked = True Then    '3階の情報を表示
-
             
+            For col As Integer = 1 To 28
+                DataGridView1(col, 24).Style = whiteCellStyle
+                DataGridView1(col, 24).ReadOnly = False
+            Next
+               
 
             '各セルの固定値部分の設定
             Dim Youbi() As String = {"日", "月", "火", "水", "木", "金", "土"}
@@ -562,35 +548,29 @@ Public Class 週間表
                 Next
             Next
 
-            DataGridView1(0, 2).Value = "午前"
-            DataGridView1(0, 4).Value = "午後"
-            DataGridView1(0, 9).Value = "月"
-            DataGridView1(0, 11).Value = "ﾊﾟｰﾄ"
-            DataGridView1(0, 14).Value = "花"
-            DataGridView1(0, 16).Value = "ﾊﾟｰﾄ"
-            DataGridView1(0, 19).Value = "海"
-            DataGridView1(0, 21).Value = "ﾊﾟｰﾄ"
-            DataGridView1(0, 22).Value = "ﾊﾟｰﾄ"
-            DataGridView1(0, 23).Value = "夜勤"
-            DataGridView1(0, 24).Value = "深夜"
-            DataGridView1(0, 28).Value = "月"
-            DataGridView1(0, 35).Value = "花"
-            DataGridView1(0, 40).Value = "海"
-            DataGridView1(0, 2).Style = cellStyle2
-            DataGridView1(0, 4).Style = cellStyle2
-            DataGridView1(0, 9).Style = cellStyle2
-            DataGridView1(0, 11).Style = cellStyle2
-            DataGridView1(0, 14).Style = cellStyle2
-            DataGridView1(0, 16).Style = cellStyle2
-            DataGridView1(0, 19).Style = cellStyle2
-            DataGridView1(0, 21).Style = cellStyle2
-            DataGridView1(0, 22).Style = cellStyle2
-            DataGridView1(0, 23).Style = cellStyle2
-            DataGridView1(0, 24).Style = cellStyle2
-            DataGridView1(0, 28).Style = cellStyle2
-            DataGridView1(0, 35).Style = cellStyle2
-            DataGridView1(0, 40).Style = cellStyle2
+            'DataGridView1(0, 2).Value = "午前"
+            'DataGridView1(0, 4).Value = "午後"
+            'DataGridView1(0, 9).Value = "月"
+            'DataGridView1(0, 11).Value = "ﾊﾟｰﾄ"
+            'DataGridView1(0, 14).Value = "花"
+            'DataGridView1(0, 16).Value = "ﾊﾟｰﾄ"
+            'DataGridView1(0, 19).Value = "海"
+            'DataGridView1(0, 21).Value = "ﾊﾟｰﾄ"
+            'DataGridView1(0, 22).Value = "ﾊﾟｰﾄ"
+            'DataGridView1(0, 23).Value = "夜勤"
+            'DataGridView1(0, 24).Value = "深夜"
+            'DataGridView1(0, 28).Value = "月"
+            'DataGridView1(0, 35).Value = "花"
+            'DataGridView1(0, 40).Value = "海"
+            Dim Moji As String() = {"午前", "午後", "月", "ﾊﾟｰﾄ", "花", "ﾊﾟｰﾄ", "海", "ﾊﾟｰﾄ", "ﾊﾟｰﾄ", "夜勤", "深夜", "月", "花", "海"}
+            Dim Gyo As Integer() = {2, 4, 9, 11, 14, 16, 19, 21, 22, 23, 24, 28, 35, 40}
 
+            For n As Integer = 0 To 13
+                DataGridView1(0, Gyo(n)).Style = cellStyle2
+                DataGridView1(0, Gyo(n)).Value = Moji(n)
+            Next
+
+            
         End If
 
         '2階と3階で共通の部分
@@ -598,13 +578,7 @@ Public Class 週間表
             DataGridView1(4 * i + 2, 0).Value = Val(Strings.Mid(lblYmd.Text, 8, 2)) + i
         Next
 
-        Dim Seireki As Integer
-        If Strings.Left(lblYmd.Text, 1) = "H" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 1988)
-        ElseIf Strings.Left(lblYmd.Text, 1) = "X" Then
-            Seireki = Val(Strings.Mid(lblYmd.Text, 2, 2) + 2018)
-        End If
-        Dim Getumatu As Integer = Date.DaysInMonth(Seireki, Val(Strings.Mid(lblYmd.Text, 5, 2)))
+        Dim Getumatu As Integer = Date.DaysInMonth(ChangeSeireki(Strings.Left(lblYmd.Text, 9)), Val(Strings.Mid(lblYmd.Text, 5, 2)))
 
         For i As Integer = 0 To 6
             If Val(DataGridView1(4 * i + 2, 0).Value) > Getumatu Then
@@ -654,13 +628,14 @@ Public Class 週間表
                     For row As Integer = 2 To 38    '入力可能な行をチェック
                         If row <> 6 Then    '6行目だけ入力する場所がないので外す
                             DataGridView1(column, row).Value = ""
-                            DataGridView1(column, row).Style.BackColor = Color.White
+                            DataGridView1(column, row).Style = whiteCellStyle
                         End If
                     Next
                 Else
                     For row As Integer = 11 To 23
                         If row = 11 OrElse row = 16 OrElse row = 21 OrElse row = 22 OrElse row = 23 Then
                             DataGridView1(column, row).Value = ""
+                            'DataGridView1(column, row).Style = clearCellStyle
                         End If
                     Next
                 End If
@@ -671,13 +646,14 @@ Public Class 週間表
                     For row As Integer = 2 To 42    '入力可能な行をチェック
                         If row <> 6 Then    '6行目だけ入力する場所がないので外す
                             DataGridView1(column, row).Value = ""
-                            DataGridView1(column, row).Style.BackColor = Color.White
+                            DataGridView1(column, row).Style = whiteCellStyle
                         End If
                     Next
                 Else
-                    For row As Integer = 11 To 23
-                        If row = 11 OrElse row = 16 OrElse row = 21 OrElse row = 22 OrElse row = 23 Then
+                    For row As Integer = 11 To 24
+                        If row = 11 OrElse row = 16 OrElse row = 21 OrElse row = 22 OrElse row = 23 OrElse row = 24 Then
                             DataGridView1(column, row).Value = ""
+                            'DataGridView1(column, row).Style = clearCellStyle
                         End If
                     Next
                 End If
@@ -713,10 +689,14 @@ Public Class 週間表
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
                         If rs.Fields(RowNo + 88).Value = 1 Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
+                        Else
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
                         End If
                         If rs.Fields(RowNo + 124).Value = 1 Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
+                        Else
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
                         End If
                     ElseIf 7 <= RowNo And RowNo <= 10 Then
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 2).Value
@@ -760,7 +740,7 @@ Public Class 週間表
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 40).Value
                     ElseIf RowNo = 28 Then
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 40).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 41).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 41).Value
                     ElseIf RowNo = 29 Or RowNo = 30 Then
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 41).Value
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 43).Value
@@ -769,7 +749,7 @@ Public Class 週間表
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 45).Value
                     ElseIf RowNo = 33 Then
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 45).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 46).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 46).Value
                     ElseIf RowNo = 34 Or RowNo = 35 Then
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 46).Value
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 48).Value
@@ -778,14 +758,19 @@ Public Class 週間表
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 50).Value
                     ElseIf RowNo = 38 Then
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 50).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 51).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 51).Value
                     End If
                     '色付け処理
                     If RowNo >= 7 Then
                         If rs.Fields(RowNo + 87).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
-                        ElseIf rs.Fields(RowNo + 123).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
+                        ElseIf rs.Fields(RowNo + 87).Value = "0" Then
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
+                        End If
+                        If rs.Fields(RowNo + 123).Value = "1" Then
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
+                        ElseIf rs.Fields(RowNo + 123).Value = "0" Then
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
                         End If
                     End If
                 Next
@@ -819,10 +804,14 @@ Public Class 週間表
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
                         If rs.Fields(RowNo + 98).Value = 1 Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
+                        Else
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
                         End If
                         If rs.Fields(RowNo + 138).Value = 1 Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
+                        Else
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
                         End If
                     ElseIf 7 <= RowNo And RowNo <= 10 Then
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 2).Value
@@ -894,10 +883,14 @@ Public Class 週間表
                     '色付け処理
                     If RowNo >= 7 Then
                         If rs.Fields(RowNo + 97).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
+                        ElseIf rs.Fields(RowNo + 97).Value = "0" Then
+                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
                         End If
                         If rs.Fields(RowNo + 137).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
+                        ElseIf rs.Fields(RowNo + 137).Value = "0" Then
+                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
                         End If
                     End If
                 Next
@@ -937,7 +930,7 @@ Public Class 週間表
         'データ登録
         If rbn2F.Checked = True Then    '2階の登録
             Dim ymd, nyuam1, nyuam2, nyupm1, nyupm2, tyaam1, tyaam2, tyapm1, tyapm2, moram1, moram2, moram3, moram4, morampk, moramp, morpm1, morpm2, morpm3, morpm4, morpmpk, morpmp, hosam1, hosam2, hosam3, hosam4, hosampk, hosamp, hospm1, hospm2, hospm3, hospm4, hospmpk, hospmp, soram1, soram2, soram3, soram4, sorampk, soramp, sorpm1, sorpm2, sorpm3, sorpm4, sorpmpk, sorpmp, yak1k, yak1, yak2k, yak2, sin1k, sin1, sin2k, sin2, gyo1, gyo2, gyo3, gyo4, gyo5, gyo6, gyo7, mora1, mora2, mora3, mora4, morh1, morh2, morh3, morh4, mory1, mory2, hosa1, hosa2, hosa3, hosa4, hosh1, hosh2, hosh3, hosh4, hosy1, hosy2, sora1, sora2, sora3, sora4, sorh1, sorh2, sorh3, sorh4, sory1, sory2 As String
-            Dim cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39 As Integer
+            'Dim cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39 As Integer
 
             For dd As Integer = 0 To 6
                 If dd = 0 Then
@@ -1034,366 +1027,22 @@ Public Class 週間表
                 sorh4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 37).Value)
                 sory1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 38).Value)
                 sory2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 38).Value)
-                If DataGridView1(dd * 4 + 2, 2).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra3 = 1
-                Else
-                    cra3 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 3).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra4 = 1
-                Else
-                    cra4 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 4).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra5 = 1
-                Else
-                    cra5 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 5).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra6 = 1
-                Else
-                    cra6 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 7).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra8 = 1
-                Else
-                    cra8 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 8).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra9 = 1
-                Else
-                    cra9 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 9).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra10 = 1
-                Else
-                    cra10 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 10).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra11 = 1
-                Else
-                    cra11 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 11).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra12 = 1
-                Else
-                    cra12 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 12).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra13 = 1
-                Else
-                    cra13 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 13).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra14 = 1
-                Else
-                    cra14 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 14).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra15 = 1
-                Else
-                    cra15 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 15).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra16 = 1
-                Else
-                    cra16 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 16).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra17 = 1
-                Else
-                    cra17 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 17).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra18 = 1
-                Else
-                    cra18 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 18).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra19 = 1
-                Else
-                    cra19 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 19).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra20 = 1
-                Else
-                    cra20 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 20).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra21 = 1
-                Else
-                    cra21 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 21).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra22 = 1
-                Else
-                    cra22 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 22).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra23 = 1
-                Else
-                    cra23 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 23).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra24 = 1
-                Else
-                    cra24 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 24).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra25 = 1
-                Else
-                    cra25 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 25).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra26 = 1
-                Else
-                    cra26 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 26).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra27 = 1
-                Else
-                    cra27 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 27).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra28 = 1
-                Else
-                    cra28 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 28).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra29 = 1
-                Else
-                    cra29 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 29).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra30 = 1
-                Else
-                    cra30 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 30).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra31 = 1
-                Else
-                    cra31 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 31).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra32 = 1
-                Else
-                    cra32 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 32).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra33 = 1
-                Else
-                    cra33 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 33).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra34 = 1
-                Else
-                    cra34 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 34).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra35 = 1
-                Else
-                    cra35 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 35).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra36 = 1
-                Else
-                    cra36 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 36).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra37 = 1
-                Else
-                    cra37 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 37).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra38 = 1
-                Else
-                    cra38 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 38).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra39 = 1
-                Else
-                    cra39 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 2).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb3 = 1
-                Else
-                    crb3 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 3).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb4 = 1
-                Else
-                    crb4 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 4).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb5 = 1
-                Else
-                    crb5 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 5).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb6 = 1
-                Else
-                    crb6 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 7).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb8 = 1
-                Else
-                    crb8 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 8).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb9 = 1
-                Else
-                    crb9 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 9).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb10 = 1
-                Else
-                    crb10 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 10).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb11 = 1
-                Else
-                    crb11 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 11).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb12 = 1
-                Else
-                    crb12 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 12).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb13 = 1
-                Else
-                    crb13 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 13).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb14 = 1
-                Else
-                    crb14 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 14).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb15 = 1
-                Else
-                    crb15 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 15).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb16 = 1
-                Else
-                    crb16 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 16).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb17 = 1
-                Else
-                    crb17 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 17).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb18 = 1
-                Else
-                    crb18 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 18).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb19 = 1
-                Else
-                    crb19 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 19).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb20 = 1
-                Else
-                    crb20 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 20).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb21 = 1
-                Else
-                    crb21 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 21).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb22 = 1
-                Else
-                    crb22 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 22).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb23 = 1
-                Else
-                    crb23 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 23).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb24 = 1
-                Else
-                    crb24 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 24).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb25 = 1
-                Else
-                    crb25 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 25).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb26 = 1
-                Else
-                    crb26 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 26).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb27 = 1
-                Else
-                    crb27 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 27).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb28 = 1
-                Else
-                    crb28 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 28).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb29 = 1
-                Else
-                    crb29 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 29).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb30 = 1
-                Else
-                    crb30 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 30).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb31 = 1
-                Else
-                    crb31 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 31).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb32 = 1
-                Else
-                    crb32 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 32).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb33 = 1
-                Else
-                    crb33 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 33).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb34 = 1
-                Else
-                    crb34 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 34).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb35 = 1
-                Else
-                    crb35 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 35).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb36 = 1
-                Else
-                    crb36 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 36).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb37 = 1
-                Else
-                    crb37 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 37).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb38 = 1
-                Else
-                    crb38 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 38).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb39 = 1
-                Else
-                    crb39 = 0
-                End If
+
+                For r As Integer = 2 To 38
+                    If r <> 6 Then
+                        Dim u As Type = GetType(週間表)
+                        If DataGridView1(dd * 4 + 2, r).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                            u.InvokeMember("cra" & r + 1, Reflection.BindingFlags.SetField, Nothing, Me, {1})
+                        Else
+                            u.InvokeMember("cra" & r + 1, Reflection.BindingFlags.SetField, Nothing, Me, {0})
+                        End If
+                        If DataGridView1(dd * 4 + 4, r).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                            u.InvokeMember("crb" & r + 1, Reflection.BindingFlags.SetField, Nothing, Me, {1})
+                        Else
+                            u.InvokeMember("crb" & r + 1, Reflection.BindingFlags.SetField, Nothing, Me, {0})
+                        End If
+                    End If
+                Next
 
                 SQL = "INSERT INTO SHyo VALUES ('" & ymd & "', '" & nyuam1 & "', '" & nyuam2 & "', '" & nyupm1 & "', '" & nyupm2 & "', '" & tyaam1 & "', '" & tyaam2 & "', '" & tyapm1 & "', '" & tyapm2 & "', '" & moram1 & "', '" & moram2 & "', '" & moram3 & "', '" & moram4 & "', '" & morampk & "', '" & moramp & "', '" & morpm1 & "', '" & morpm2 & "', '" & morpm3 & "', '" & morpm4 & "', '" & morpmpk & "', '" & morpmp & "', '" & hosam1 & "', '" & hosam2 & "', '" & hosam3 & "', '" & hosam4 & "', '" & hosampk & "', '" & hosamp & "', '" & hospm1 & "', '" & hospm2 & "', '" & hospm3 & "', '" & hospm4 & "', '" & hospmpk & "', '" & hospmp & "', '" & soram1 & "', '" & soram2 & "', '" & soram3 & "', '" & soram4 & "', '" & sorampk & "', '" & soramp & "', '" & sorpm1 & "', '" & sorpm2 & "', '" & sorpm3 & "', '" & sorpm4 & "', '" & sorpmpk & "', '" & sorpmp & "', '" & yak1k & "', '" & yak1 & "', '" & yak2k & "', '" & yak2 & "', '" & sin1k & "', '" & sin1 & "', '" & sin2k & "', '" & sin2 & "', '" & gyo1 & "', '" & gyo2 & "', '" & gyo3 & "', '" & gyo4 & "', '" & gyo5 & "', '" & gyo6 & "', '" & gyo7 & "', '" & mora1 & "', '" & mora2 & "', '" & mora3 & "', '" & mora4 & "', '" & morh1 & "', '" & morh2 & "', '" & morh3 & "', '" & morh4 & "', '" & mory1 & "', '" & mory2 & "', '" & hosa1 & "', '" & hosa2 & "', '" & hosa3 & "', '" & hosa4 & "', '" & hosh1 & "', '" & hosh2 & "', '" & hosh3 & "', '" & hosh4 & "', '" & hosy1 & "', '" & hosy2 & "', '" & sora1 & "', '" & sora2 & "', '" & sora3 & "', '" & sora4 & "', '" & sorh1 & "', '" & sorh2 & "', '" & sorh3 & "', '" & sorh4 & "', '" & sory1 & "', '" & sory2 & "', '" & cra3 & "', '" & cra4 & "', '" & cra5 & "', '" & cra6 & "', '" & cra8 & "', '" & cra9 & "', '" & cra10 & "', '" & cra11 & "', '" & cra12 & "', '" & cra13 & "', '" & cra14 & "', '" & cra15 & "', '" & cra16 & "', '" & cra17 & "', '" & cra18 & "', '" & cra19 & "', '" & cra20 & "', '" & cra21 & "', '" & cra22 & "', '" & cra23 & "', '" & cra24 & "', '" & cra25 & "', '" & cra26 & "', '" & cra27 & "', '" & cra28 & "', '" & cra29 & "', '" & cra30 & "', '" & cra31 & "', '" & cra32 & "', '" & cra33 & "', '" & cra34 & "', '" & cra35 & "', '" & cra36 & "', '" & cra37 & "', '" & cra38 & "', '" & cra39 & "', '" & crb3 & "', '" & crb4 & "', '" & crb5 & "', '" & crb6 & "', '" & crb8 & "', '" & crb9 & "', '" & crb10 & "', '" & crb11 & "', '" & crb12 & "', '" & crb13 & "', '" & crb14 & "', '" & crb15 & "', '" & crb16 & "', '" & crb17 & "', '" & crb18 & "', '" & crb19 & "', '" & crb20 & "', '" & crb21 & "', '" & crb22 & "', '" & crb23 & "', '" & crb24 & "', '" & crb25 & "', '" & crb26 & "', '" & crb27 & "', '" & crb28 & "', '" & crb29 & "', '" & crb30 & "', '" & crb31 & "', '" & crb32 & "', '" & crb33 & "', '" & crb34 & "', '" & crb35 & "', '" & crb36 & "', '" & crb37 & "', '" & crb38 & "', '" & crb39 & "')"
 
@@ -1508,406 +1157,22 @@ Public Class 週間表
                 umih4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 41).Value)
                 umiy1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 42).Value)
                 umiy2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 42).Value)
-                If DataGridView1(dd * 4 + 2, 2).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra3 = 1
-                Else
-                    cra3 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 3).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra4 = 1
-                Else
-                    cra4 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 4).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra5 = 1
-                Else
-                    cra5 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 5).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra6 = 1
-                Else
-                    cra6 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 7).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra8 = 1
-                Else
-                    cra8 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 8).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra9 = 1
-                Else
-                    cra9 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 9).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra10 = 1
-                Else
-                    cra10 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 10).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra11 = 1
-                Else
-                    cra11 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 11).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra12 = 1
-                Else
-                    cra12 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 12).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra13 = 1
-                Else
-                    cra13 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 13).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra14 = 1
-                Else
-                    cra14 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 14).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra15 = 1
-                Else
-                    cra15 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 15).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra16 = 1
-                Else
-                    cra16 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 16).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra17 = 1
-                Else
-                    cra17 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 17).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra18 = 1
-                Else
-                    cra18 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 18).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra19 = 1
-                Else
-                    cra19 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 19).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra20 = 1
-                Else
-                    cra20 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 20).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra21 = 1
-                Else
-                    cra21 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 21).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra22 = 1
-                Else
-                    cra22 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 22).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra23 = 1
-                Else
-                    cra23 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 23).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra24 = 1
-                Else
-                    cra24 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 24).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra25 = 1
-                Else
-                    cra25 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 25).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra26 = 1
-                Else
-                    cra26 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 26).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra27 = 1
-                Else
-                    cra27 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 27).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra28 = 1
-                Else
-                    cra28 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 28).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra29 = 1
-                Else
-                    cra29 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 29).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra30 = 1
-                Else
-                    cra30 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 30).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra31 = 1
-                Else
-                    cra31 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 31).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra32 = 1
-                Else
-                    cra32 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 32).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra33 = 1
-                Else
-                    cra33 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 33).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra34 = 1
-                Else
-                    cra34 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 34).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra35 = 1
-                Else
-                    cra35 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 35).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra36 = 1
-                Else
-                    cra36 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 36).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra37 = 1
-                Else
-                    cra37 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 37).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra38 = 1
-                Else
-                    cra38 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 38).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra39 = 1
-                Else
-                    cra39 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 39).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra40 = 1
-                Else
-                    cra40 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 40).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra41 = 1
-                Else
-                    cra41 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 41).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra42 = 1
-                Else
-                    cra42 = 0
-                End If
-                If DataGridView1(dd * 4 + 2, 42).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    cra43 = 1
-                Else
-                    cra43 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 2).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb3 = 1
-                Else
-                    crb3 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 3).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb4 = 1
-                Else
-                    crb4 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 4).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb5 = 1
-                Else
-                    crb5 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 5).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb6 = 1
-                Else
-                    crb6 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 7).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb8 = 1
-                Else
-                    crb8 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 8).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb9 = 1
-                Else
-                    crb9 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 9).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb10 = 1
-                Else
-                    crb10 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 10).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb11 = 1
-                Else
-                    crb11 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 11).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb12 = 1
-                Else
-                    crb12 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 12).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb13 = 1
-                Else
-                    crb13 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 13).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb14 = 1
-                Else
-                    crb14 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 14).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb15 = 1
-                Else
-                    crb15 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 15).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb16 = 1
-                Else
-                    crb16 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 16).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb17 = 1
-                Else
-                    crb17 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 17).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb18 = 1
-                Else
-                    crb18 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 18).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb19 = 1
-                Else
-                    crb19 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 19).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb20 = 1
-                Else
-                    crb20 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 20).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb21 = 1
-                Else
-                    crb21 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 21).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb22 = 1
-                Else
-                    crb22 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 22).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb23 = 1
-                Else
-                    crb23 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 23).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb24 = 1
-                Else
-                    crb24 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 24).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb25 = 1
-                Else
-                    crb25 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 25).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb26 = 1
-                Else
-                    crb26 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 26).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb27 = 1
-                Else
-                    crb27 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 27).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb28 = 1
-                Else
-                    crb28 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 28).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb29 = 1
-                Else
-                    crb29 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 29).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb30 = 1
-                Else
-                    crb30 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 30).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb31 = 1
-                Else
-                    crb31 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 31).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb32 = 1
-                Else
-                    crb32 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 32).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb33 = 1
-                Else
-                    crb33 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 33).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb34 = 1
-                Else
-                    crb34 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 34).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb35 = 1
-                Else
-                    crb35 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 35).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb36 = 1
-                Else
-                    crb36 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 36).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb37 = 1
-                Else
-                    crb37 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 37).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb38 = 1
-                Else
-                    crb38 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 38).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb39 = 1
-                Else
-                    crb39 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 39).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb40 = 1
-                Else
-                    crb40 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 40).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb41 = 1
-                Else
-                    crb41 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 41).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb42 = 1
-                Else
-                    crb42 = 0
-                End If
-                If DataGridView1(dd * 4 + 4, 42).Style.BackColor = Color.FromArgb(255, 192, 255) Then
-                    crb43 = 1
-                Else
-                    crb43 = 0
-                End If
+
+                For r As Integer = 2 To 42
+                    If r <> 6 Then
+                        Dim u As Type = GetType(週間表)
+                        If DataGridView1(dd * 4 + 2, r).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                            u.InvokeMember("cra" & r + 1, Reflection.BindingFlags.SetField, Nothing, Me, {1})
+                        Else
+                            u.InvokeMember("cra" & r + 1, Reflection.BindingFlags.SetField, Nothing, Me, {0})
+                        End If
+                        If DataGridView1(dd * 4 + 4, r).Style.BackColor = Color.FromArgb(255, 192, 255) Then
+                            u.InvokeMember("crb" & r + 1, Reflection.BindingFlags.SetField, Nothing, Me, {1})
+                        Else
+                            u.InvokeMember("crb" & r + 1, Reflection.BindingFlags.SetField, Nothing, Me, {0})
+                        End If
+                    End If
+                Next
 
                 SQL = "INSERT INTO SHyo3 VALUES ('" & ymd & "', '" & nyuam1 & "', '" & nyuam2 & "', '" & nyupm1 & "', '" & nyupm2 & "', '" & tyaam1 & "', '" & tyaam2 & "', '" & tyapm1 & "', '" & tyapm2 & "', '" & tukam1 & "', '" & tukam2 & "', '" & tukam3 & "', '" & tukam4 & "', '" & tukampk & "', '" & tukamp & "', '" & tukpm1 & "', '" & tukpm2 & "', '" & tukpm3 & "', '" & tukpm4 & "', '" & tukpmpk & "', '" & tukpmp & "', '" & hanam1 & "', '" & hanam2 & "', '" & hanam3 & "', '" & hanam4 & "', '" & hanampk & "', '" & hanamp & "', '" & hanpm1 & "', '" & hanpm2 & "', '" & hanpm3 & "', '" & hanpm4 & "', '" & hanpmpk & "', '" & hanpmp & "', '" & umiam1 & "', '" & umiam2 & "', '" & umiam3 & "', '" & umiam4 & "', '" & umiampk & "', '" & umiamp & "', '" & umiampk2 & "', '" & umiamp2 & "', '" & umipm1 & "', '" & umipm2 & "', '" & umipm3 & "', '" & umipm4 & "', '" & umipmpk & "', '" & umipmp & "', '" & umipmpk2 & "', '" & umipmp2 & "', '" & yak1k & "', '" & yak1 & "', '" & yak2k & "', '" & yak2 & "', '" & sin1k & "', '" & sin1 & "', '" & sin2k & "', '" & sin2 & "', '" & gyo1 & "', '" & gyo2 & "', '" & gyo3 & "', '" & gyo4 & "', '" & gyo5 & "', '" & gyo6 & "', '" & gyo7 & "', '" & tuka1 & "', '" & tuka2 & "', '" & tuka3 & "', '" & tuka4 & "', '" & tukh1 & "', '" & tukh2 & "', '" & tukh3 & "', '" & tukh4 & "', '" & tukh5 & "', '" & tukh6 & "', '" & tuky1 & "', '" & tuky2 & "', '" & tuky3 & "', '" & tuky4 & "', '" & hana1 & "', '" & hana2 & "', '" & hana3 & "', '" & hana4 & "', '" & hanh1 & "', '" & hanh2 & "', '" & hanh3 & "', '" & hanh4 & "', '" & hanh5 & "', '" & hanh6 & "', '" & hany1 & "', '" & hany2 & "', '" & hany3 & "', '" & hany4 & "', '" & umia1 & "', '" & umia2 & "', '" & umih1 & "', '" & umih2 & "', '" & umih3 & "', '" & umih4 & "', '" & umiy1 & "', '" & umiy2 & "', '" & cra3 & "', '" & cra4 & "', '" & cra5 & "', '" & cra6 & "', '" & cra8 & "', '" & cra9 & "', '" & cra10 & "', '" & cra11 & "', '" & cra12 & "', '" & cra13 & "', '" & cra14 & "', '" & cra15 & "', '" & cra16 & "', '" & cra17 & "', '" & cra18 & "', '" & cra19 & "', '" & cra20 & "', '" & cra21 & "', '" & cra22 & "', '" & cra23 & "', '" & cra24 & "', '" & cra25 & "', '" & cra26 & "', '" & cra27 & "', '" & cra28 & "', '" & cra29 & "', '" & cra30 & "', '" & cra31 & "', '" & cra32 & "', '" & cra33 & "', '" & cra34 & "', '" & cra35 & "', '" & cra36 & "', '" & cra37 & "', '" & cra38 & "', '" & cra39 & "', '" & cra40 & "', '" & cra41 & "', '" & cra42 & "', '" & cra43 & "', '" & crb3 & "', '" & crb4 & "', '" & crb5 & "', '" & crb6 & "', '" & crb8 & "', '" & crb9 & "', '" & crb10 & "', '" & crb11 & "', '" & crb12 & "', '" & crb13 & "', '" & crb14 & "', '" & crb15 & "', '" & crb16 & "', '" & crb17 & "', '" & crb18 & "', '" & crb19 & "', '" & crb20 & "', '" & crb21 & "', '" & crb22 & "', '" & crb23 & "', '" & crb24 & "', '" & crb25 & "', '" & crb26 & "', '" & crb27 & "', '" & crb28 & "', '" & crb29 & "', '" & crb30 & "', '" & crb31 & "', '" & crb32 & "', '" & crb33 & "', '" & crb34 & "', '" & crb35 & "', '" & crb36 & "', '" & crb37 & "', '" & crb38 & "', '" & crb39 & "', '" & crb40 & "', '" & crb41 & "', '" & crb42 & "', '" & crb43 & "')"
                 cnn.Execute(SQL)
@@ -1920,7 +1185,7 @@ Public Class 週間表
     End Sub
 
     Private Sub KinnmuwariTouroku()
-        If MsgBox("パートの勤務割に登録してよろしいですか？", MsgBoxStyle.YesNo + vbExclamation, "登録確認") = MsgBoxResult.No Then
+        If MsgBox("パートの勤務割に登録してよろしいですか？", MsgBoxStyle.YesNo + vbExclamation, "ﾊﾟｰﾄ勤務割登録確認") = MsgBoxResult.No Then
             Return
         End If
 
@@ -2153,7 +1418,7 @@ Public Class 週間表
                 'Datagridview1への表示
                 Dim ColumnsNo As Integer = 0
                 While Not rs.EOF
-                    For RowNo As Integer = 2 To 42
+                    For RowNo As Integer = 2 To 38
                         If RowNo <= 5 Then
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
@@ -2174,13 +1439,13 @@ Public Class 週間表
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 32).Value
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 33).Value
                         End If
-                        '色付け処理
-                        If rs.Fields(RowNo + 97).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
-                        End If
-                        If rs.Fields(RowNo + 137).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
-                        End If
+                        ''色付け処理
+                        'If rs.Fields(RowNo + 97).Value = "1" Then
+                        '    DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        'End If
+                        'If rs.Fields(RowNo + 137).Value = "1" Then
+                        '    DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        'End If
                     Next
 
                     'Datagridview2への表示
@@ -2205,7 +1470,7 @@ Public Class 週間表
                 'Datagridview1への表示
                 Dim ColumnsNo As Integer = 0
                 While Not rs.EOF
-                    For RowNo As Integer = 2 To 38
+                    For RowNo As Integer = 2 To 42
                         If RowNo <= 5 Then
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
@@ -2226,12 +1491,12 @@ Public Class 週間表
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 27).Value
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 28).Value
                         End If
-                        '色付け処理
-                        If rs.Fields(RowNo + 87).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
-                        ElseIf rs.Fields(RowNo + 123).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
-                        End If
+                        ''色付け処理
+                        'If rs.Fields(RowNo + 87).Value = "1" Then
+                        '    DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        'ElseIf rs.Fields(RowNo + 123).Value = "1" Then
+                        '    DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                        'End If
                     Next
 
                     'Datagridview2への表示
