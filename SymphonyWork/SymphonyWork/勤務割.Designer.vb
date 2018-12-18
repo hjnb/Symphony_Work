@@ -59,7 +59,7 @@ Partial Class 勤務割
         'rbtn3F
         '
         Me.rbtn3F.AutoSize = True
-        Me.rbtn3F.Location = New System.Drawing.Point(152, 14)
+        Me.rbtn3F.Location = New System.Drawing.Point(152, 9)
         Me.rbtn3F.Name = "rbtn3F"
         Me.rbtn3F.Size = New System.Drawing.Size(43, 16)
         Me.rbtn3F.TabIndex = 1
@@ -69,18 +69,16 @@ Partial Class 勤務割
         'rbtn2F
         '
         Me.rbtn2F.AutoSize = True
-        Me.rbtn2F.Checked = True
-        Me.rbtn2F.Location = New System.Drawing.Point(152, 41)
+        Me.rbtn2F.Location = New System.Drawing.Point(152, 36)
         Me.rbtn2F.Name = "rbtn2F"
         Me.rbtn2F.Size = New System.Drawing.Size(43, 16)
         Me.rbtn2F.TabIndex = 2
-        Me.rbtn2F.TabStop = True
         Me.rbtn2F.Text = "２階"
         Me.rbtn2F.UseVisualStyleBackColor = True
         '
         'btnRowAdd
         '
-        Me.btnRowAdd.Location = New System.Drawing.Point(318, 31)
+        Me.btnRowAdd.Location = New System.Drawing.Point(318, 26)
         Me.btnRowAdd.Name = "btnRowAdd"
         Me.btnRowAdd.Size = New System.Drawing.Size(55, 23)
         Me.btnRowAdd.TabIndex = 3
@@ -89,7 +87,7 @@ Partial Class 勤務割
         '
         'btnRowDelete
         '
-        Me.btnRowDelete.Location = New System.Drawing.Point(379, 31)
+        Me.btnRowDelete.Location = New System.Drawing.Point(379, 26)
         Me.btnRowDelete.Name = "btnRowDelete"
         Me.btnRowDelete.Size = New System.Drawing.Size(55, 23)
         Me.btnRowDelete.TabIndex = 4
@@ -98,7 +96,7 @@ Partial Class 勤務割
         '
         'btnRegist
         '
-        Me.btnRegist.Location = New System.Drawing.Point(459, 20)
+        Me.btnRegist.Location = New System.Drawing.Point(459, 15)
         Me.btnRegist.Name = "btnRegist"
         Me.btnRegist.Size = New System.Drawing.Size(80, 35)
         Me.btnRegist.TabIndex = 5
@@ -107,7 +105,7 @@ Partial Class 勤務割
         '
         'btnPrint
         '
-        Me.btnPrint.Location = New System.Drawing.Point(631, 20)
+        Me.btnPrint.Location = New System.Drawing.Point(631, 15)
         Me.btnPrint.Name = "btnPrint"
         Me.btnPrint.Size = New System.Drawing.Size(80, 35)
         Me.btnPrint.TabIndex = 6
@@ -116,7 +114,7 @@ Partial Class 勤務割
         '
         'btnDelete
         '
-        Me.btnDelete.Location = New System.Drawing.Point(545, 20)
+        Me.btnDelete.Location = New System.Drawing.Point(545, 15)
         Me.btnDelete.Name = "btnDelete"
         Me.btnDelete.Size = New System.Drawing.Size(80, 35)
         Me.btnDelete.TabIndex = 7
@@ -127,7 +125,7 @@ Partial Class 勤務割
         '
         Me.Label1.AutoSize = True
         Me.Label1.ForeColor = System.Drawing.Color.Blue
-        Me.Label1.Location = New System.Drawing.Point(47, 669)
+        Me.Label1.Location = New System.Drawing.Point(47, 695)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(44, 12)
         Me.Label1.TabIndex = 9
@@ -137,7 +135,7 @@ Partial Class 勤務割
         '
         Me.Label2.AutoSize = True
         Me.Label2.ForeColor = System.Drawing.Color.Blue
-        Me.Label2.Location = New System.Drawing.Point(100, 669)
+        Me.Label2.Location = New System.Drawing.Point(100, 695)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(49, 12)
         Me.Label2.TabIndex = 10
@@ -147,7 +145,7 @@ Partial Class 勤務割
         '
         Me.Label3.AutoSize = True
         Me.Label3.ForeColor = System.Drawing.Color.Blue
-        Me.Label3.Location = New System.Drawing.Point(218, 669)
+        Me.Label3.Location = New System.Drawing.Point(218, 695)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(49, 12)
         Me.Label3.TabIndex = 12
@@ -157,7 +155,7 @@ Partial Class 勤務割
         '
         Me.Label4.AutoSize = True
         Me.Label4.ForeColor = System.Drawing.Color.Blue
-        Me.Label4.Location = New System.Drawing.Point(160, 669)
+        Me.Label4.Location = New System.Drawing.Point(160, 695)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(49, 12)
         Me.Label4.TabIndex = 11
@@ -167,7 +165,7 @@ Partial Class 勤務割
         '
         Me.Label5.AutoSize = True
         Me.Label5.ForeColor = System.Drawing.Color.Blue
-        Me.Label5.Location = New System.Drawing.Point(394, 669)
+        Me.Label5.Location = New System.Drawing.Point(394, 695)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(49, 12)
         Me.Label5.TabIndex = 15
@@ -177,7 +175,7 @@ Partial Class 勤務割
         '
         Me.Label6.AutoSize = True
         Me.Label6.ForeColor = System.Drawing.Color.Blue
-        Me.Label6.Location = New System.Drawing.Point(336, 669)
+        Me.Label6.Location = New System.Drawing.Point(336, 695)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(49, 12)
         Me.Label6.TabIndex = 14
@@ -187,7 +185,7 @@ Partial Class 勤務割
         '
         Me.Label7.AutoSize = True
         Me.Label7.ForeColor = System.Drawing.Color.Blue
-        Me.Label7.Location = New System.Drawing.Point(276, 669)
+        Me.Label7.Location = New System.Drawing.Point(276, 695)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(49, 12)
         Me.Label7.TabIndex = 13
@@ -197,7 +195,7 @@ Partial Class 勤務割
         '
         Me.Label8.AutoSize = True
         Me.Label8.ForeColor = System.Drawing.Color.Blue
-        Me.Label8.Location = New System.Drawing.Point(507, 669)
+        Me.Label8.Location = New System.Drawing.Point(507, 695)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(45, 12)
         Me.Label8.TabIndex = 17
@@ -207,7 +205,7 @@ Partial Class 勤務割
         '
         Me.Label9.AutoSize = True
         Me.Label9.ForeColor = System.Drawing.Color.Blue
-        Me.Label9.Location = New System.Drawing.Point(449, 669)
+        Me.Label9.Location = New System.Drawing.Point(449, 695)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(49, 12)
         Me.Label9.TabIndex = 16
@@ -217,7 +215,7 @@ Partial Class 勤務割
         '
         Me.Label11.AutoSize = True
         Me.Label11.ForeColor = System.Drawing.Color.Blue
-        Me.Label11.Location = New System.Drawing.Point(907, 692)
+        Me.Label11.Location = New System.Drawing.Point(907, 718)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(55, 12)
         Me.Label11.TabIndex = 24
@@ -227,7 +225,7 @@ Partial Class 勤務割
         '
         Me.Label12.AutoSize = True
         Me.Label12.ForeColor = System.Drawing.Color.Blue
-        Me.Label12.Location = New System.Drawing.Point(847, 669)
+        Me.Label12.Location = New System.Drawing.Point(847, 695)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(55, 12)
         Me.Label12.TabIndex = 23
@@ -237,7 +235,7 @@ Partial Class 勤務割
         '
         Me.Label13.AutoSize = True
         Me.Label13.ForeColor = System.Drawing.Color.Blue
-        Me.Label13.Location = New System.Drawing.Point(788, 669)
+        Me.Label13.Location = New System.Drawing.Point(788, 695)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(55, 12)
         Me.Label13.TabIndex = 22
@@ -247,7 +245,7 @@ Partial Class 勤務割
         '
         Me.Label14.AutoSize = True
         Me.Label14.ForeColor = System.Drawing.Color.Blue
-        Me.Label14.Location = New System.Drawing.Point(729, 669)
+        Me.Label14.Location = New System.Drawing.Point(729, 695)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(55, 12)
         Me.Label14.TabIndex = 21
@@ -257,7 +255,7 @@ Partial Class 勤務割
         '
         Me.Label15.AutoSize = True
         Me.Label15.ForeColor = System.Drawing.Color.Blue
-        Me.Label15.Location = New System.Drawing.Point(675, 669)
+        Me.Label15.Location = New System.Drawing.Point(675, 695)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(51, 12)
         Me.Label15.TabIndex = 20
@@ -267,7 +265,7 @@ Partial Class 勤務割
         '
         Me.Label16.AutoSize = True
         Me.Label16.ForeColor = System.Drawing.Color.Blue
-        Me.Label16.Location = New System.Drawing.Point(624, 669)
+        Me.Label16.Location = New System.Drawing.Point(624, 695)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(47, 12)
         Me.Label16.TabIndex = 19
@@ -277,7 +275,7 @@ Partial Class 勤務割
         '
         Me.Label17.AutoSize = True
         Me.Label17.ForeColor = System.Drawing.Color.Blue
-        Me.Label17.Location = New System.Drawing.Point(568, 669)
+        Me.Label17.Location = New System.Drawing.Point(568, 695)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(43, 12)
         Me.Label17.TabIndex = 18
@@ -287,7 +285,7 @@ Partial Class 勤務割
         '
         Me.Label10.AutoSize = True
         Me.Label10.ForeColor = System.Drawing.Color.Blue
-        Me.Label10.Location = New System.Drawing.Point(847, 692)
+        Me.Label10.Location = New System.Drawing.Point(847, 718)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(55, 12)
         Me.Label10.TabIndex = 30
@@ -297,7 +295,7 @@ Partial Class 勤務割
         '
         Me.Label18.AutoSize = True
         Me.Label18.ForeColor = System.Drawing.Color.Blue
-        Me.Label18.Location = New System.Drawing.Point(788, 692)
+        Me.Label18.Location = New System.Drawing.Point(788, 718)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(55, 12)
         Me.Label18.TabIndex = 29
@@ -307,7 +305,7 @@ Partial Class 勤務割
         '
         Me.Label20.AutoSize = True
         Me.Label20.ForeColor = System.Drawing.Color.Blue
-        Me.Label20.Location = New System.Drawing.Point(675, 692)
+        Me.Label20.Location = New System.Drawing.Point(675, 718)
         Me.Label20.Name = "Label20"
         Me.Label20.Size = New System.Drawing.Size(53, 12)
         Me.Label20.TabIndex = 27
@@ -317,7 +315,7 @@ Partial Class 勤務割
         '
         Me.Label21.AutoSize = True
         Me.Label21.ForeColor = System.Drawing.Color.Blue
-        Me.Label21.Location = New System.Drawing.Point(624, 692)
+        Me.Label21.Location = New System.Drawing.Point(624, 718)
         Me.Label21.Name = "Label21"
         Me.Label21.Size = New System.Drawing.Size(51, 12)
         Me.Label21.TabIndex = 26
@@ -327,7 +325,7 @@ Partial Class 勤務割
         '
         Me.Label22.AutoSize = True
         Me.Label22.ForeColor = System.Drawing.Color.Blue
-        Me.Label22.Location = New System.Drawing.Point(568, 692)
+        Me.Label22.Location = New System.Drawing.Point(568, 718)
         Me.Label22.Name = "Label22"
         Me.Label22.Size = New System.Drawing.Size(55, 12)
         Me.Label22.TabIndex = 25
@@ -339,7 +337,7 @@ Partial Class 勤務割
         Me.ymBox.DateText = ""
         Me.ymBox.EraLabelText = "H30"
         Me.ymBox.EraText = ""
-        Me.ymBox.Location = New System.Drawing.Point(41, 14)
+        Me.ymBox.Location = New System.Drawing.Point(41, 9)
         Me.ymBox.MonthLabelText = "12"
         Me.ymBox.MonthText = ""
         Me.ymBox.Name = "ymBox"
@@ -349,17 +347,17 @@ Partial Class 勤務割
         'dgvWork
         '
         Me.dgvWork.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvWork.Location = New System.Drawing.Point(36, 74)
+        Me.dgvWork.Location = New System.Drawing.Point(36, 56)
         Me.dgvWork.Name = "dgvWork"
         Me.dgvWork.RowTemplate.Height = 21
-        Me.dgvWork.Size = New System.Drawing.Size(925, 586)
+        Me.dgvWork.Size = New System.Drawing.Size(925, 630)
         Me.dgvWork.TabIndex = 8
         '
         '勤務割
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(997, 722)
+        Me.ClientSize = New System.Drawing.Size(997, 738)
         Me.Controls.Add(Me.ymBox)
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.Label18)
