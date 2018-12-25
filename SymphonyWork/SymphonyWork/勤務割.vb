@@ -1,62 +1,58 @@
-﻿Imports System.Data.OleDb
+﻿Public Class 勤務割
 
-Public Class 勤務割
+    Private workDt As DataTable
+    Private editBeforeCellValue As String
 
-    Private cn As OleDbConnection
-    Private sqlCm As OleDbCommand
-    Private adapter As OleDbDataAdapter
-    Private dt As DataTable
+    Private unitDictionary2F As Dictionary(Of String, String)
+    Private unitDictionary3F As Dictionary(Of String, String)
+    Private wordDictionary As Dictionary(Of String, String)
+    Private workTimeDictionary As Dictionary(Of String, Double)
+    Private abbreviationDictionary As Dictionary(Of String, String)
+    Private subtotalStrIndexDictionary As Dictionary(Of String, Integer)
+    Private dayCharArray() As String = {"日", "月", "火", "水", "木", "金", "土"}
+
     Private disableCellStyle As DataGridViewCellStyle
     Private namColumnCellStyle As DataGridViewCellStyle
     Private sundayColumnCellStyle As DataGridViewCellStyle
     Private sundayCharCellStyle As DataGridViewCellStyle
     Private workChangeCellStyle As DataGridViewCellStyle
-    Private editBeforeCellValue As String
-    Private Const MAX_ROW_COUNT As Integer = 50
+    Private subtotalPlanCellStyle As DataGridViewCellStyle
+    Private subtotalChangeCellStyle As DataGridViewCellStyle
 
-    Private unitDictionary2F As Dictionary(Of String, String)
-    Private unitDictionary3F As Dictionary(Of String, String)
-    Private wordDictionary As Dictionary(Of String, String)
-    Private dayCharArray() As String = {"日", "月", "火", "水", "木", "金", "土"}
+    Private Const INPUT_ROW_COUNT As Integer = 50
+    Private Const READONLY_ROW_COUNT As Integer = 32
 
-    Private Sub workForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private abbreviationNamForm As 同姓略名
+
+    Private Sub 勤務割_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+        If e.Alt AndAlso e.KeyCode = Keys.F12 Then
+            btnRowAdd.Visible = Not btnRowAdd.Visible
+            btnRowDelete.Visible = Not btnRowDelete.Visible
+            btnRegist.Visible = Not btnRegist.Visible
+            btnDelete.Visible = Not btnDelete.Visible
+            btnPrint.Visible = Not btnPrint.Visible
+            wordPanel.Visible = Not wordPanel.Visible
+        End If
+
+        If e.Alt AndAlso e.KeyCode = Keys.F11 Then
+            If IsNothing(abbreviationNamForm) OrElse abbreviationNamForm.IsDisposed Then
+                abbreviationNamForm = New 同姓略名(ymBox.getADStr4Ym())
+                abbreviationNamForm.Show()
+            End If
+        End If
+    End Sub
+
+    Private Sub 勤務割_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.WindowState = FormWindowState.Maximized
         Me.MaximizeBox = False
         Me.MinimizeBox = False
+        Me.KeyPreview = True
 
-        createCellStyles()
         createDictionary()
+        createCellStyles()
 
-        '当月のデータを表示
-        'とりあえず今は仮でこれ
-        displayWorkTable("2018/04", "2")
-    End Sub
-
-    Private Sub displayWorkTable(ymStr As String, floar As String)
-        dgvWork.Columns.Clear()
-        Dim year As Integer = CInt(ymStr.Split("/")(0))
-        Dim month As Integer = CInt(ymStr.Split("/")(1))
-        dt = New DataTable()
-
-        cn = New OleDbConnection(TopForm.DB_Work)
-        sqlCm = cn.CreateCommand
-        adapter = New OleDbDataAdapter(sqlCm)
-        sqlCm.CommandText = "SELECT * FROM KinD WHERE YM='" & ymStr & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
-        cn.Open()
-        adapter.Fill(dt)
-        Dim builder As OleDbCommandBuilder = New OleDbCommandBuilder(adapter)
-        adapter.SelectCommand.Connection = cn
-
-        addHenkouRow(dt)
-        addDayCharRow(dt, year, month)
-        addTypeColumn(dt)
-        addBlankRow(dt)
-        setSeqValue(dt)
-
-        settingDgv(dgvWork)
-        dgvWork.DataSource = dt
-        settingDgvColumnsAndRows(dgvWork)
-        setReadonlyCell(dgvWork)
+        initDgvWork()
+        rbtn2F.Checked = True
     End Sub
 
     Private Sub createDictionary()
@@ -97,6 +93,85 @@ Public Class 勤務割
         wordDictionary.Add("34", "希")
         wordDictionary.Add("35", "産")
         wordDictionary.Add("36", "特")
+
+        '略語
+        abbreviationDictionary = New Dictionary(Of String, String)
+        abbreviationDictionary.Add("早", "早出")
+        abbreviationDictionary.Add("日早", "日早")
+        abbreviationDictionary.Add("日", "日勤")
+        abbreviationDictionary.Add("日遅", "日遅")
+        abbreviationDictionary.Add("遅", "遅出")
+        abbreviationDictionary.Add("遅々", "遅々")
+        abbreviationDictionary.Add("夜", "夜勤")
+        abbreviationDictionary.Add("深", "深夜")
+        abbreviationDictionary.Add("半", "半")
+        abbreviationDictionary.Add("半Ａ", "半Ａ")
+        abbreviationDictionary.Add("半Ｂ", "半Ｂ")
+        abbreviationDictionary.Add("半夜", "半夜")
+        abbreviationDictionary.Add("半行", "半行")
+        abbreviationDictionary.Add("研", "研修")
+        abbreviationDictionary.Add("公", "公休")
+        abbreviationDictionary.Add("明", "明等")
+
+        '勤務時間
+        workTimeDictionary = New Dictionary(Of String, Double)
+        workTimeDictionary.Add("早", 7.5)
+        workTimeDictionary.Add("日早", 7.5)
+        workTimeDictionary.Add("日", 7.5)
+        workTimeDictionary.Add("日遅", 7.5)
+        workTimeDictionary.Add("遅", 7.5)
+        workTimeDictionary.Add("遅々", 7.5)
+        workTimeDictionary.Add("夜", 15.0)
+        workTimeDictionary.Add("深", 7.5)
+        workTimeDictionary.Add("半", 3.5)
+        workTimeDictionary.Add("半Ａ", 3.5)
+        workTimeDictionary.Add("半Ｂ", 3.5)
+        workTimeDictionary.Add("半夜", 3.5)
+        workTimeDictionary.Add("半行", 3.5)
+        workTimeDictionary.Add("研", 7.5)
+        workTimeDictionary.Add("有", 0.0)
+        workTimeDictionary.Add("公", 7.5)
+        workTimeDictionary.Add("明", 0.0)
+        workTimeDictionary.Add("希", 0.0)
+        workTimeDictionary.Add("産", 0.0)
+        workTimeDictionary.Add("特", 0.0)
+        workTimeDictionary.Add("A", 5.0)
+        workTimeDictionary.Add("B", 5.5)
+        workTimeDictionary.Add("C", 7.0)
+        workTimeDictionary.Add("D", 3.5)
+        workTimeDictionary.Add("E", 5.0)
+        workTimeDictionary.Add("F", 6.0)
+        workTimeDictionary.Add("G", 7.0)
+        workTimeDictionary.Add("H", 4.0)
+        workTimeDictionary.Add("I", 3.0)
+        workTimeDictionary.Add("J", 5.5)
+        workTimeDictionary.Add("K", 7.0)
+        workTimeDictionary.Add("L", 2.5)
+        workTimeDictionary.Add("M", 3.5)
+        workTimeDictionary.Add("N", 2.0)
+        workTimeDictionary.Add("P", 6.5)
+        workTimeDictionary.Add("R", 2.5)
+        workTimeDictionary.Add("S", 7.5)
+        workTimeDictionary.Add("T", 4.5)
+
+        '小計の行インデックス
+        subtotalStrIndexDictionary = New Dictionary(Of String, Integer)
+        subtotalStrIndexDictionary.Add("早出", 51)
+        subtotalStrIndexDictionary.Add("日早", 53)
+        subtotalStrIndexDictionary.Add("日勤", 55)
+        subtotalStrIndexDictionary.Add("日遅", 57)
+        subtotalStrIndexDictionary.Add("遅出", 59)
+        subtotalStrIndexDictionary.Add("遅々", 61)
+        subtotalStrIndexDictionary.Add("夜勤", 63)
+        subtotalStrIndexDictionary.Add("深夜", 65)
+        subtotalStrIndexDictionary.Add("半", 67)
+        subtotalStrIndexDictionary.Add("半Ａ", 69)
+        subtotalStrIndexDictionary.Add("半Ｂ", 71)
+        subtotalStrIndexDictionary.Add("半夜", 73)
+        subtotalStrIndexDictionary.Add("半行", 75)
+        subtotalStrIndexDictionary.Add("研修", 77)
+        subtotalStrIndexDictionary.Add("公休", 79)
+
     End Sub
 
     Private Sub createCellStyles()
@@ -110,6 +185,7 @@ Public Class 勤務割
         '氏名の列のスタイル
         namColumnCellStyle = New DataGridViewCellStyle()
         namColumnCellStyle.ForeColor = Color.Blue
+        namColumnCellStyle.SelectionForeColor = Color.Blue
         namColumnCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
 
         '日曜日の列のスタイル
@@ -128,63 +204,31 @@ Public Class 勤務割
         'Y1～Y31列の変更の行のスタイル
         workChangeCellStyle = New DataGridViewCellStyle()
         workChangeCellStyle.ForeColor = Color.Red
+        workChangeCellStyle.SelectionForeColor = Color.Red
         workChangeCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+        workChangeCellStyle.Font = New Font("MS UI Gothic", 8.5)
+
+        '小計予定セルスタイル
+        subtotalPlanCellStyle = New DataGridViewCellStyle()
+        subtotalPlanCellStyle.BackColor = Color.FromKnownColor(KnownColor.Control)
+        subtotalPlanCellStyle.SelectionBackColor = Color.FromKnownColor(KnownColor.Control)
+        subtotalPlanCellStyle.ForeColor = Color.Blue
+        subtotalPlanCellStyle.SelectionForeColor = Color.Blue
+        subtotalPlanCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+        '小計変更セルスタイル
+        subtotalChangeCellStyle = New DataGridViewCellStyle()
+        subtotalChangeCellStyle.BackColor = Color.FromKnownColor(KnownColor.Control)
+        subtotalChangeCellStyle.SelectionBackColor = Color.FromKnownColor(KnownColor.Control)
+        subtotalChangeCellStyle.ForeColor = Color.Red
+        subtotalChangeCellStyle.SelectionForeColor = Color.Red
+        subtotalChangeCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
 
     End Sub
 
-    Private Sub addHenkouRow(dt As DataTable)
-        Dim row As DataRow
-        For i As Integer = 0 To dt.Rows.Count * 2 - 1 Step 2
-            row = dt.NewRow()
-            For j As Integer = 1 To 31
-                If (Not IsDBNull(dt.Rows(i)("Y" & j)) AndAlso Not IsDBNull(dt.Rows(i)("J" & j))) AndAlso dt.Rows(i)("Y" & j) <> dt.Rows(i)("J" & j) Then
-                    row("Y" & j) = dt.Rows(i)("J" & j)
-                End If
-            Next
-            dt.Rows.InsertAt(row, i + 1)
-        Next
-    End Sub
-
-    Private Sub addTypeColumn(dt As DataTable)
-        dt.Columns.Add("type", Type.GetType("System.String")).SetOrdinal(6)
-        For i As Integer = 1 To dt.Rows.Count - 1
-            If i Mod 2 = 0 Then
-                dt.Rows(i).Item("type") = "変更"
-            Else
-                dt.Rows(i).Item("type") = "予定"
-            End If
-        Next
-    End Sub
-
-    Private Sub addDayCharRow(dt As DataTable, year As Integer, month As Integer)
-        Dim daysInMonth As Integer = DateTime.DaysInMonth(year, month)
-        Dim firstDay As DateTime = New DateTime(year, month, 1)
-        Dim weekNumber As Integer = CInt(firstDay.DayOfWeek)
-        Dim row As DataRow = dt.NewRow()
-
-        For i As Integer = 1 To daysInMonth
-            row("Y" & i) = dayCharArray((weekNumber + (i - 1)) Mod 7)
-        Next
-
-        dt.Rows.InsertAt(row, 0)
-    End Sub
-
-    Private Sub addBlankRow(dt As DataTable)
-        Dim rowCount As Integer = dt.Rows.Count
-        If rowCount = MAX_ROW_COUNT + 1 Then
-            Return
-        End If
-
-        For i As Integer = rowCount To MAX_ROW_COUNT
-            Dim row As DataRow = dt.NewRow()
-            dt.Rows.Add(row)
-        Next
-    End Sub
-
-    Private Sub settingDgv(dgv As DataGridView)
-        Util.EnableDoubleBuffering(dgv)
-
-        With dgv
+    Private Sub initDgvWork()
+        'dgv設定
+        With dgvWork
             .AllowUserToAddRows = False '行追加禁止
             .AllowUserToResizeColumns = False '列の幅をユーザーが変更できないようにする
             .AllowUserToResizeRows = False '行の高さをユーザーが変更できないようにする
@@ -194,15 +238,78 @@ Public Class 勤務割
             .RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing
             .ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
             .BackgroundColor = Color.FromKnownColor(KnownColor.Control)
-            .RowTemplate.Height = 16
+            .DefaultCellStyle.SelectionForeColor = Color.Black
+            .RowTemplate.Height = 15.5
             .ColumnHeadersHeight = 19
+            .ShowCellToolTips = False
+            .EnableHeadersVisualStyles = False
+            .DefaultCellStyle.Font = New Font("MS UI Gothic", 8.5)
         End With
+
     End Sub
 
-    Private Sub settingDgvColumnsAndRows(dgv As DataGridView)
-        With dgv
+    Private Sub setEmptyCell()
+        dgvWork.Columns.Clear()
+
+        workDt = New DataTable()
+
+        '列定義
+        workDt.Columns.Add("Ym", Type.GetType("System.String"))
+        workDt.Columns.Add("Seq", Type.GetType("System.String"))
+        workDt.Columns.Add("Seq2", Type.GetType("System.String"))
+        workDt.Columns.Add("Unt", Type.GetType("System.String"))
+        workDt.Columns.Add("Rdr", Type.GetType("System.String"))
+        workDt.Columns.Add("Nam", Type.GetType("System.String"))
+        workDt.Columns.Add("Type", Type.GetType("System.String"))
+        For i As Integer = 1 To 31
+            workDt.Columns.Add("Y" & i, Type.GetType("System.String"))
+        Next
+        workDt.Columns.Add("月合計", Type.GetType("System.String"))
+        workDt.Columns.Add("早出", Type.GetType("System.String"))
+        workDt.Columns.Add("日早", Type.GetType("System.String"))
+        workDt.Columns.Add("日勤", Type.GetType("System.String"))
+        workDt.Columns.Add("日遅", Type.GetType("System.String"))
+        workDt.Columns.Add("遅出", Type.GetType("System.String"))
+        workDt.Columns.Add("遅々", Type.GetType("System.String"))
+        workDt.Columns.Add("夜勤", Type.GetType("System.String"))
+        workDt.Columns.Add("深夜", Type.GetType("System.String"))
+        workDt.Columns.Add("半", Type.GetType("System.String"))
+        workDt.Columns.Add("半Ａ", Type.GetType("System.String"))
+        workDt.Columns.Add("半Ｂ", Type.GetType("System.String"))
+        workDt.Columns.Add("半夜", Type.GetType("System.String"))
+        workDt.Columns.Add("半行", Type.GetType("System.String"))
+        workDt.Columns.Add("研修", Type.GetType("System.String"))
+        workDt.Columns.Add("公休", Type.GetType("System.String"))
+        workDt.Columns.Add("明等", Type.GetType("System.String"))
+
+        '空行追加
+        For i = 0 To 1 + INPUT_ROW_COUNT + READONLY_ROW_COUNT
+            workDt.Rows.Add(workDt.NewRow())
+        Next
+
+        '小計項目名
+        Dim itemArray As String() = {"早出", "日早", "日勤", "日遅", "遅出", "遅々", "夜勤", "深夜", "半", "半Ａ", "半Ｂ", "半夜", "半行", "研修", "公休"}
+        Dim index As Integer = 0
+        For i As Integer = 51 To 79 Step 2
+            workDt.Rows(i).Item("Nam") = itemArray(index)
+            index += 1
+        Next
+
+        '表示
+        dgvWork.DataSource = workDt
+    End Sub
+
+    Private Sub settingDgvWorkColumnsAndRows(year As Integer, month As Integer)
+        '空セル表示
+        setEmptyCell()
+
+        '曜日設定
+        setDayCharRow(year, month)
+
+        '列設定
+        With dgvWork
             '並び替えができないようにする
-            For Each c As DataGridViewColumn In dgv.Columns
+            For Each c As DataGridViewColumn In .Columns
                 c.SortMode = DataGridViewColumnSortMode.NotSortable
             Next
 
@@ -210,9 +317,6 @@ Public Class 勤務割
             .Columns("Ym").Visible = False
             .Columns("Seq").Visible = False
             .Columns("Seq2").Visible = False
-            For i As Integer = 1 To 31
-                .Columns("J" & i).Visible = False
-            Next
 
             '行固定
             .Rows(0).Frozen = True
@@ -222,7 +326,7 @@ Public Class 勤務割
 
             'ユニット列
             With .Columns("Unt")
-                .Width = 34
+                .Width = 32
                 .HeaderText = "ﾕﾆｯﾄ"
                 .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -230,7 +334,7 @@ Public Class 勤務割
 
             'R列
             With .Columns("Rdr")
-                .Width = 19
+                .Width = 20
                 .HeaderText = "R"
                 .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -254,40 +358,76 @@ Public Class 勤務割
             'Y1～Y31の列
             For i As Integer = 1 To 31
                 With .Columns("Y" & i)
-                    .Width = 46
+                    .Width = 50
                     .HeaderText = i.ToString()
                     .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                     .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
                 End With
             Next
 
-            'Y1～Y31の列の変更の行
-            For i As Integer = 2 To MAX_ROW_COUNT Step 2
+            'Y1～Y31,小計列の変更の行
+            For i As Integer = 2 To INPUT_ROW_COUNT Step 2
                 For j As Integer = 1 To 31
-                    dgv("Y" & j, i).Style = workChangeCellStyle
+                    dgvWork("Y" & j, i).Style = workChangeCellStyle
+                Next
+                For k As Integer = 38 To 54
+                    dgvWork(k, i).Style = subtotalChangeCellStyle
                 Next
             Next
 
             '日曜日の列
             For i As Integer = 1 To 31
-                If Not IsDBNull(dt.Rows(0).Item("Y" & i)) AndAlso dt.Rows(0).Item("Y" & i) = "日" Then
-                    dgv("Y" & i, 0).Style = sundayCharCellStyle
-                    dgv.Columns("Y" & i).DefaultCellStyle = sundayColumnCellStyle
+                If Not IsDBNull(workDt.Rows(0).Item("Y" & i)) AndAlso workDt.Rows(0).Item("Y" & i) = "日" Then
+                    dgvWork("Y" & i, 0).Style = sundayCharCellStyle
+                    dgvWork.Columns("Y" & i).DefaultCellStyle = sundayColumnCellStyle
                 End If
             Next
 
             '日曜日以外の曜日の行
-            For Each cell As DataGridViewCell In dgv.Rows(0).Cells
+            For Each cell As DataGridViewCell In dgvWork.Rows(0).Cells
                 If IsDBNull(cell.Value) OrElse cell.Value <> "日" Then
                     cell.Style = disableCellStyle
                 End If
             Next
 
+            '小計記載行
+            For i As Integer = 1 + INPUT_ROW_COUNT To 1 + INPUT_ROW_COUNT + READONLY_ROW_COUNT
+                If i Mod 2 = 1 Then
+                    .Rows(i).DefaultCellStyle = subtotalPlanCellStyle
+                Else
+                    .Rows(i).DefaultCellStyle = subtotalChangeCellStyle
+                End If
+            Next
+
+            '小計記載列
+            .Columns(38).DefaultCellStyle = subtotalPlanCellStyle
+            .Columns(38).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(38).Width = 60
+            For i As Integer = 39 To 54
+                .Columns(i).DefaultCellStyle = subtotalPlanCellStyle
+                .Columns(i).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Columns(i).Width = 35
+            Next
+
+            'ReadOnlyセルの設定
+            setReadonlyCell()
+
         End With
     End Sub
 
-    Private Sub setReadonlyCell(dgv As DataGridView)
-        With dgv
+    Private Sub setDayCharRow(year As Integer, month As Integer)
+        Dim daysInMonth As Integer = DateTime.DaysInMonth(year, month)
+        Dim firstDay As DateTime = New DateTime(year, month, 1)
+        Dim weekNumber As Integer = CInt(firstDay.DayOfWeek)
+        Dim row As DataRow = workDt.Rows(0)
+
+        For i As Integer = 1 To daysInMonth
+            row("Y" & i) = dayCharArray((weekNumber + (i - 1)) Mod 7)
+        Next
+    End Sub
+
+    Private Sub setReadonlyCell()
+        With dgvWork
             '曜日の行
             .Rows(0).ReadOnly = True
 
@@ -295,121 +435,139 @@ Public Class 勤務割
             .Columns("type").ReadOnly = True
 
             '変更の行のﾕﾆｯﾄ、R、Nam列のセル
-            For i As Integer = 2 To dgv.Rows.Count - 1 Step 2
-                dgv("Unt", i).ReadOnly = True
-                dgv("Rdr", i).ReadOnly = True
-                dgv("Nam", i).ReadOnly = True
+            For i As Integer = 2 To dgvWork.Rows.Count - 1 Step 2
+                dgvWork("Unt", i).ReadOnly = True
+                dgvWork("Rdr", i).ReadOnly = True
+                dgvWork("Nam", i).ReadOnly = True
+            Next
+
+            '小計記載行
+            For i As Integer = 1 + INPUT_ROW_COUNT To 1 + INPUT_ROW_COUNT + READONLY_ROW_COUNT
+                .Rows(i).ReadOnly = True
+            Next
+
+            '小計記載列
+            For i As Integer = 38 To 54
+                dgvWork.Columns(i).ReadOnly = True
             Next
         End With
     End Sub
 
-    Private Sub setSeqValue(dt As DataTable)
-        For i As Integer = 1 To MAX_ROW_COUNT Step 2
-            dt.Rows(i).Item("Seq") = i + 1
+    Private Sub setSeqValue()
+        For i As Integer = 1 To INPUT_ROW_COUNT Step 2
+            workDt.Rows(i).Item("Seq") = i + 1
         Next
     End Sub
 
-    Private Sub setAddState(dt As DataTable)
-        For Each row As DataRow In dt.Rows
-            If Not IsDBNull(row("Nam")) AndAlso row("Nam") <> "" Then
-                row.SetAdded()
-            End If
-        Next
-    End Sub
+    Private Sub displayWork(ymStr As String, floar As String, Optional deleteAfterFlg As Boolean = False)
+        Dim year As Integer = CInt(ymStr.Split("/")(0))
+        Dim month As Integer = CInt(ymStr.Split("/")(1))
+        settingDgvWorkColumnsAndRows(year, month)
+        setSeqValue()
 
-    Private Sub rbtnF_MouseClick(sender As Object, e As MouseEventArgs) Handles rbtn2F.MouseClick, rbtn3F.MouseClick
-        If sender Is rbtn2F Then
-            displayWorkTable("2018/04", "2")
-        ElseIf sender Is rbtn3F Then
-            displayWorkTable("2018/04", "3")
+        If deleteAfterFlg Then
+            Return
         End If
-    End Sub
 
-    Private Sub btnRowAdd_Click(sender As Object, e As EventArgs) Handles btnRowAdd.Click
-        Dim selectedRowIndex As Integer = If(IsNothing(dgvWork.CurrentRow), -1, dgvWork.CurrentRow.Index)
-        If selectedRowIndex = -1 OrElse selectedRowIndex = 0 Then
-            Return
-        ElseIf Not IsDBNull(dt.Rows(MAX_ROW_COUNT - 1).Item("Nam")) AndAlso dt.Rows(MAX_ROW_COUNT - 1).Item("Nam") <> "" Then
-            MsgBox("行挿入できません。")
-            Return
+        Dim cnn As New ADODB.Connection
+        cnn.Open(TopForm.DB_Work)
+        Dim rs As New ADODB.Recordset
+        Dim sql = "SELECT * FROM KinD WHERE YM='" & ymStr & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
+        rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
+        If rs.RecordCount <= 0 Then
+            Dim warekiStr As String = Util.convADStrToWarekiStr(ymStr & "/01")
+            Dim eraStr As String = warekiStr.Substring(0, 3)
+            Dim monthStr As String = warekiStr.Substring(4, 2)
+            Dim result As DialogResult = MessageBox.Show(eraStr & "年" & monthStr & "月分は登録されていません" & Environment.NewLine & "登録しますか？", "Work", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+            If result = Windows.Forms.DialogResult.Yes Then
+                rs.Close()
+
+                '前月データの名前を表示
+                Dim prevMonth As String
+                Dim prevYear As String
+                If month - 1 = 0 Then
+                    prevYear = (year - 1).ToString()
+                    prevMonth = "12"
+                Else
+                    prevYear = year.ToString()
+                    prevMonth = If(month - 1 >= 10, (month - 1).ToString(), "0" & (month - 1).ToString())
+                End If
+                Dim prevYmStr As String = prevYear & "/" & prevMonth
+
+                sql = "SELECT * FROM KinD WHERE YM='" & prevYmStr & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
+                rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
+
+                Dim rowIndex As Integer = 1
+                While Not rs.EOF
+                    '予定行の値設定
+                    dgvWork("Seq", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Seq").Value)
+                    dgvWork("Seq2", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Seq2").Value)
+                    dgvWork("Unt", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Unt").Value)
+                    dgvWork("Rdr", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Rdr").Value)
+                    dgvWork("Nam", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Nam").Value)
+                    dgvWork("Type", rowIndex).Value = "予定"
+
+                    '変更行の値設定
+                    dgvWork("Type", (rowIndex + 1)).Value = "変更"
+
+                    rowIndex += 2
+                    rs.MoveNext()
+                End While
+
+                rs.Close()
+                cnn.Close()
+                Return
+            Else
+                rs.Close()
+                cnn.Close()
+                Return
+            End If
         Else
-            '変更の行を選択してる場合は予定の行を選択しているindexとする
-            If selectedRowIndex Mod 2 = 0 Then
-                selectedRowIndex -= 1
-            End If
+            '表示処理
+            Dim rowIndex As Integer = 1
+            While Not rs.EOF
+                '予定行の値設定
+                dgvWork("Ym", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Ym").Value)
+                dgvWork("Seq", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Seq").Value)
+                dgvWork("Seq2", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Seq2").Value)
+                dgvWork("Unt", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Unt").Value)
+                dgvWork("Rdr", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Rdr").Value)
+                dgvWork("Nam", rowIndex).Value = Util.checkDBNullValue(rs.Fields("Nam").Value)
+                dgvWork("Type", rowIndex).Value = "予定"
+                For i As Integer = 1 To 31
+                    dgvWork("Y" & i, rowIndex).Value = Util.checkDBNullValue(rs.Fields("Y" & i).Value)
+                Next
 
-            Dim row1 As DataRow = dt.NewRow()
-            Dim row2 As DataRow = dt.NewRow()
-            row2("Seq") = selectedRowIndex + 1
+                '変更行の値設定
+                dgvWork("Type", (rowIndex + 1)).Value = "変更"
+                For i As Integer = 1 To 31
+                    dgvWork("Y" & i, (rowIndex + 1)).Value = If(Util.checkDBNullValue(rs.Fields("J" & i).Value) = Util.checkDBNullValue(rs.Fields("Y" & i).Value), "", Util.checkDBNullValue(rs.Fields("J" & i).Value))
+                Next
 
-            '行追加
-            dt.Rows.InsertAt(row1, selectedRowIndex)
-            dt.Rows.InsertAt(row2, selectedRowIndex)
-            '追加した行(変更の行)のreadonly設定
-            dgvWork("Unt", selectedRowIndex + 1).ReadOnly = True
-            dgvWork("Rdr", selectedRowIndex + 1).ReadOnly = True
-            dgvWork("Nam", selectedRowIndex + 1).ReadOnly = True
-
-            '追加された行以降のSeqの値を更新
-            For i As Integer = selectedRowIndex + 2 To MAX_ROW_COUNT - 1 Step 2
-                dt.Rows(i).Item("Seq") += 2
-            Next
-
-            '下から２行削除
-            dt.Rows.RemoveAt(MAX_ROW_COUNT + 2)
-            dt.Rows.RemoveAt(MAX_ROW_COUNT + 1)
+                rowIndex += 2
+                rs.MoveNext()
+            End While
+            rs.Close()
+            cnn.Close()
         End If
+
     End Sub
 
-    Private Sub btnRowDelete_Click(sender As Object, e As EventArgs) Handles btnRowDelete.Click
-        Dim selectedRowIndex As Integer = If(IsNothing(dgvWork.CurrentRow), -1, dgvWork.CurrentRow.Index)
-        If selectedRowIndex = -1 OrElse selectedRowIndex = 0 Then
-            Return
+    Private Sub ymBox_YmLabelTextChange(sender As Object, e As System.EventArgs) Handles ymBox.YmLabelTextChange
+        Dim ym As String = ymBox.getADStr4Ym()
+        Dim floar As String = If(rbtn2F.Checked, "2", "3")
+        displayWork(ym, floar)
+    End Sub
+
+    Private Sub floarRadioButton_CheckedChanged(sender As Object, e As System.EventArgs) Handles rbtn2F.CheckedChanged, rbtn3F.CheckedChanged
+        Dim rbtn As RadioButton = CType(sender, RadioButton)
+        If rbtn.Checked = True Then
+            rbtn.BackColor = Color.FromArgb(255, 255, 0)
+            Dim floar As String = rbtn.Name.Substring(4, 1)
+            displayWork(ymBox.getADStr4Ym(), floar)
         Else
-            '変更の行を選択してる場合は予定の行を選択しているindexとする
-            If selectedRowIndex Mod 2 = 0 Then
-                selectedRowIndex -= 1
-            End If
-
-            '行削除
-            dt.Rows.RemoveAt(selectedRowIndex)
-            dt.Rows.RemoveAt(selectedRowIndex)
-
-            '削除された行以降のSeqの値を更新
-            For i As Integer = selectedRowIndex To MAX_ROW_COUNT - 3 Step 2
-                dt.Rows(i).Item("Seq") -= 2
-            Next
-
-            '下に２行追加
-            Dim row As DataRow = dt.NewRow()
-            row("Seq") = MAX_ROW_COUNT
-            dt.Rows.Add(row)
-            dt.Rows.Add(dt.NewRow())
-            '追加した行(変更の行)のreadonly設定
-            dgvWork("Unt", MAX_ROW_COUNT).ReadOnly = True
-            dgvWork("Rdr", MAX_ROW_COUNT).ReadOnly = True
-            dgvWork("Nam", MAX_ROW_COUNT).ReadOnly = True
+            rbtn.BackColor = Color.FromKnownColor(KnownColor.Control)
         End If
-    End Sub
-
-    Private Sub deleteMonthData(ymStr As String, floar As String)
-        cn = New OleDbConnection(TopForm.DB_Work)
-        sqlCm = cn.CreateCommand
-        sqlCm.CommandText = "delete from KinD where Ym='" & ymStr & "' and (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9'))"
-        cn.Open()
-        sqlCm.ExecuteNonQuery()
-        cn.Close()
-        sqlCm.Dispose()
-        cn.Dispose()
-    End Sub
-
-    Private Sub btnRegist_Click(sender As Object, e As EventArgs) Handles btnRegist.Click
-        Dim floar As String = If(rbtn2F.Checked = True, "2", "3")
-        dt.AcceptChanges()
-        setAddState(dt)
-        deleteMonthData("2018/04", floar)
-        adapter.Update(dt)
-        MsgBox("登録しました。")
     End Sub
 
     Private Sub dgvWork_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvWork.CellBeginEdit
@@ -417,9 +575,9 @@ Public Class 勤務割
     End Sub
 
     Private Sub dgvWork_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWork.CellEndEdit
+        Dim inputStr As String = If(IsDBNull(dgvWork(e.ColumnIndex, e.RowIndex).Value), "", dgvWork(e.ColumnIndex, e.RowIndex).Value)
         If dgvWork.Columns(e.ColumnIndex).Name = "Unt" Then
             'ﾕﾆｯﾄ列の編集終了時、Seq2列のセルに対応した値を設定
-            Dim inputStr As String = If(IsDBNull(dgvWork(e.ColumnIndex, e.RowIndex).Value), "", dgvWork(e.ColumnIndex, e.RowIndex).Value)
             Try
                 If rbtn2F.Checked = True Then
                     dgvWork("Seq2", e.RowIndex).Value = unitDictionary2F(inputStr)
@@ -431,25 +589,323 @@ Public Class 勤務割
                 MsgBox("正しいﾕﾆｯﾄ名を入力してください。")
             End Try
         ElseIf 7 <= e.ColumnIndex AndAlso e.ColumnIndex <= 37 Then
-            'Y1～Y31列の編集終了時の処理
-            If e.RowIndex Mod 2 = 1 Then
-                '予定の行の場合、値の変換処理をする
-                Try
-                    dgvWork(e.ColumnIndex, e.RowIndex).Value = wordDictionary(dgvWork(e.ColumnIndex, e.RowIndex).Value)
-                Catch ex As KeyNotFoundException
-                    '何もしない
-                End Try
-            Else
-                '変更の行の場合、値の変換処理をして、入力しているY列に対応する非表示のJ列の値を置き換える
-                Try
-                    dgvWork(e.ColumnIndex, e.RowIndex).Value = wordDictionary(dgvWork(e.ColumnIndex, e.RowIndex).Value)
-                    dgvWork(e.ColumnIndex + 31, e.RowIndex - 1).Value = dgvWork(e.ColumnIndex, e.RowIndex).Value
-                Catch ex As KeyNotFoundException
-                    dgvWork(e.ColumnIndex + 31, e.RowIndex - 1).Value = dgvWork(e.ColumnIndex, e.RowIndex).Value
-                End Try
-            End If
-
+            'Y1～Y31列の編集終了時の処理、値の変換処理をする
+            Try
+                dgvWork(e.ColumnIndex, e.RowIndex).Value = wordDictionary(inputStr)
+            Catch ex As KeyNotFoundException
+                '何もしない
+            End Try
         End If
     End Sub
 
+    Private Sub monthDataDelete(ymStr As String, floar As String, cnn As ADODB.Connection)
+        Dim cmd As New ADODB.Command()
+        cmd.ActiveConnection = cnn
+        cmd.CommandText = "delete from KinD where YM='" & ymStr & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9'))"
+        cmd.Execute()
+    End Sub
+
+    Private Function existsWorkStr(row As DataGridViewRow) As Boolean
+        For i As Integer = 1 To 31
+            If Util.checkDBNullValue(row.Cells("Y" & i).Value) <> "" Then
+                Return True
+            End If
+        Next
+        Return False
+    End Function
+
+    Private Sub subtotalClear()
+        '小計列のクリア
+        For i As Integer = 38 To 54
+            For j As Integer = 1 To 50
+                dgvWork(i, j).Value = ""
+            Next
+        Next
+
+        '小計行のクリア
+        For i As Integer = 51 To 80
+            For j As Integer = 1 To 31
+                dgvWork("Y" & j, i).Value = ""
+            Next
+        Next
+    End Sub
+
+    Private Sub btnRowAdd_Click(sender As System.Object, e As System.EventArgs) Handles btnRowAdd.Click
+        Dim selectedRowIndex As Integer = If(IsNothing(dgvWork.CurrentRow), -1, dgvWork.CurrentRow.Index)
+        If selectedRowIndex = -1 OrElse selectedRowIndex = 0 Then
+            Return
+        ElseIf Not IsDBNull(workDt.Rows(INPUT_ROW_COUNT - 1).Item("Nam")) AndAlso workDt.Rows(INPUT_ROW_COUNT - 1).Item("Nam") <> "" Then
+            MsgBox("行挿入できません。")
+            Return
+        Else
+            '変更の行を選択してる場合は予定の行を選択しているindexとする
+            If selectedRowIndex Mod 2 = 0 Then
+                selectedRowIndex -= 1
+            End If
+
+            Dim rowJ As DataRow = workDt.NewRow()
+            Dim rowY As DataRow = workDt.NewRow()
+            rowY("Seq") = selectedRowIndex + 1
+
+            '行追加
+            workDt.Rows.InsertAt(rowJ, selectedRowIndex) '変更行
+            workDt.Rows.InsertAt(rowY, selectedRowIndex) '予定行
+
+            '追加した変更行の設定
+            dgvWork("Unt", selectedRowIndex + 1).ReadOnly = True
+            dgvWork("Rdr", selectedRowIndex + 1).ReadOnly = True
+            dgvWork("Nam", selectedRowIndex + 1).ReadOnly = True
+            For i As Integer = 1 To 31 'Y1～Y31列のセルスタイル設定
+                dgvWork("Y" & i, selectedRowIndex + 1).Style = workChangeCellStyle
+            Next
+            For i As Integer = 38 To 54 '小計部分のセルスタイル設定
+                dgvWork(i, selectedRowIndex + 1).Style = subtotalChangeCellStyle
+            Next
+
+            '追加された行以降のSeqの値を更新
+            For i As Integer = selectedRowIndex + 2 To INPUT_ROW_COUNT - 1 Step 2
+                workDt.Rows(i).Item("Seq") += 2
+            Next
+
+            '下から２行削除
+            workDt.Rows.RemoveAt(INPUT_ROW_COUNT + 2)
+            workDt.Rows.RemoveAt(INPUT_ROW_COUNT + 1)
+        End If
+    End Sub
+
+    Private Sub btnRowDelete_Click(sender As System.Object, e As System.EventArgs) Handles btnRowDelete.Click
+        Dim selectedRowIndex As Integer = If(IsNothing(dgvWork.CurrentRow), -1, dgvWork.CurrentRow.Index)
+        If selectedRowIndex = -1 OrElse selectedRowIndex = 0 Then
+            Return
+        Else
+            '変更の行を選択してる場合は予定の行を選択しているindexとする
+            If selectedRowIndex Mod 2 = 0 Then
+                selectedRowIndex -= 1
+            End If
+
+            '行削除
+            workDt.Rows.RemoveAt(selectedRowIndex)
+            workDt.Rows.RemoveAt(selectedRowIndex)
+
+            '削除された行以降のSeqの値を更新
+            For i As Integer = selectedRowIndex To INPUT_ROW_COUNT - 3 Step 2
+                workDt.Rows(i).Item("Seq") -= 2
+            Next
+
+            '下に２行追加
+            Dim row As DataRow = workDt.NewRow()
+            row("Seq") = INPUT_ROW_COUNT
+            workDt.Rows.InsertAt(workDt.NewRow(), INPUT_ROW_COUNT - 1)
+            workDt.Rows.InsertAt(row, INPUT_ROW_COUNT - 1)
+
+            '追加した変更行の設定
+            dgvWork("Unt", INPUT_ROW_COUNT).ReadOnly = True
+            dgvWork("Rdr", INPUT_ROW_COUNT).ReadOnly = True
+            dgvWork("Nam", INPUT_ROW_COUNT).ReadOnly = True
+            For i As Integer = 1 To 31 'Y1～Y31列のセルスタイル設定
+                dgvWork("Y" & i, INPUT_ROW_COUNT).Style = workChangeCellStyle
+            Next
+            For i As Integer = 38 To 54 '小計部分のセルスタイル設定
+                dgvWork(i, INPUT_ROW_COUNT).Style = subtotalChangeCellStyle
+            Next
+        End If
+    End Sub
+
+    Private Sub btnRegist_Click(sender As System.Object, e As System.EventArgs) Handles btnRegist.Click
+        '
+        Dim cnn As New ADODB.Connection
+        cnn.Open(TopForm.DB_Work)
+        Dim rs As New ADODB.Recordset
+        rs.Open("KinD", cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
+
+        Dim ymStr As String = ymBox.getADStr4Ym()
+        Dim floar As String = If(rbtn2F.Checked, "2", "3")
+        Dim seq As Integer = 2
+        Dim existsUnt As Boolean
+        Dim existsNam As Boolean
+        Dim existsWork As Boolean
+
+        '登録チェック
+        For i As Integer = 1 To 51 Step 2
+            existsUnt = If(Util.checkDBNullValue(dgvWork("Unt", i).Value) <> "", True, False)
+            existsNam = If(Util.checkDBNullValue(dgvWork("Nam", i).Value) <> "", True, False)
+            existsWork = existsWorkStr(dgvWork.Rows(i))
+
+            If (existsUnt AndAlso Not existsNam AndAlso existsWork) OrElse (Not existsUnt AndAlso Not existsNam AndAlso existsWork) Then
+                MsgBox("氏名の無い行に入力しています。", MsgBoxStyle.Exclamation, "Work")
+                rs.Close()
+                cnn.Close()
+                Return
+            ElseIf (Not existsUnt AndAlso existsNam AndAlso existsWork) OrElse (Not existsUnt AndAlso existsNam AndAlso Not existsWork) Then
+                MsgBox("ﾕﾆｯﾄが空白です。", MsgBoxStyle.Exclamation, "Work")
+                rs.Close()
+                cnn.Close()
+                Return
+            Else
+                Continue For
+            End If
+        Next
+
+        '既存データ削除
+        monthDataDelete(ymStr, floar, cnn)
+
+        '登録
+        For i As Integer = 1 To 51 Step 2
+            existsUnt = If(Util.checkDBNullValue(dgvWork("Unt", i).Value) <> "", True, False)
+            existsNam = If(Util.checkDBNullValue(dgvWork("Nam", i).Value) <> "", True, False)
+            existsWork = existsWorkStr(dgvWork.Rows(i))
+
+            If (existsUnt AndAlso Not existsNam AndAlso Not existsWork) OrElse (Not existsUnt AndAlso Not existsNam AndAlso Not existsWork) Then
+                Continue For
+            Else
+                With rs
+                    .AddNew()
+                    .Fields("Ym").Value = ymStr
+                    .Fields("Seq").Value = seq
+                    .Fields("Seq2").Value = Util.checkDBNullValue(dgvWork("Seq2", i).Value)
+                    .Fields("Unt").Value = Util.checkDBNullValue(dgvWork("Unt", i).Value)
+                    .Fields("Rdr").Value = Util.checkDBNullValue(dgvWork("Rdr", i).Value)
+                    .Fields("Nam").Value = Util.checkDBNullValue(dgvWork("Nam", i).Value)
+                    For j As Integer = 1 To 31
+                        .Fields("Y" & j).Value = Util.checkDBNullValue(dgvWork("Y" & j, i).Value)
+                        .Fields("J" & j).Value = Util.checkDBNullValue(dgvWork("Y" & j, i + 1).Value)
+                    Next
+                End With
+                rs.Update()
+                seq += 2
+            End If
+        Next
+        rs.Close()
+        cnn.Close()
+        MsgBox("登録しました。", , "Work")
+    End Sub
+
+    Private Sub btnDelete_Click(sender As System.Object, e As System.EventArgs) Handles btnDelete.Click
+        Dim ymStr As String = ymBox.getADStr4Ym()
+        Dim floar As String = If(rbtn2F.Checked, "2", "3")
+        Dim cnn As New ADODB.Connection
+        cnn.Open(TopForm.DB_Work)
+        Dim rs As New ADODB.Recordset
+        Dim sql = "SELECT * FROM KinD WHERE YM='" & ymStr & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
+        rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
+
+        If rs.RecordCount <= 0 Then
+            MsgBox("登録されていません", , "Work")
+            rs.Close()
+            cnn.Close()
+        Else
+            Dim result As DialogResult = MessageBox.Show("削除してよろしいですか？", "Work", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+            If result = Windows.Forms.DialogResult.Yes Then
+                monthDataDelete(ymStr, floar, cnn)
+                rs.Close()
+                cnn.Close()
+
+                '再表示
+                displayWork(ymStr, floar, True)
+                MsgBox("削除しました", , "Work")
+            End If
+        End If
+    End Sub
+
+    Private Sub btnPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnPrint.Click
+        'パスワードフォーム表示
+        Dim passForm As Form = New passwordForm(TopForm.iniFilePath, 2)
+        If passForm.ShowDialog() <> Windows.Forms.DialogResult.OK Then
+            Return
+        End If
+
+        Dim ymStr As String = ymBox.getADStr4Ym() '選択年月
+        Dim floar As String = If(rbtn2F.Checked, "2", "3")
+        Dim cnn As New ADODB.Connection
+        cnn.Open(TopForm.DB_Work)
+        Dim rs As New ADODB.Recordset
+        Dim sql = "SELECT * FROM KinD WHERE YM='" & ymStr & "' order by Seq2" '選択年月の全てのデータ(2階、3階共に)抽出
+        rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
+        If rs.RecordCount <= 0 Then
+            MsgBox("該当がありません。", MsgBoxStyle.Exclamation, "Work")
+            rs.Close()
+            cnn.Close()
+            Return
+        Else
+            rs.Close()
+            subtotalClear()
+
+            '予定の小計表示
+            sql = "SELECT * FROM KinD WHERE YM='" & ymStr & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
+            rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
+            Dim rowIndex As Integer = 1
+            Dim totalTime As Double
+            While Not rs.EOF
+                totalTime = 0.0
+                For i As Integer = 1 To 31
+                    Dim inputPlan As String = Util.checkDBNullValue(rs.Fields("Y" & i).Value)
+                    If workTimeDictionary.ContainsKey(inputPlan) Then
+                        totalTime = totalTime + workTimeDictionary(inputPlan)
+                    End If
+                    If Not abbreviationDictionary.ContainsKey(inputPlan) AndAlso inputPlan <> "" Then
+                        inputPlan = "明"
+                    End If
+                    If abbreviationDictionary.ContainsKey(inputPlan) Then
+                        Dim columnStr As String = abbreviationDictionary(inputPlan)
+                        dgvWork(columnStr, rowIndex).Value = If(IsNumeric(dgvWork(columnStr, rowIndex).Value), CInt(dgvWork(columnStr, rowIndex).Value), 0) + 1
+                        If columnStr <> "明等" Then
+                            dgvWork("Y" & i, subtotalStrIndexDictionary(columnStr)).Value = If(IsNumeric(dgvWork("Y" & i, subtotalStrIndexDictionary(columnStr)).Value), CInt(dgvWork("Y" & i, subtotalStrIndexDictionary(columnStr)).Value), 0) + 1
+                        End If
+                    End If
+                Next
+                If totalTime <> 0.0 Then
+                    dgvWork("月合計", rowIndex).Value = totalTime.ToString("f1")
+                End If
+                rowIndex += 2
+                rs.MoveNext()
+            End While
+
+            Dim changeRowResult As DialogResult = MessageBox.Show("縦/横計の変更分も表示しますか？", "Work", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+            If changeRowResult = Windows.Forms.DialogResult.Yes Then
+                '変更分の表示
+                rs.MoveFirst()
+                rowIndex = 1
+                While Not rs.EOF
+                    totalTime = 0.0
+                    For i As Integer = 1 To 31
+                        Dim inputChange As String = Util.checkDBNullValue(rs.Fields("J" & i).Value)
+                        If workTimeDictionary.ContainsKey(inputChange) Then
+                            totalTime = totalTime + workTimeDictionary(inputChange)
+                        End If
+                        If Not abbreviationDictionary.ContainsKey(inputChange) AndAlso inputChange <> "" Then
+                            inputChange = "明"
+                        End If
+                        If abbreviationDictionary.ContainsKey(inputChange) Then
+                            Dim columnStr As String = abbreviationDictionary(inputChange)
+                            dgvWork(columnStr, rowIndex + 1).Value = If(IsNumeric(dgvWork(columnStr, rowIndex + 1).Value), CInt(dgvWork(columnStr, rowIndex + 1).Value), 0) + 1
+                            If columnStr <> "明等" Then
+                                dgvWork("Y" & i, subtotalStrIndexDictionary(columnStr) + 1).Value = If(IsNumeric(dgvWork("Y" & i, subtotalStrIndexDictionary(columnStr) + 1).Value), CInt(dgvWork("Y" & i, subtotalStrIndexDictionary(columnStr) + 1).Value), 0) + 1
+                            End If
+                        End If
+                    Next
+                    If totalTime <> 0.0 Then
+                        dgvWork("月合計", rowIndex + 1).Value = totalTime.ToString("f1")
+                    End If
+                    rowIndex += 2
+                    rs.MoveNext()
+                End While
+            End If
+
+            Dim workPrintResult As DialogResult = MessageBox.Show("勤務割表を印刷しますか？", "Work", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+            Dim personalPrintResult As DialogResult = MessageBox.Show("個人別勤務割を印刷しますか？", "Work", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+
+            '印刷
+            If workPrintResult = Windows.Forms.DialogResult.Yes Then
+                '勤務割表の印刷
+
+            End If
+
+            If personalPrintResult = Windows.Forms.DialogResult.Yes Then
+                '個人別勤務割の印刷
+
+            End If
+
+        End If
+
+    End Sub
 End Class
