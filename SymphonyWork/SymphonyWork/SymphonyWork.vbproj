@@ -84,6 +84,12 @@
     <Compile Include="CSV作成.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="passwordForm.Designer.vb">
+      <DependentUpon>passwordForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="passwordForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="TopForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +125,12 @@
     <Compile Include="勤務割.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="同姓略名.Designer.vb">
+      <DependentUpon>同姓略名.vb</DependentUpon>
+    </Compile>
+    <Compile Include="同姓略名.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="職員リスト.Designer.vb">
       <DependentUpon>職員リスト.vb</DependentUpon>
     </Compile>
@@ -133,6 +145,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="passwordForm.resx">
+      <DependentUpon>passwordForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TopForm.resx">
       <DependentUpon>TopForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -144,6 +159,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="勤務割.resx">
       <DependentUpon>勤務割.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="同姓略名.resx">
+      <DependentUpon>同姓略名.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="職員リスト.resx">
       <DependentUpon>職員リスト.vb</DependentUpon>
