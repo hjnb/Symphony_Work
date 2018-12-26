@@ -3,8 +3,7 @@
     Private workDt As DataTable
     Private editBeforeCellValue As String
 
-    Private unitDictionary2F As Dictionary(Of String, String)
-    Private unitDictionary3F As Dictionary(Of String, String)
+    Private unitDictionary As Dictionary(Of String, String)
     Private wordDictionary As Dictionary(Of String, String)
     Private workTimeDictionary As Dictionary(Of String, Double)
     Private abbreviationDictionary As Dictionary(Of String, String)
@@ -56,19 +55,15 @@
     End Sub
 
     Private Sub createDictionary()
-        'ﾕﾆｯﾄ(2F)の連想配列作成
-        unitDictionary2F = New Dictionary(Of String, String)
-        unitDictionary2F.Add("※", "00")
-        unitDictionary2F.Add("星", "21")
-        unitDictionary2F.Add("森", "22")
-        unitDictionary2F.Add("空", "23")
-
-        'ﾕﾆｯﾄ(3F)の連想配列作成
-        unitDictionary3F = New Dictionary(Of String, String)
-        unitDictionary3F.Add("※", "00")
-        unitDictionary3F.Add("月", "31")
-        unitDictionary3F.Add("花", "32")
-        unitDictionary3F.Add("海", "33")
+        'ﾕﾆｯﾄの連想配列作成
+        unitDictionary = New Dictionary(Of String, String)
+        unitDictionary.Add("※", "00")
+        unitDictionary.Add("星", "21")
+        unitDictionary.Add("森", "22")
+        unitDictionary.Add("空", "23")
+        unitDictionary.Add("月", "31")
+        unitDictionary.Add("花", "32")
+        unitDictionary.Add("海", "33")
 
         'Y1～Y31の列のセルの入力文字変換連想配列
         wordDictionary = New Dictionary(Of String, String)
@@ -579,14 +574,9 @@
         If dgvWork.Columns(e.ColumnIndex).Name = "Unt" Then
             'ﾕﾆｯﾄ列の編集終了時、Seq2列のセルに対応した値を設定
             Try
-                If rbtn2F.Checked = True Then
-                    dgvWork("Seq2", e.RowIndex).Value = unitDictionary2F(inputStr)
-                Else
-                    dgvWork("Seq2", e.RowIndex).Value = unitDictionary3F(inputStr)
-                End If
+                dgvWork("Seq2", e.RowIndex).Value = unitDictionary(inputStr)
             Catch ex As KeyNotFoundException
-                dgvWork(e.ColumnIndex, e.RowIndex).Value = editBeforeCellValue
-                MsgBox("正しいﾕﾆｯﾄ名を入力してください。")
+                '何もしない
             End Try
         ElseIf 7 <= e.ColumnIndex AndAlso e.ColumnIndex <= 37 Then
             'Y1～Y31列の編集終了時の処理、値の変換処理をする
@@ -726,7 +716,7 @@
         Dim existsWork As Boolean
 
         '登録チェック
-        For i As Integer = 1 To 51 Step 2
+        For i As Integer = 1 To 49 Step 2
             existsUnt = If(Util.checkDBNullValue(dgvWork("Unt", i).Value) <> "", True, False)
             existsNam = If(Util.checkDBNullValue(dgvWork("Nam", i).Value) <> "", True, False)
             existsWork = existsWorkStr(dgvWork.Rows(i))
@@ -750,7 +740,7 @@
         monthDataDelete(ymStr, floar, cnn)
 
         '登録
-        For i As Integer = 1 To 51 Step 2
+        For i As Integer = 1 To 49 Step 2
             existsUnt = If(Util.checkDBNullValue(dgvWork("Unt", i).Value) <> "", True, False)
             existsNam = If(Util.checkDBNullValue(dgvWork("Nam", i).Value) <> "", True, False)
             existsWork = existsWorkStr(dgvWork.Rows(i))
@@ -758,6 +748,9 @@
             If (existsUnt AndAlso Not existsNam AndAlso Not existsWork) OrElse (Not existsUnt AndAlso Not existsNam AndAlso Not existsWork) Then
                 Continue For
             Else
+                If Not unitDictionary.ContainsKey(Util.checkDBNullValue(dgvWork("Unt", i).Value)) Then
+                    Continue For
+                End If
                 With rs
                     .AddNew()
                     .Fields("Ym").Value = ymStr
@@ -768,7 +761,7 @@
                     .Fields("Nam").Value = Util.checkDBNullValue(dgvWork("Nam", i).Value)
                     For j As Integer = 1 To 31
                         .Fields("Y" & j).Value = Util.checkDBNullValue(dgvWork("Y" & j, i).Value)
-                        .Fields("J" & j).Value = Util.checkDBNullValue(dgvWork("Y" & j, i + 1).Value)
+                        .Fields("J" & j).Value = If(Util.checkDBNullValue(dgvWork("Y" & j, i + 1).Value) = "", Util.checkDBNullValue(dgvWork("Y" & j, i).Value), Util.checkDBNullValue(dgvWork("Y" & j, i + 1).Value))
                     Next
                 End With
                 rs.Update()

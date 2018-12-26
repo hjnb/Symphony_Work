@@ -405,7 +405,7 @@ Partial Class 勤務割
         Me.Controls.Add(Me.rbtn2F)
         Me.Controls.Add(Me.rbtn3F)
         Me.Name = "勤務割"
-        Me.Text = "workForm"
+        Me.Text = "勤務割"
         Me.wordPanel.ResumeLayout(False)
         Me.wordPanel.PerformLayout()
         CType(Me.dgvWork, System.ComponentModel.ISupportInitialize).EndInit()
