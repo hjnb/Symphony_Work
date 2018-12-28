@@ -1,7 +1,6 @@
 ﻿Public Class 勤務割
 
     Private workDt As DataTable
-    Private editBeforeCellValue As String
 
     Private unitDictionary As Dictionary(Of String, String)
     Private wordDictionary As Dictionary(Of String, String)
@@ -467,7 +466,7 @@
         Dim cnn As New ADODB.Connection
         cnn.Open(TopForm.DB_Work)
         Dim rs As New ADODB.Recordset
-        Dim sql = "SELECT * FROM KinD WHERE YM='" & ymStr & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
+        Dim sql = "SELECT * FROM KinD WHERE YM='" & ymStr & "' AND ((Seq2='00' AND Unt='※') OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
         rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
         If rs.RecordCount <= 0 Then
             Dim warekiStr As String = Util.convADStrToWarekiStr(ymStr & "/01")
@@ -489,7 +488,7 @@
                 End If
                 Dim prevYmStr As String = prevYear & "/" & prevMonth
 
-                sql = "SELECT * FROM KinD WHERE YM='" & prevYmStr & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
+                sql = "SELECT * FROM KinD WHERE YM='" & prevYmStr & "' AND ((Seq2='00' AND Unt='※') OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
                 rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
 
                 Dim rowIndex As Integer = 1
@@ -563,10 +562,6 @@
         Else
             rbtn.BackColor = Color.FromKnownColor(KnownColor.Control)
         End If
-    End Sub
-
-    Private Sub dgvWork_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvWork.CellBeginEdit
-        editBeforeCellValue = If(IsDBNull(dgvWork(e.ColumnIndex, e.RowIndex).Value), "", dgvWork(e.ColumnIndex, e.RowIndex).Value)
     End Sub
 
     Private Sub dgvWork_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWork.CellEndEdit
@@ -812,7 +807,7 @@
         Dim cnn As New ADODB.Connection
         cnn.Open(TopForm.DB_Work)
         Dim rs As New ADODB.Recordset
-        Dim sql = "SELECT * FROM KinD WHERE YM='" & ymStr & "' order by Seq2" '選択年月の全てのデータ(2階、3階共に)抽出
+        Dim sql = "SELECT * FROM KinD WHERE YM='" & ymStr & "' AND ((Seq2='00' AND Unt='※') OR ('20' <= Seq2 AND Seq2 <= '39')) order by Seq2" '選択年月の全てのデータ(2階、3階共に)抽出
         rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
         If rs.RecordCount <= 0 Then
             MsgBox("該当がありません。", MsgBoxStyle.Exclamation, "Work")
@@ -824,7 +819,7 @@
             subtotalClear()
 
             '予定の小計表示
-            sql = "SELECT * FROM KinD WHERE YM='" & ymStr & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
+            sql = "SELECT * FROM KinD WHERE YM='" & ymStr & "' AND ((Seq2='00' AND Unt='※') OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) order by Seq"
             rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
             Dim rowIndex As Integer = 1
             Dim totalTime As Double

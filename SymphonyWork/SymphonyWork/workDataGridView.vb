@@ -7,9 +7,17 @@
         DoubleBuffered = True
     End Sub
 
+    'Protected Overrides Function ProcessKeyEventArgs(ByRef m As System.Windows.Forms.Message) As Boolean
+    '    Dim code As Integer = CInt(m.WParam)
+
+    '    m.WParam = code
+    '    Return MyBase.ProcessKeyEventArgs(m)
+
+    'End Function
+
     Protected Overrides Function ProcessDialogKey(keyData As System.Windows.Forms.Keys) As Boolean
+        Dim columnName As String = Me.Columns(CurrentCell.ColumnIndex).Name
         If keyData = Keys.Enter Then
-            Dim columnName As String = Me.Columns(CurrentCell.ColumnIndex).Name
             If columnName = "Unt" OrElse columnName = "Rdr" OrElse columnName = "Nam" Then
                 EndEdit()
                 Return False
@@ -42,6 +50,19 @@
         End If
     End Function
 
+    Private Sub workDataGridView_CellEnter(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles Me.CellEnter
+        Dim columnName As String = Me.Columns(e.ColumnIndex).Name
+        If columnName = "Unt" Then
+            Me.ImeMode = Windows.Forms.ImeMode.Hiragana
+        ElseIf columnName = "Rdr" Then
+            Me.ImeMode = Windows.Forms.ImeMode.Off
+        ElseIf columnName = "Nam" Then
+            Me.ImeMode = Windows.Forms.ImeMode.Hiragana
+        ElseIf columnName.Substring(0, 1) = "Y" Then
+            Me.ImeMode = Windows.Forms.ImeMode.Off
+        End If
+    End Sub
+
     Private Sub ExDataGridView_CellPainting(sender As Object, e As System.Windows.Forms.DataGridViewCellPaintingEventArgs) Handles Me.CellPainting
         '選択したセルに枠を付ける
         If e.ColumnIndex >= 0 AndAlso e.RowIndex >= 0 AndAlso (e.PaintParts And DataGridViewPaintParts.Background) = DataGridViewPaintParts.Background Then
@@ -56,5 +77,6 @@
             e.Handled = True
         End If
     End Sub
+
 
 End Class
