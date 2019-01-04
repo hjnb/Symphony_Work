@@ -221,6 +221,10 @@
     End Sub
 
     Private Sub initDgvWork()
+        'dictionary設定
+        dgvWork.setUnitDictionary(unitDictionary)
+        dgvWork.setWordDictionary(wordDictionary)
+
         'dgv設定
         With dgvWork
             .AllowUserToAddRows = False '行追加禁止
@@ -564,25 +568,6 @@
         End If
     End Sub
 
-    Private Sub dgvWork_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWork.CellEndEdit
-        Dim inputStr As String = If(IsDBNull(dgvWork(e.ColumnIndex, e.RowIndex).Value), "", dgvWork(e.ColumnIndex, e.RowIndex).Value)
-        If dgvWork.Columns(e.ColumnIndex).Name = "Unt" Then
-            'ﾕﾆｯﾄ列の編集終了時、Seq2列のセルに対応した値を設定
-            Try
-                dgvWork("Seq2", e.RowIndex).Value = unitDictionary(inputStr)
-            Catch ex As KeyNotFoundException
-                '何もしない
-            End Try
-        ElseIf 7 <= e.ColumnIndex AndAlso e.ColumnIndex <= 37 Then
-            'Y1～Y31列の編集終了時の処理、値の変換処理をする
-            Try
-                dgvWork(e.ColumnIndex, e.RowIndex).Value = wordDictionary(inputStr)
-            Catch ex As KeyNotFoundException
-                '何もしない
-            End Try
-        End If
-    End Sub
-
     Private Sub monthDataDelete(ymStr As String, floar As String, cnn As ADODB.Connection)
         Dim cmd As New ADODB.Command()
         cmd.ActiveConnection = cnn
@@ -896,4 +881,5 @@
         End If
 
     End Sub
+
 End Class

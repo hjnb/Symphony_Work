@@ -1,29 +1,47 @@
 ﻿Public Class workDataGridView
     Inherits DataGridView
 
+    Private unitDictionary As Dictionary(Of String, String)
+    Private wordDictionary As Dictionary(Of String, String)
+
     Protected Overrides Sub InitLayout()
         MyBase.InitLayout()
 
         DoubleBuffered = True
     End Sub
 
-    'Protected Overrides Function ProcessKeyEventArgs(ByRef m As System.Windows.Forms.Message) As Boolean
-    '    Dim code As Integer = CInt(m.WParam)
-
-    '    m.WParam = code
-    '    Return MyBase.ProcessKeyEventArgs(m)
-
-    'End Function
-
     Protected Overrides Function ProcessDialogKey(keyData As System.Windows.Forms.Keys) As Boolean
+        Dim inputStr As String = If(Not IsNothing(Me.EditingControl), CType(Me.EditingControl, DataGridViewTextBoxEditingControl).Text, "")
         Dim columnName As String = Me.Columns(CurrentCell.ColumnIndex).Name
         If keyData = Keys.Enter Then
             If columnName = "Unt" OrElse columnName = "Rdr" OrElse columnName = "Nam" Then
                 EndEdit()
                 Return False
+            ElseIf 7 <= Me.CurrentCell.ColumnIndex AndAlso Me.CurrentCell.ColumnIndex <= 37 Then
+                If inputStr = "" OrElse ("A" <= inputStr.Substring(0, 1) AndAlso inputStr.Substring(0, 1) <= "T") Then
+                    Return Me.ProcessTabKey(keyData)
+                Else
+                    'Y1～Y31列の編集終了時の処理、値の変換処理をする
+                    Try
+                        CType(Me.EditingControl, DataGridViewTextBoxEditingControl).Text = wordDictionary(inputStr)
+                    Catch ex As KeyNotFoundException
+                        MsgBox("正しく入力して下さい。", MsgBoxStyle.Exclamation)
+                        EndEdit()
+                        Return False
+                    End Try
+                End If
+                Return Me.ProcessTabKey(keyData)
             Else
                 Return Me.ProcessTabKey(keyData)
             End If
+        ElseIf keyData = Keys.Back Then
+            If columnName = "Unt" OrElse columnName = "Rdr" OrElse columnName.Substring(0, 1) = "Y" Then
+                CurrentCell.Value = ""
+                BeginEdit(False)
+            ElseIf columnName = "Nam" Then
+                BeginEdit(True)
+            End If
+            Return MyBase.ProcessDialogKey(keyData)
         Else
             Return MyBase.ProcessDialogKey(keyData)
         End If
@@ -49,6 +67,22 @@
             Return MyBase.ProcessDataGridViewKey(e)
         End If
     End Function
+
+    Private Sub workDataGridView_CellEndEdit(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles Me.CellEndEdit
+        Dim inputStr As String = If(IsDBNull(Me(e.ColumnIndex, e.RowIndex).Value), "", Me(e.ColumnIndex, e.RowIndex).Value)
+        If Me.Columns(e.ColumnIndex).Name = "Unt" Then
+            'ﾕﾆｯﾄ列の編集終了時、Seq2列のセルに対応した値を設定
+            Try
+                Me("Seq2", e.RowIndex).Value = unitDictionary(inputStr)
+            Catch ex As KeyNotFoundException
+                '何もしない
+            End Try
+        ElseIf Me.Columns(e.ColumnIndex).Name = "Rdr" Then
+            If inputStr <> "" AndAlso Not ("A" <= inputStr.Substring(0, 1) AndAlso inputStr.Substring(0, 1) <= "Z") Then
+                Me(e.ColumnIndex, e.RowIndex).Value = ""
+            End If
+        End If
+    End Sub
 
     Private Sub workDataGridView_CellEnter(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles Me.CellEnter
         Dim columnName As String = Me.Columns(e.ColumnIndex).Name
@@ -78,5 +112,19 @@
         End If
     End Sub
 
+    Private Sub workDataGridView_EditingControlShowing(sender As Object, e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles Me.EditingControlShowing
+        Dim tb As DataGridViewTextBoxEditingControl = CType(e.Control, DataGridViewTextBoxEditingControl)
+        tb.CharacterCasing = CharacterCasing.Upper
+        If Me.Columns(Me.CurrentCell.ColumnIndex).Name = "Rdr" Then
+            tb.MaxLength = 1
+        End If
+    End Sub
 
+    Public Sub setUnitDictionary(unitDictionary As Dictionary(Of String, String))
+        Me.unitDictionary = unitDictionary
+    End Sub
+
+    Public Sub setWordDictionary(wordDictionary As Dictionary(Of String, String))
+        Me.wordDictionary = wordDictionary
+    End Sub
 End Class
