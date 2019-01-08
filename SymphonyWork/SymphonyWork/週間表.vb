@@ -98,7 +98,7 @@ Public Class 週間表
             If c = 0 Then
                 DataGridView1.Columns(c).Width = 30
             ElseIf c Mod 2 = 0 Then
-                DataGridView1.Columns(c).Width = 45
+                DataGridView1.Columns(c).Width = 55
                 DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             ElseIf c = 1 OrElse c = 5 OrElse c = 9 OrElse c = 13 OrElse c = 17 OrElse c = 21 OrElse c = 25 Then
                 DataGridView1.Columns(c).Width = 28
@@ -148,7 +148,7 @@ Public Class 週間表
 
         'DataGridView2の列の設定
         For c As Integer = 0 To 6
-            DataGridView2.Columns(c).Width = 135
+            DataGridView2.Columns(c).Width = 155
         Next
 
         'DataGridView2の行の設定
@@ -238,7 +238,6 @@ Public Class 週間表
             DataGridView1(0, Gyo(n)).Style = cellStyle2
             DataGridView1(0, Gyo(n)).Value = Moji(n)
         Next
-        
 
     End Sub
 
@@ -334,47 +333,47 @@ Public Class 週間表
 
 
         If rbn2F.Checked = True Then    '2階の情報を表示
-            Label52.Location = New Point(32, 74)
-            Label1.Location = New Point(32, 103)
-            Label2.Location = New Point(32, 134)
-            Label3.Location = New Point(32, 149)
-            Label4.Location = New Point(32, 223)
-            Label5.Location = New Point(32, 298)
-            Label6.Location = New Point(32, 373)
-            Label7.Location = New Point(32, 403)
-            Label8.Location = New Point(32, 478)
-            Label9.Location = New Point(32, 554)
+            Label52.Location = New Point(12, 74)
+            Label1.Location = New Point(12, 103)
+            Label2.Location = New Point(12, 134)
+            Label3.Location = New Point(12, 149)
+            Label4.Location = New Point(12, 223)
+            Label5.Location = New Point(12, 298)
+            Label6.Location = New Point(12, 373)
+            Label7.Location = New Point(12, 403)
+            Label8.Location = New Point(12, 478)
+            Label9.Location = New Point(12, 554)
 
             For i As Integer = 10 To 16
                 Controls("Label" & i).Size = New Size(2, 588)
             Next
 
-            DataGridView1.Location = New Point(32, 43)
-            DataGridView1.Size = New Size(978, 588)
-            DataGridView2.Location = New Point(62, 630)
+            DataGridView1.Location = New Point(12, 43)
+            DataGridView1.Size = New Size(1118, 588)
+            DataGridView2.Location = New Point(42, 630)
 
             'DataGridView1行作成
             For i As Integer = 1 To 39
                 DGV1Table.Rows.Add(DGV1Table.NewRow())
             Next
         ElseIf rbn3F.Checked = True Then    '3階の情報を表示
-            Label52.Location = New Point(32, 72)
-            Label1.Location = New Point(32, 100)
-            Label2.Location = New Point(32, 128)
-            Label3.Location = New Point(32, 142)
-            Label4.Location = New Point(32, 212)
-            Label5.Location = New Point(32, 282)
-            Label6.Location = New Point(32, 365)
-            Label7.Location = New Point(32, 393)
-            Label8.Location = New Point(32, 491)
-            Label9.Location = New Point(32, 589)
+            Label52.Location = New Point(12, 72)
+            Label1.Location = New Point(12, 100)
+            Label2.Location = New Point(12, 128)
+            Label3.Location = New Point(12, 142)
+            Label4.Location = New Point(12, 212)
+            Label5.Location = New Point(12, 282)
+            Label6.Location = New Point(12, 365)
+            Label7.Location = New Point(12, 393)
+            Label8.Location = New Point(12, 491)
+            Label9.Location = New Point(12, 589)
             For i As Integer = 10 To 16
                 Controls("Label" & i).Size = New Size(2, 605)
             Next
 
-            DataGridView1.Location = New Point(32, 43)
-            DataGridView1.Size = New Size(978, 605)
-            DataGridView2.Location = New Point(62, 647)
+            DataGridView1.Location = New Point(12, 43)
+            DataGridView1.Size = New Size(1118, 605)
+            DataGridView2.Location = New Point(42, 647)
 
             'DataGridView1行作成
             For i As Integer = 1 To 43
@@ -392,7 +391,7 @@ Public Class 週間表
             If c = 0 Then
                 DataGridView1.Columns(c).Width = 30
             ElseIf c Mod 2 = 0 Then
-                DataGridView1.Columns(c).Width = 45
+                DataGridView1.Columns(c).Width = 55
                 DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             ElseIf c = 1 OrElse c = 5 OrElse c = 9 OrElse c = 13 OrElse c = 17 OrElse c = 21 OrElse c = 25 Then
                 DataGridView1.Columns(c).Width = 28
@@ -831,7 +830,7 @@ Public Class 週間表
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 16).Value
                     ElseIf 17 <= RowNo And RowNo <= 20 Then
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 16).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 22).Value
+                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 24).Value
                     ElseIf RowNo = 21 Then
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 16).Value
                         DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 17).Value
@@ -1536,7 +1535,7 @@ Public Class 週間表
                 objWorkBooks = objExcel.Workbooks
                 objWorkBook = objWorkBooks.Open(TopForm.excelFilePass)
                 oSheets = objWorkBook.Worksheets
-                oSheet = objWorkBook.Worksheets("週間食事表")
+                oSheet = objWorkBook.Worksheets("週間食事表改")
 
                 oSheet.Range("B2").Value = Strings.Mid(lblYmd.Text, 5, 2) & "月"
 
@@ -1666,7 +1665,7 @@ Public Class 週間表
                 objWorkBooks = objExcel.Workbooks
                 objWorkBook = objWorkBooks.Open(TopForm.excelFilePass)
                 oSheets = objWorkBook.Worksheets
-                oSheet = objWorkBook.Worksheets("週間食事表３")
+                oSheet = objWorkBook.Worksheets("週間食事表３改")
 
                 oSheet.Range("B2").Value = Strings.Mid(lblYmd.Text, 5, 2) & "月"
 
@@ -1785,7 +1784,5 @@ Public Class 週間表
         End If
 
     End Sub
-
-    
 
 End Class
