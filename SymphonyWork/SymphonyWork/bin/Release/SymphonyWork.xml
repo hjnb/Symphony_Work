@@ -19,6 +19,38 @@ SymphonyWork
 	<summary>
   A strongly-typed resource class, for looking up localized strings, etc.
 </summary>
+</member><member name="M:SymphonyWork.勤務割.writeWorkTotalTable(System.Object,ADODB.Connection,System.String)">
+	<summary>
+ 勤務割横計表書き込み
+ </summary>
+	<param name="osheet"></param>
+	<param name="cnn"></param>
+	<param name="type"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:SymphonyWork.勤務割.writeWorkTable(System.Object,ADODB.Connection,System.String)">
+	<summary>
+ 勤務割表書き込み
+ </summary>
+	<param name="osheet"></param>
+	<param name="cnn"></param>
+	<param name="type"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:SymphonyWork.勤務割.writePersonalCalendar(System.Object,ADODB.Connection)">
+	<summary>
+ 個人別勤務割書き込み
+ </summary>
+	<param name="oSheet"></param>
+	<param name="cnn"></param>
+	<remarks></remarks>
+</member><member name="M:SymphonyWork.勤務割.getColumnAlphabet(System.Int32)">
+	<summary>
+ エクセル列番号文字列を取得
+ </summary>
+	<param name="num">列番号数値</param>
+	<returns></returns>
+	<remarks></remarks>
 </member><member name="M:SymphonyWork.Util.EnableDoubleBuffering(System.Windows.Forms.Control)">
 	<summary>
  コントロールのDoubleBufferedプロパティをTrueにする
