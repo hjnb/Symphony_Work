@@ -120,6 +120,7 @@ Public Class workDataGridView
         If Me.Columns(Me.CurrentCell.ColumnIndex).Name = "Rdr" Then
             tb.MaxLength = 1
         ElseIf Me.Columns(Me.CurrentCell.ColumnIndex).Name = "Unt" Then
+            tb.MaxLength = 1
             'イベントハンドラを削除、追加
             RemoveHandler tb.KeyPress, AddressOf dgvTextBox_KeyPress
             AddHandler tb.KeyPress, AddressOf dgvTextBox_KeyPress
