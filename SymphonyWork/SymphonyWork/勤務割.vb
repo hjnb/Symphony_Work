@@ -1274,11 +1274,15 @@ Public Class 勤務割
         Dim personCount As Integer = rs.RecordCount '人数
 
         '人数分の枠準備
-        For i As Integer = 1 To ((personCount - 1) \ 2)
+        Dim forCount As Integer
+        For forCount = 1 To ((personCount - 1) \ 2)
             'コピペ処理
-            Dim xlPasteRange As Excel.Range = oSheet.Range("A" & ((i * 53) + 1)) 'ペースト先
+            Dim xlPasteRange As Excel.Range = oSheet.Range("A" & ((forCount * 53) + 1)) 'ペースト先
             oSheet.rows("1:53").copy(xlPasteRange)
         Next
+        If (personCount Mod 2) = 1 Then
+            oSheet.Range("C" & (((forCount - 1) * 53) + 1 + 30)).value = ""
+        End If
 
         '勤務データ作成
         Dim daysInMonth As Integer = DateTime.DaysInMonth(year, month) '月の日数
