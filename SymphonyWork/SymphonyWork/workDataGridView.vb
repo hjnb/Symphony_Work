@@ -1,4 +1,6 @@
-﻿Public Class workDataGridView
+﻿Imports System.Text
+
+Public Class workDataGridView
     Inherits DataGridView
 
     Private unitDictionary As Dictionary(Of String, String)
@@ -117,6 +119,26 @@
         tb.CharacterCasing = CharacterCasing.Upper
         If Me.Columns(Me.CurrentCell.ColumnIndex).Name = "Rdr" Then
             tb.MaxLength = 1
+        ElseIf Me.Columns(Me.CurrentCell.ColumnIndex).Name = "Unt" Then
+            'イベントハンドラを削除、追加
+            RemoveHandler tb.KeyPress, AddressOf dgvTextBox_KeyPress
+            AddHandler tb.KeyPress, AddressOf dgvTextBox_KeyPress
+        End If
+    End Sub
+
+    Private Sub dgvTextBox_KeyPress(sender As Object, e As System.Windows.Forms.KeyPressEventArgs)
+        Dim text As String = CType(sender, DataGridViewTextBoxEditingControl).Text
+        Dim lengthByte As Integer = Encoding.GetEncoding("Shift_JIS").GetByteCount(text)
+        Dim limitLengthByte As Integer = 2
+
+        If lengthByte >= limitLengthByte Then '設定されているバイト数以上の時
+            If e.KeyChar = ChrW(Keys.Back) Then
+                'Backspaceは入力可能
+                e.Handled = False
+            Else
+                '入力できなくする
+                e.Handled = True
+            End If
         End If
     End Sub
 
