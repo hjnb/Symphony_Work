@@ -611,7 +611,7 @@ Public Class 勤務割
 
     Private Sub btnRowAdd_Click(sender As System.Object, e As System.EventArgs) Handles btnRowAdd.Click
         Dim selectedRowIndex As Integer = If(IsNothing(dgvWork.CurrentRow), -1, dgvWork.CurrentRow.Index)
-        If selectedRowIndex = -1 OrElse selectedRowIndex = 0 Then
+        If selectedRowIndex = -1 OrElse selectedRowIndex = 0 OrElse selectedRowIndex >= 51 Then
             Return
         ElseIf Not IsDBNull(workDt.Rows(INPUT_ROW_COUNT - 1).Item("Nam")) AndAlso workDt.Rows(INPUT_ROW_COUNT - 1).Item("Nam") <> "" Then
             MsgBox("行挿入できません。")
@@ -654,7 +654,7 @@ Public Class 勤務割
 
     Private Sub btnRowDelete_Click(sender As System.Object, e As System.EventArgs) Handles btnRowDelete.Click
         Dim selectedRowIndex As Integer = If(IsNothing(dgvWork.CurrentRow), -1, dgvWork.CurrentRow.Index)
-        If selectedRowIndex = -1 OrElse selectedRowIndex = 0 Then
+        If selectedRowIndex = -1 OrElse selectedRowIndex = 0 OrElse selectedRowIndex >= 51 Then
             Return
         Else
             '変更の行を選択してる場合は予定の行を選択しているindexとする
