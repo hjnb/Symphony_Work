@@ -117,12 +117,13 @@ Public Class workDataGridView
     Private Sub workDataGridView_EditingControlShowing(sender As Object, e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles Me.EditingControlShowing
         Dim tb As DataGridViewTextBoxEditingControl = CType(e.Control, DataGridViewTextBoxEditingControl)
         tb.CharacterCasing = CharacterCasing.Upper
+        RemoveHandler tb.KeyPress, AddressOf dgvTextBox_KeyPress
+
         If Me.Columns(Me.CurrentCell.ColumnIndex).Name = "Rdr" Then
             tb.MaxLength = 1
         ElseIf Me.Columns(Me.CurrentCell.ColumnIndex).Name = "Unt" Then
             tb.MaxLength = 1
             'イベントハンドラを削除、追加
-            RemoveHandler tb.KeyPress, AddressOf dgvTextBox_KeyPress
             AddHandler tb.KeyPress, AddressOf dgvTextBox_KeyPress
         End If
     End Sub
