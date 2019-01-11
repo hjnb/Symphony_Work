@@ -593,6 +593,18 @@ Public Class 勤務割
         Return False
     End Function
 
+    Private Function existsNoneDayCell(row As DataGridViewRow, ymStr As String) As Boolean
+        Dim year As Integer = CInt(ymStr.Split("/")(0))
+        Dim month As Integer = CInt(ymStr.Split("/")(1))
+        Dim daysInMonth As Integer = DateTime.DaysInMonth(year, month) '月の日数
+        For i As Integer = daysInMonth + 1 To 31
+            If Util.checkDBNullValue(row.Cells("Y" & i).Value) <> "" Then
+                Return True
+            End If
+        Next
+        Return False
+    End Function
+
     Private Sub subtotalClear()
         '小計列のクリア
         For i As Integer = 38 To 54
@@ -703,12 +715,14 @@ Public Class 勤務割
         Dim existsUnt As Boolean
         Dim existsNam As Boolean
         Dim existsWork As Boolean
+        Dim existsNoneDay As Boolean
 
         '登録チェック
         For i As Integer = 1 To 49 Step 2
             existsUnt = If(Util.checkDBNullValue(dgvWork("Unt", i).Value) <> "", True, False)
             existsNam = If(Util.checkDBNullValue(dgvWork("Nam", i).Value) <> "", True, False)
             existsWork = existsWorkStr(dgvWork.Rows(i))
+            existsNoneDay = existsNoneDayCell(dgvWork.Rows(i), ymStr)
 
             If (existsUnt AndAlso Not existsNam AndAlso existsWork) OrElse (Not existsUnt AndAlso Not existsNam AndAlso existsWork) Then
                 MsgBox("氏名の無い行に入力しています。", MsgBoxStyle.Exclamation, "Work")
@@ -721,7 +735,14 @@ Public Class 勤務割
                 cnn.Close()
                 Return
             Else
-                Continue For
+                If existsNoneDay Then
+                    MsgBox("曜日の無い列に入力しています。", MsgBoxStyle.Exclamation, "Work")
+                    rs.Close()
+                    cnn.Close()
+                    Return
+                Else
+                    Continue For
+                End If
             End If
         Next
 
