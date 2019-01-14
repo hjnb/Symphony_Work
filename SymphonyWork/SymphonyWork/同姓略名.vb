@@ -2,8 +2,14 @@
 
 Public Class 同姓略名
 
+    '選択年月
     Private selectedYmstr As String
 
+    ''' <summary>
+    ''' コンストラクタ
+    ''' </summary>
+    ''' <param name="ymStr">選択している年月(yyyy/MM)</param>
+    ''' <remarks></remarks>
     Public Sub New(ymStr As String)
         InitializeComponent()
         Me.StartPosition = FormStartPosition.CenterScreen
@@ -30,6 +36,12 @@ Public Class 同姓略名
 
     End Class
 
+    ''' <summary>
+    ''' Loadイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub 同姓略名_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         '設定
         settingComponent()
@@ -41,6 +53,10 @@ Public Class 同姓略名
         displayDgvNam()
     End Sub
 
+    ''' <summary>
+    ''' 氏名リスト表示
+    ''' </summary>
+    ''' <remarks></remarks>
     Private Sub displayNamList()
         Dim cnn As New ADODB.Connection
         cnn.Open(TopForm.DB_Work)
@@ -55,6 +71,10 @@ Public Class 同姓略名
         cnn.Close()
     End Sub
 
+    ''' <summary>
+    ''' 略名dgv表示
+    ''' </summary>
+    ''' <remarks></remarks>
     Private Sub displayDgvNam()
         dgvNam.DataSource = Nothing
         Dim cnn As New ADODB.Connection
@@ -86,6 +106,10 @@ Public Class 同姓略名
         dgvNam.CurrentCell = Nothing
     End Sub
 
+    ''' <summary>
+    ''' 各コンポーネント設定
+    ''' </summary>
+    ''' <remarks></remarks>
     Private Sub settingComponent()
         'リストボックス
         namList.BackColor = Color.FromKnownColor(KnownColor.Control) '背景色
@@ -118,10 +142,23 @@ Public Class 同姓略名
 
     End Sub
 
+    ''' <summary>
+    ''' 氏名リストクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub namList_MouseClick(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles namList.MouseClick
+        '氏名ラベルに選択した氏名を設定
         namLabel.Text = namList.SelectedItem
     End Sub
 
+    ''' <summary>
+    ''' dgvセルマウスクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub dgvNam_CellMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles dgvNam.CellMouseClick
         If e.RowIndex >= 0 Then
             namLabel.Text = dgvNam("Nam", e.RowIndex).Value
@@ -129,6 +166,12 @@ Public Class 同姓略名
         End If
     End Sub
 
+    ''' <summary>
+    ''' dgvCellPaintingイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub dgvNam_CellPainting(sender As Object, e As System.Windows.Forms.DataGridViewCellPaintingEventArgs) Handles dgvNam.CellPainting
         '行ヘッダーかどうか調べる
         If e.ColumnIndex < 0 AndAlso e.RowIndex >= 0 Then
@@ -151,6 +194,12 @@ Public Class 同姓略名
         End If
     End Sub
 
+    ''' <summary>
+    ''' 登録ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub btnRegist_Click(sender As System.Object, e As System.EventArgs) Handles btnRegist.Click
         Dim selectedNam As String = namLabel.Text
         Dim inputNam As String = abbreviationTextBox.Text
@@ -206,6 +255,12 @@ Public Class 同姓略名
 
     End Sub
 
+    ''' <summary>
+    ''' 削除ボタンイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub btnDelete_Click(sender As System.Object, e As System.EventArgs) Handles btnDelete.Click
         Dim selectedNam As String = namLabel.Text
         If selectedNam = "" Then

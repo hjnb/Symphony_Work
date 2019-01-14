@@ -3,8 +3,8 @@
 Public Class workDataGridView
     Inherits DataGridView
 
-    Private unitDictionary As Dictionary(Of String, String)
-    Private wordDictionary As Dictionary(Of String, String)
+    Private unitDictionary As Dictionary(Of String, String) 'ユニット名dic
+    Private wordDictionary As Dictionary(Of String, String) '勤務略名dic
 
     Protected Overrides Sub InitLayout()
         MyBase.InitLayout()
@@ -13,18 +13,20 @@ Public Class workDataGridView
     End Sub
 
     Protected Overrides Function ProcessDialogKey(keyData As System.Windows.Forms.Keys) As Boolean
-        Dim inputStr As String = If(Not IsNothing(Me.EditingControl), CType(Me.EditingControl, DataGridViewTextBoxEditingControl).Text, "")
-        Dim columnName As String = Me.Columns(CurrentCell.ColumnIndex).Name
+        Dim inputStr As String = If(Not IsNothing(Me.EditingControl), CType(Me.EditingControl, DataGridViewTextBoxEditingControl).Text, "") '入力文字
+        Dim columnName As String = Me.Columns(CurrentCell.ColumnIndex).Name '選択列名
         If keyData = Keys.Enter Then
             If columnName = "Unt" OrElse columnName = "Rdr" OrElse columnName = "Nam" Then
                 EndEdit()
                 Return False
-            ElseIf 7 <= Me.CurrentCell.ColumnIndex AndAlso Me.CurrentCell.ColumnIndex <= 37 Then
+            ElseIf 7 <= Me.CurrentCell.ColumnIndex AndAlso Me.CurrentCell.ColumnIndex <= 37 Then 'Y1～Y31列
                 If inputStr = "" OrElse ("A" <= inputStr.Substring(0, 1) AndAlso inputStr.Substring(0, 1) <= "T") Then
+                    '入力文字が空またはアルファベット"A"～"T"の場合
                     Return Me.ProcessTabKey(keyData)
                 Else
-                    'Y1～Y31列の編集終了時の処理、値の変換処理をする
+                    '編集終了時に値の変換処理をする
                     Try
+                        '入力文字に対応する勤務略名を選択しているセルに設定
                         CType(Me.EditingControl, DataGridViewTextBoxEditingControl).Text = wordDictionary(inputStr)
                     Catch ex As KeyNotFoundException
                         MsgBox("正しく入力して下さい。", MsgBoxStyle.Exclamation)
@@ -50,9 +52,34 @@ Public Class workDataGridView
     End Function
 
     Protected Overrides Function ProcessDataGridViewKey(e As System.Windows.Forms.KeyEventArgs) As Boolean
+        Dim inputStr As String = Util.checkDBNullValue(Me.CurrentCell.Value)
         If e.KeyCode = Keys.Enter Then
+            If Me.CurrentCell.RowIndex <= 0 OrElse 51 <= Me.CurrentCell.RowIndex Then
+                Return Me.ProcessTabKey(e.KeyCode)
+            End If
+
             Dim columnName As String = Me.Columns(CurrentCell.ColumnIndex).Name
             If columnName = "Unt" OrElse columnName = "Rdr" OrElse columnName = "Nam" Then
+                BeginEdit(True)
+                Return False
+            ElseIf 7 <= Me.CurrentCell.ColumnIndex AndAlso Me.CurrentCell.ColumnIndex <= 37 Then 'Y1～Y31列
+                If inputStr = "" OrElse ("A" <= inputStr.Substring(0, 1) AndAlso inputStr.Substring(0, 1) <= "T") Then
+                    '入力文字が空またはアルファベット"A"～"T"の場合
+                    Me.ProcessTabKey(e.KeyCode)
+                    BeginEdit(True)
+                    Return False
+                Else
+                    '編集終了時に値の変換処理をする
+                    Try
+                        '入力文字に対応する勤務略名を選択しているセルに設定
+                        Me.CurrentCell.Value = wordDictionary(inputStr)
+                    Catch ex As KeyNotFoundException
+                        MsgBox("正しく入力して下さい。", MsgBoxStyle.Exclamation)
+                        EndEdit()
+                        Return False
+                    End Try
+                End If
+                Me.ProcessTabKey(e.KeyCode)
                 BeginEdit(True)
                 Return False
             Else
@@ -70,6 +97,12 @@ Public Class workDataGridView
         End If
     End Function
 
+    ''' <summary>
+    ''' セル編集終了時イベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub workDataGridView_CellEndEdit(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles Me.CellEndEdit
         Dim inputStr As String = If(IsDBNull(Me(e.ColumnIndex, e.RowIndex).Value), "", Me(e.ColumnIndex, e.RowIndex).Value)
         If Me.Columns(e.ColumnIndex).Name = "Unt" Then
@@ -81,13 +114,22 @@ Public Class workDataGridView
             End Try
         ElseIf Me.Columns(e.ColumnIndex).Name = "Rdr" Then
             If inputStr <> "" AndAlso Not ("A" <= inputStr.Substring(0, 1) AndAlso inputStr.Substring(0, 1) <= "Z") Then
+                'R列への入力がA～Z以外の場合は空文字セット
                 Me(e.ColumnIndex, e.RowIndex).Value = ""
             End If
         End If
     End Sub
 
+    ''' <summary>
+    ''' セルエンターイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub workDataGridView_CellEnter(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles Me.CellEnter
-        Dim columnName As String = Me.Columns(e.ColumnIndex).Name
+        Dim columnName As String = Me.Columns(e.ColumnIndex).Name '選択列名
+
+        '選択列によってIMEの設定
         If columnName = "Unt" Then
             Me.ImeMode = Windows.Forms.ImeMode.Hiragana
         ElseIf columnName = "Rdr" Then
@@ -99,6 +141,12 @@ Public Class workDataGridView
         End If
     End Sub
 
+    ''' <summary>
+    ''' CellPaintingイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub ExDataGridView_CellPainting(sender As Object, e As System.Windows.Forms.DataGridViewCellPaintingEventArgs) Handles Me.CellPainting
         '選択したセルに枠を付ける
         If e.ColumnIndex >= 0 AndAlso e.RowIndex >= 0 AndAlso (e.PaintParts And DataGridViewPaintParts.Background) = DataGridViewPaintParts.Background Then
@@ -114,9 +162,15 @@ Public Class workDataGridView
         End If
     End Sub
 
+    ''' <summary>
+    ''' セル編集時に表示されるテキストボックスイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub workDataGridView_EditingControlShowing(sender As Object, e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles Me.EditingControlShowing
         Dim tb As DataGridViewTextBoxEditingControl = CType(e.Control, DataGridViewTextBoxEditingControl)
-        tb.CharacterCasing = CharacterCasing.Upper
+        tb.CharacterCasing = CharacterCasing.Upper '入力される文字を大文字に
         RemoveHandler tb.KeyPress, AddressOf dgvTextBox_KeyPress
 
         If Me.Columns(Me.CurrentCell.ColumnIndex).Name = "Rdr" Then
@@ -128,6 +182,12 @@ Public Class workDataGridView
         End If
     End Sub
 
+    ''' <summary>
+    ''' セル編集用keyPress処理
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub dgvTextBox_KeyPress(sender As Object, e As System.Windows.Forms.KeyPressEventArgs)
         Dim text As String = CType(sender, DataGridViewTextBoxEditingControl).Text
         Dim lengthByte As Integer = Encoding.GetEncoding("Shift_JIS").GetByteCount(text)
@@ -144,10 +204,20 @@ Public Class workDataGridView
         End If
     End Sub
 
+    ''' <summary>
+    ''' ユニット名dicセット
+    ''' </summary>
+    ''' <param name="unitDictionary"></param>
+    ''' <remarks></remarks>
     Public Sub setUnitDictionary(unitDictionary As Dictionary(Of String, String))
         Me.unitDictionary = unitDictionary
     End Sub
 
+    ''' <summary>
+    ''' 勤務略名dicセット
+    ''' </summary>
+    ''' <param name="wordDictionary"></param>
+    ''' <remarks></remarks>
     Public Sub setWordDictionary(wordDictionary As Dictionary(Of String, String))
         Me.wordDictionary = wordDictionary
     End Sub
