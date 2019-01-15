@@ -163,6 +163,25 @@ Public Class workDataGridView
     End Sub
 
     ''' <summary>
+    ''' 列ヘッダーマウスクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub workDataGridView_ColumnHeaderMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles Me.ColumnHeaderMouseClick
+        '選択列を全選択
+        For Each row As DataGridViewRow In Me.Rows
+            For i As Integer = 0 To Me.Columns.Count - 1
+                If i = e.ColumnIndex Then
+                    row.Cells(i).Selected = True
+                Else
+                    row.Cells(i).Selected = False
+                End If
+            Next
+        Next
+    End Sub
+
+    ''' <summary>
     ''' セル編集時に表示されるテキストボックスイベント
     ''' </summary>
     ''' <param name="sender"></param>

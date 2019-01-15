@@ -1220,11 +1220,12 @@ Public Class 勤務割
             While Not rs.EOF
                 'ユニット
                 unit = Util.checkDBNullValue(rs.Fields("Unt").Value)
-                '「※」以外のユニット名に変わる毎に罫線を設定
-                If unit = "※" Then
-                    osheet.range("B" & index).value = unit
-                ElseIf unit = unitTmp Then
-                    osheet.range("B" & index).value = ""
+                If unit = unitTmp Then
+                    If unit = "※" Then
+                        osheet.range("B" & index).value = unit
+                    Else
+                        osheet.range("B" & index).value = ""
+                    End If
                 Else
                     osheet.range("B" & index).value = unit
                     unitTmp = unit
@@ -1384,13 +1385,14 @@ Public Class 勤務割
             While Not rs.EOF
                 'ユニット
                 unit = Util.checkDBNullValue(rs.Fields("Unt").Value)
-                '「※」以外のユニット名に変わる毎に罫線を設定
                 If type = "非常勤" Then
                     osheet.range("B" & index).value = unit
-                ElseIf unit = "※" Then
-                    osheet.range("B" & index).value = unit
                 ElseIf unit = unitTmp Then
-                    osheet.range("B" & index).value = ""
+                    If unit = "※" Then
+                        osheet.range("B" & index).value = unit
+                    Else
+                        osheet.range("B" & index).value = ""
+                    End If
                 Else
                     osheet.range("B" & index).value = unit
                     unitTmp = unit
