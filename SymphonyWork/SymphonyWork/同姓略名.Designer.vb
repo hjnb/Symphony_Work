@@ -25,7 +25,7 @@ Partial Class 同姓略名
         Me.Label1 = New System.Windows.Forms.Label()
         Me.abbreviationTextBox = New System.Windows.Forms.TextBox()
         Me.btnRegist = New System.Windows.Forms.Button()
-        Me.Button1 = New System.Windows.Forms.Button()
+        Me.btnDelete = New System.Windows.Forms.Button()
         Me.dgvNam = New System.Windows.Forms.DataGridView()
         Me.namList = New System.Windows.Forms.ListBox()
         Me.namLabel = New System.Windows.Forms.Label()
@@ -57,14 +57,14 @@ Partial Class 同姓略名
         Me.btnRegist.Text = "登録"
         Me.btnRegist.UseVisualStyleBackColor = True
         '
-        'Button1
+        'btnDelete
         '
-        Me.Button1.Location = New System.Drawing.Point(253, 45)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(41, 23)
-        Me.Button1.TabIndex = 3
-        Me.Button1.Text = "削除"
-        Me.Button1.UseVisualStyleBackColor = True
+        Me.btnDelete.Location = New System.Drawing.Point(253, 45)
+        Me.btnDelete.Name = "btnDelete"
+        Me.btnDelete.Size = New System.Drawing.Size(41, 23)
+        Me.btnDelete.TabIndex = 3
+        Me.btnDelete.Text = "削除"
+        Me.btnDelete.UseVisualStyleBackColor = True
         '
         'dgvNam
         '
@@ -102,7 +102,7 @@ Partial Class 同姓略名
         Me.Controls.Add(Me.namLabel)
         Me.Controls.Add(Me.namList)
         Me.Controls.Add(Me.dgvNam)
-        Me.Controls.Add(Me.Button1)
+        Me.Controls.Add(Me.btnDelete)
         Me.Controls.Add(Me.btnRegist)
         Me.Controls.Add(Me.abbreviationTextBox)
         Me.Controls.Add(Me.Label1)
@@ -116,7 +116,7 @@ Partial Class 同姓略名
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents abbreviationTextBox As System.Windows.Forms.TextBox
     Friend WithEvents btnRegist As System.Windows.Forms.Button
-    Friend WithEvents Button1 As System.Windows.Forms.Button
+    Friend WithEvents btnDelete As System.Windows.Forms.Button
     Friend WithEvents dgvNam As System.Windows.Forms.DataGridView
     Friend WithEvents namList As System.Windows.Forms.ListBox
     Friend WithEvents namLabel As System.Windows.Forms.Label

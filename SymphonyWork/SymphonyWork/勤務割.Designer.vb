@@ -342,10 +342,10 @@ Partial Class 勤務割
         '
         Me.ymBox.boxType = 5
         Me.ymBox.DateText = ""
-        Me.ymBox.EraLabelText = "H30"
+        Me.ymBox.EraLabelText = "H31"
         Me.ymBox.EraText = ""
         Me.ymBox.Location = New System.Drawing.Point(41, 9)
-        Me.ymBox.MonthLabelText = "12"
+        Me.ymBox.MonthLabelText = "01"
         Me.ymBox.MonthText = ""
         Me.ymBox.Name = "ymBox"
         Me.ymBox.Size = New System.Drawing.Size(95, 40)
@@ -405,7 +405,7 @@ Partial Class 勤務割
         Me.Controls.Add(Me.rbtn2F)
         Me.Controls.Add(Me.rbtn3F)
         Me.Name = "勤務割"
-        Me.Text = "workForm"
+        Me.Text = "勤務割"
         Me.wordPanel.ResumeLayout(False)
         Me.wordPanel.PerformLayout()
         CType(Me.dgvWork, System.ComponentModel.ISupportInitialize).EndInit()
