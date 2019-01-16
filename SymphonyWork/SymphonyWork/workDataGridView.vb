@@ -20,7 +20,7 @@ Public Class workDataGridView
                 EndEdit()
                 Return False
             ElseIf 7 <= Me.CurrentCell.ColumnIndex AndAlso Me.CurrentCell.ColumnIndex <= 37 Then 'Y1～Y31列
-                If inputStr = "" OrElse ("A" <= inputStr.Substring(0, 1) AndAlso inputStr.Substring(0, 1) <= "T") Then
+                If inputStr = "" OrElse ("A" <= StrConv(inputStr.Substring(0, 1), VbStrConv.Narrow) AndAlso StrConv(inputStr.Substring(0, 1), vbNarrow) <= "T") Then
                     '入力文字が空またはアルファベット"A"～"T"の場合
                     Return Me.ProcessTabKey(keyData)
                 Else
@@ -29,7 +29,7 @@ Public Class workDataGridView
                         '入力文字に対応する勤務略名を選択しているセルに設定
                         CType(Me.EditingControl, DataGridViewTextBoxEditingControl).Text = wordDictionary(inputStr)
                     Catch ex As KeyNotFoundException
-                        MsgBox("正しく入力して下さい。", MsgBoxStyle.Exclamation)
+                        MsgBox("正しく入力して下さい。", MsgBoxStyle.Exclamation, "Work")
                         EndEdit()
                         Return False
                     End Try
@@ -63,7 +63,7 @@ Public Class workDataGridView
                 BeginEdit(True)
                 Return False
             ElseIf 7 <= Me.CurrentCell.ColumnIndex AndAlso Me.CurrentCell.ColumnIndex <= 37 Then 'Y1～Y31列
-                If inputStr = "" OrElse ("A" <= inputStr.Substring(0, 1) AndAlso inputStr.Substring(0, 1) <= "T") Then
+                If inputStr = "" OrElse ("A" <= StrConv(inputStr.Substring(0, 1), VbStrConv.Narrow) AndAlso StrConv(inputStr.Substring(0, 1), VbStrConv.Narrow) <= "T") Then
                     '入力文字が空またはアルファベット"A"～"T"の場合
                     Me.ProcessTabKey(e.KeyCode)
                     BeginEdit(True)
@@ -74,8 +74,8 @@ Public Class workDataGridView
                         '入力文字に対応する勤務略名を選択しているセルに設定
                         Me.CurrentCell.Value = wordDictionary(inputStr)
                     Catch ex As KeyNotFoundException
-                        MsgBox("正しく入力して下さい。", MsgBoxStyle.Exclamation)
-                        EndEdit()
+                        MsgBox("正しく入力して下さい。", MsgBoxStyle.Exclamation, "Work")
+                        BeginEdit(True)
                         Return False
                     End Try
                 End If

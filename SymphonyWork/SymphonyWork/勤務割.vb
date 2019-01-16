@@ -628,6 +628,16 @@ Public Class 勤務割
             End If
         Else
             '表示処理
+            '現在日付が見えるようにスクロール
+            Dim todayDate As Integer = Today.Day
+            If todayDate >= 24 Then
+                dgvWork.FirstDisplayedScrollingColumnIndex = 21
+            ElseIf 10 <= todayDate AndAlso todayDate <= 23 Then
+                dgvWork.FirstDisplayedScrollingColumnIndex = todayDate - 2
+            Else
+                dgvWork.FirstDisplayedScrollingColumnIndex = 7
+            End If
+
             Dim rowIndex As Integer = 1
             While Not rs.EOF
                 '予定行の値設定
