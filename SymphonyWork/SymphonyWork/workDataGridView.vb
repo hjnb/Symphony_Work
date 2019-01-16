@@ -210,7 +210,7 @@ Public Class workDataGridView
     Private Sub dgvTextBox_KeyPress(sender As Object, e As System.Windows.Forms.KeyPressEventArgs)
         Dim text As String = CType(sender, DataGridViewTextBoxEditingControl).Text
         Dim lengthByte As Integer = Encoding.GetEncoding("Shift_JIS").GetByteCount(text)
-        Dim limitLengthByte As Integer = 2
+        Dim limitLengthByte As Integer = 4
 
         If lengthByte >= limitLengthByte Then '設定されているバイト数以上の時
             If e.KeyChar = ChrW(Keys.Back) Then
