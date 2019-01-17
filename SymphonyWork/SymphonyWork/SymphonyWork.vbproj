@@ -145,6 +145,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CSV作成.resx">
+      <DependentUpon>CSV作成.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="passwordForm.resx">
       <DependentUpon>passwordForm.vb</DependentUpon>
     </EmbeddedResource>
