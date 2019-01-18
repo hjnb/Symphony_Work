@@ -28,6 +28,8 @@ Partial Class TopForm
         Me.btnArrangementDB = New System.Windows.Forms.Button()
         Me.rbtnPreview = New System.Windows.Forms.RadioButton()
         Me.rbtnPrintout = New System.Windows.Forms.RadioButton()
+        Me.topPicture = New System.Windows.Forms.PictureBox()
+        CType(Me.topPicture, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'btnWork
@@ -98,11 +100,20 @@ Partial Class TopForm
         Me.rbtnPrintout.Text = "印刷"
         Me.rbtnPrintout.UseVisualStyleBackColor = True
         '
+        'topPicture
+        '
+        Me.topPicture.Location = New System.Drawing.Point(611, 42)
+        Me.topPicture.Name = "topPicture"
+        Me.topPicture.Size = New System.Drawing.Size(115, 106)
+        Me.topPicture.TabIndex = 6
+        Me.topPicture.TabStop = False
+        '
         'TopForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(936, 654)
+        Me.Controls.Add(Me.topPicture)
         Me.Controls.Add(Me.rbtnPrintout)
         Me.Controls.Add(Me.rbtnPreview)
         Me.Controls.Add(Me.btnArrangementDB)
@@ -111,6 +122,7 @@ Partial Class TopForm
         Me.Controls.Add(Me.btnWork)
         Me.Name = "TopForm"
         Me.Text = "Work 特養勤務割"
+        CType(Me.topPicture, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -121,5 +133,6 @@ Partial Class TopForm
     Friend WithEvents btnArrangementDB As System.Windows.Forms.Button
     Friend WithEvents rbtnPreview As System.Windows.Forms.RadioButton
     Friend WithEvents rbtnPrintout As System.Windows.Forms.RadioButton
+    Friend WithEvents topPicture As System.Windows.Forms.PictureBox
 
 End Class
