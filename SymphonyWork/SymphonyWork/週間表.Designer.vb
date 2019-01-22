@@ -113,7 +113,7 @@ Partial Class 週間表
         Me.DataGridView1.Location = New System.Drawing.Point(12, 43)
         Me.DataGridView1.Name = "DataGridView1"
         Me.DataGridView1.RowTemplate.Height = 21
-        Me.DataGridView1.Size = New System.Drawing.Size(1118, 588)
+        Me.DataGridView1.Size = New System.Drawing.Size(1174, 588)
         Me.DataGridView1.TabIndex = 5
         '
         'DataGridView2
@@ -123,7 +123,7 @@ Partial Class 週間表
         Me.DataGridView2.Location = New System.Drawing.Point(42, 630)
         Me.DataGridView2.Name = "DataGridView2"
         Me.DataGridView2.RowTemplate.Height = 21
-        Me.DataGridView2.Size = New System.Drawing.Size(1088, 108)
+        Me.DataGridView2.Size = New System.Drawing.Size(1144, 108)
         Me.DataGridView2.TabIndex = 6
         '
         'btnTouroku
@@ -172,7 +172,7 @@ Partial Class 週間表
         Me.Label52.ForeColor = System.Drawing.Color.RoyalBlue
         Me.Label52.Location = New System.Drawing.Point(12, 74)
         Me.Label52.Name = "Label52"
-        Me.Label52.Size = New System.Drawing.Size(1118, 2)
+        Me.Label52.Size = New System.Drawing.Size(1174, 2)
         Me.Label52.TabIndex = 398
         '
         'Label1
@@ -181,7 +181,7 @@ Partial Class 週間表
         Me.Label1.ForeColor = System.Drawing.Color.RoyalBlue
         Me.Label1.Location = New System.Drawing.Point(12, 103)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(1118, 2)
+        Me.Label1.Size = New System.Drawing.Size(1174, 2)
         Me.Label1.TabIndex = 399
         '
         'Label2
@@ -190,7 +190,7 @@ Partial Class 週間表
         Me.Label2.ForeColor = System.Drawing.Color.RoyalBlue
         Me.Label2.Location = New System.Drawing.Point(12, 134)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(1118, 2)
+        Me.Label2.Size = New System.Drawing.Size(1174, 2)
         Me.Label2.TabIndex = 400
         '
         'Label3
@@ -199,7 +199,7 @@ Partial Class 週間表
         Me.Label3.ForeColor = System.Drawing.Color.RoyalBlue
         Me.Label3.Location = New System.Drawing.Point(12, 149)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(1118, 2)
+        Me.Label3.Size = New System.Drawing.Size(1174, 2)
         Me.Label3.TabIndex = 401
         '
         'Label4
@@ -208,7 +208,7 @@ Partial Class 週間表
         Me.Label4.ForeColor = System.Drawing.Color.RoyalBlue
         Me.Label4.Location = New System.Drawing.Point(12, 223)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(1118, 2)
+        Me.Label4.Size = New System.Drawing.Size(1174, 2)
         Me.Label4.TabIndex = 402
         '
         'Label5
@@ -217,7 +217,7 @@ Partial Class 週間表
         Me.Label5.ForeColor = System.Drawing.Color.RoyalBlue
         Me.Label5.Location = New System.Drawing.Point(12, 298)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(1118, 2)
+        Me.Label5.Size = New System.Drawing.Size(1174, 2)
         Me.Label5.TabIndex = 403
         '
         'Label6
@@ -226,7 +226,7 @@ Partial Class 週間表
         Me.Label6.ForeColor = System.Drawing.Color.RoyalBlue
         Me.Label6.Location = New System.Drawing.Point(12, 373)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(1118, 2)
+        Me.Label6.Size = New System.Drawing.Size(1174, 2)
         Me.Label6.TabIndex = 404
         '
         'Label7
@@ -235,7 +235,7 @@ Partial Class 週間表
         Me.Label7.ForeColor = System.Drawing.Color.RoyalBlue
         Me.Label7.Location = New System.Drawing.Point(12, 403)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(1118, 2)
+        Me.Label7.Size = New System.Drawing.Size(1174, 2)
         Me.Label7.TabIndex = 405
         '
         'Label8
@@ -244,7 +244,7 @@ Partial Class 週間表
         Me.Label8.ForeColor = System.Drawing.Color.RoyalBlue
         Me.Label8.Location = New System.Drawing.Point(12, 478)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(1118, 2)
+        Me.Label8.Size = New System.Drawing.Size(1174, 2)
         Me.Label8.TabIndex = 406
         '
         'Label9
@@ -253,7 +253,7 @@ Partial Class 週間表
         Me.Label9.ForeColor = System.Drawing.Color.RoyalBlue
         Me.Label9.Location = New System.Drawing.Point(12, 554)
         Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(1118, 2)
+        Me.Label9.Size = New System.Drawing.Size(1174, 2)
         Me.Label9.TabIndex = 407
         '
         'Label10
@@ -269,7 +269,7 @@ Partial Class 週間表
         '
         Me.Label11.BackColor = System.Drawing.SystemColors.HotTrack
         Me.Label11.ForeColor = System.Drawing.Color.RoyalBlue
-        Me.Label11.Location = New System.Drawing.Point(197, 43)
+        Me.Label11.Location = New System.Drawing.Point(205, 43)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(2, 588)
         Me.Label11.TabIndex = 409
@@ -278,7 +278,7 @@ Partial Class 週間表
         '
         Me.Label12.BackColor = System.Drawing.SystemColors.HotTrack
         Me.Label12.ForeColor = System.Drawing.Color.RoyalBlue
-        Me.Label12.Location = New System.Drawing.Point(352, 43)
+        Me.Label12.Location = New System.Drawing.Point(368, 43)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(2, 588)
         Me.Label12.TabIndex = 410
@@ -287,7 +287,7 @@ Partial Class 週間表
         '
         Me.Label13.BackColor = System.Drawing.SystemColors.HotTrack
         Me.Label13.ForeColor = System.Drawing.Color.RoyalBlue
-        Me.Label13.Location = New System.Drawing.Point(507, 43)
+        Me.Label13.Location = New System.Drawing.Point(531, 43)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(2, 588)
         Me.Label13.TabIndex = 411
@@ -296,7 +296,7 @@ Partial Class 週間表
         '
         Me.Label14.BackColor = System.Drawing.SystemColors.HotTrack
         Me.Label14.ForeColor = System.Drawing.Color.RoyalBlue
-        Me.Label14.Location = New System.Drawing.Point(662, 43)
+        Me.Label14.Location = New System.Drawing.Point(694, 43)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(2, 588)
         Me.Label14.TabIndex = 412
@@ -305,7 +305,7 @@ Partial Class 週間表
         '
         Me.Label15.BackColor = System.Drawing.SystemColors.HotTrack
         Me.Label15.ForeColor = System.Drawing.Color.RoyalBlue
-        Me.Label15.Location = New System.Drawing.Point(817, 43)
+        Me.Label15.Location = New System.Drawing.Point(858, 43)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(2, 588)
         Me.Label15.TabIndex = 413
@@ -314,7 +314,7 @@ Partial Class 週間表
         '
         Me.Label16.BackColor = System.Drawing.SystemColors.HotTrack
         Me.Label16.ForeColor = System.Drawing.Color.RoyalBlue
-        Me.Label16.Location = New System.Drawing.Point(972, 43)
+        Me.Label16.Location = New System.Drawing.Point(1020, 43)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(2, 588)
         Me.Label16.TabIndex = 414

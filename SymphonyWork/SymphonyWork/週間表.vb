@@ -10,7 +10,7 @@ Public Class 週間表
     Private pinkCellStyle As DataGridViewCellStyle
     Private Const HEISEI_Str As String = "H"
     Private Const NEXT_WAREKI As String = "X"
-    Public cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, cra40, cra41, cra42, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39, crb40, crb41, crb42 As Integer
+    Public cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, cra40, cra41, cra42, cra43, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39, crb40, crb41, crb42, crb43 As Integer
 
     Private Sub MadeStyle()
         '文字の大きさ指定
@@ -38,7 +38,6 @@ Public Class 週間表
         pinkCellStyle.Font = New Font("MS UI Gothic", 8)
         pinkCellStyle.BackColor = Color.FromArgb(255, 192, 255)
         pinkCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-
     End Sub
 
     Private Sub 週間表_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
@@ -103,7 +102,7 @@ Public Class 週間表
             ElseIf c = 1 OrElse c = 5 OrElse c = 9 OrElse c = 13 OrElse c = 17 OrElse c = 21 OrElse c = 25 Then
                 DataGridView1.Columns(c).Width = 28
             ElseIf c = 3 OrElse c = 7 OrElse c = 11 OrElse c = 15 OrElse c = 19 OrElse c = 23 OrElse c = 27 Then
-                DataGridView1.Columns(c).Width = 17
+                DataGridView1.Columns(c).Width = 25
             End If
         Next
 
@@ -148,7 +147,7 @@ Public Class 週間表
 
         'DataGridView2の列の設定
         For c As Integer = 0 To 6
-            DataGridView2.Columns(c).Width = 155
+            DataGridView2.Columns(c).Width = 163
         Next
 
         'DataGridView2の行の設定
@@ -331,7 +330,6 @@ Public Class 週間表
             DGV1Table.Columns.Add("a" & i, Type.GetType("System.String"))
         Next
 
-
         If rbn2F.Checked = True Then    '2階の情報を表示
             Label52.Location = New Point(12, 74)
             Label1.Location = New Point(12, 103)
@@ -349,7 +347,7 @@ Public Class 週間表
             Next
 
             DataGridView1.Location = New Point(12, 43)
-            DataGridView1.Size = New Size(1118, 588)
+            DataGridView1.Size = New Size(1174, 588)
             DataGridView2.Location = New Point(42, 630)
 
             'DataGridView1行作成
@@ -372,7 +370,7 @@ Public Class 週間表
             Next
 
             DataGridView1.Location = New Point(12, 43)
-            DataGridView1.Size = New Size(1118, 605)
+            DataGridView1.Size = New Size(1174, 605)
             DataGridView2.Location = New Point(42, 647)
 
             'DataGridView1行作成
@@ -396,7 +394,7 @@ Public Class 週間表
             ElseIf c = 1 OrElse c = 5 OrElse c = 9 OrElse c = 13 OrElse c = 17 OrElse c = 21 OrElse c = 25 Then
                 DataGridView1.Columns(c).Width = 28
             ElseIf c = 3 OrElse c = 7 OrElse c = 11 OrElse c = 15 OrElse c = 19 OrElse c = 23 OrElse c = 27 Then
-                DataGridView1.Columns(c).Width = 17
+                DataGridView1.Columns(c).Width = 25
             End If
         Next
 
@@ -476,19 +474,7 @@ Public Class 週間表
                     DataGridView1(i * 4 + 1, r * 5 + 23).Style = cellStyle2
                 Next
             Next
-            'DataGridView1(0, 2).Value = "午前"
-            'DataGridView1(0, 4).Value = "午後"
-            'DataGridView1(0, 8).Value = "森"
-            'DataGridView1(0, 11).Value = "ﾊﾟｰﾄ"
-            'DataGridView1(0, 13).Value = "星"
-            'DataGridView1(0, 16).Value = "ﾊﾟｰﾄ"
-            'DataGridView1(0, 18).Value = "空"
-            'DataGridView1(0, 21).Value = "ﾊﾟｰﾄ"
-            'DataGridView1(0, 22).Value = "夜勤"
-            'DataGridView1(0, 23).Value = "深夜"
-            'DataGridView1(0, 26).Value = "森"
-            'DataGridView1(0, 31).Value = "星"
-            'DataGridView1(0, 36).Value = "空"
+            
             Dim Moji As String() = {"午前", "午後", "森", "ﾊﾟｰﾄ", "星", "ﾊﾟｰﾄ", "空", "ﾊﾟｰﾄ", "夜勤", "深夜", "森", "星", "空"}
             Dim Gyo As Integer() = {2, 4, 8, 11, 13, 16, 18, 21, 22, 23, 26, 31, 36}
 
@@ -503,7 +489,6 @@ Public Class 週間表
                 DataGridView1(col, 24).Style = whiteCellStyle
                 DataGridView1(col, 24).ReadOnly = False
             Next
-               
 
             '各セルの固定値部分の設定
             Dim Youbi() As String = {"日", "月", "火", "水", "木", "金", "土"}
@@ -547,20 +532,6 @@ Public Class 週間表
                 Next
             Next
 
-            'DataGridView1(0, 2).Value = "午前"
-            'DataGridView1(0, 4).Value = "午後"
-            'DataGridView1(0, 9).Value = "月"
-            'DataGridView1(0, 11).Value = "ﾊﾟｰﾄ"
-            'DataGridView1(0, 14).Value = "花"
-            'DataGridView1(0, 16).Value = "ﾊﾟｰﾄ"
-            'DataGridView1(0, 19).Value = "海"
-            'DataGridView1(0, 21).Value = "ﾊﾟｰﾄ"
-            'DataGridView1(0, 22).Value = "ﾊﾟｰﾄ"
-            'DataGridView1(0, 23).Value = "夜勤"
-            'DataGridView1(0, 24).Value = "深夜"
-            'DataGridView1(0, 28).Value = "月"
-            'DataGridView1(0, 35).Value = "花"
-            'DataGridView1(0, 40).Value = "海"
             Dim Moji As String() = {"午前", "午後", "月", "ﾊﾟｰﾄ", "花", "ﾊﾟｰﾄ", "海", "ﾊﾟｰﾄ", "ﾊﾟｰﾄ", "夜勤", "深夜", "月", "花", "海"}
             Dim Gyo As Integer() = {2, 4, 9, 11, 14, 16, 19, 21, 22, 23, 24, 28, 35, 40}
 
@@ -569,7 +540,6 @@ Public Class 週間表
                 DataGridView1(0, Gyo(n)).Value = Moji(n)
             Next
 
-            
         End If
 
         '2階と3階で共通の部分
@@ -621,6 +591,8 @@ Public Class 週間表
     End Sub
 
     Private Sub DataClear()
+        DataGridView1.CurrentCell = DataGridView1(0, 0)
+
         If rbn2F.Checked = True Then
             For column As Integer = 1 To 28
                 If column Mod 2 = 0 Then    '偶数列
@@ -658,7 +630,7 @@ Public Class 週間表
                 End If
             Next
         End If
-        
+
 
         For c2 As Integer = 0 To 6
             For r2 As Integer = 0 To 6
@@ -916,20 +888,17 @@ Public Class 週間表
         Dim cnn As New ADODB.Connection
         cnn.Open(TopForm.DB_Work)
         Dim Honjitu As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
-        'データ削除
+
         Dim DelYmd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         Dim DelYmdAdd7 As Date = DelYmd.AddDays(6)
         Dim SQL As String = ""
-        If rbn2F.Checked = True Then
-            SQL = "DELETE FROM SHyo WHERE #" & DelYmd & "# <= Ymd and Ymd <= #" & DelYmdAdd7 & "#"
-        ElseIf rbn3F.Checked = True Then
-            SQL = "DELETE FROM SHyo3 WHERE #" & DelYmd & "# <= Ymd and Ymd <= #" & DelYmdAdd7 & "#"
-        End If
-        cnn.Execute(SQL)
-        'データ登録
+
+        'データ変更
         If rbn2F.Checked = True Then    '2階の登録
+            SQL = "DELETE FROM SHyo WHERE #" & DelYmd & "# <= Ymd and Ymd <= #" & DelYmdAdd7 & "#"
+            cnn.Execute(SQL)
+
             Dim ymd, nyuam1, nyuam2, nyupm1, nyupm2, tyaam1, tyaam2, tyapm1, tyapm2, moram1, moram2, moram3, moram4, morampk, moramp, morpm1, morpm2, morpm3, morpm4, morpmpk, morpmp, hosam1, hosam2, hosam3, hosam4, hosampk, hosamp, hospm1, hospm2, hospm3, hospm4, hospmpk, hospmp, soram1, soram2, soram3, soram4, sorampk, soramp, sorpm1, sorpm2, sorpm3, sorpm4, sorpmpk, sorpmp, yak1k, yak1, yak2k, yak2, sin1k, sin1, sin2k, sin2, gyo1, gyo2, gyo3, gyo4, gyo5, gyo6, gyo7, mora1, mora2, mora3, mora4, morh1, morh2, morh3, morh4, mory1, mory2, hosa1, hosa2, hosa3, hosa4, hosh1, hosh2, hosh3, hosh4, hosy1, hosy2, sora1, sora2, sora3, sora4, sorh1, sorh2, sorh3, sorh4, sory1, sory2 As String
-            'Dim cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39 As Integer
 
             For dd As Integer = 0 To 6
                 If dd = 0 Then
@@ -1044,12 +1013,13 @@ Public Class 週間表
                 Next
 
                 SQL = "INSERT INTO SHyo VALUES ('" & ymd & "', '" & nyuam1 & "', '" & nyuam2 & "', '" & nyupm1 & "', '" & nyupm2 & "', '" & tyaam1 & "', '" & tyaam2 & "', '" & tyapm1 & "', '" & tyapm2 & "', '" & moram1 & "', '" & moram2 & "', '" & moram3 & "', '" & moram4 & "', '" & morampk & "', '" & moramp & "', '" & morpm1 & "', '" & morpm2 & "', '" & morpm3 & "', '" & morpm4 & "', '" & morpmpk & "', '" & morpmp & "', '" & hosam1 & "', '" & hosam2 & "', '" & hosam3 & "', '" & hosam4 & "', '" & hosampk & "', '" & hosamp & "', '" & hospm1 & "', '" & hospm2 & "', '" & hospm3 & "', '" & hospm4 & "', '" & hospmpk & "', '" & hospmp & "', '" & soram1 & "', '" & soram2 & "', '" & soram3 & "', '" & soram4 & "', '" & sorampk & "', '" & soramp & "', '" & sorpm1 & "', '" & sorpm2 & "', '" & sorpm3 & "', '" & sorpm4 & "', '" & sorpmpk & "', '" & sorpmp & "', '" & yak1k & "', '" & yak1 & "', '" & yak2k & "', '" & yak2 & "', '" & sin1k & "', '" & sin1 & "', '" & sin2k & "', '" & sin2 & "', '" & gyo1 & "', '" & gyo2 & "', '" & gyo3 & "', '" & gyo4 & "', '" & gyo5 & "', '" & gyo6 & "', '" & gyo7 & "', '" & mora1 & "', '" & mora2 & "', '" & mora3 & "', '" & mora4 & "', '" & morh1 & "', '" & morh2 & "', '" & morh3 & "', '" & morh4 & "', '" & mory1 & "', '" & mory2 & "', '" & hosa1 & "', '" & hosa2 & "', '" & hosa3 & "', '" & hosa4 & "', '" & hosh1 & "', '" & hosh2 & "', '" & hosh3 & "', '" & hosh4 & "', '" & hosy1 & "', '" & hosy2 & "', '" & sora1 & "', '" & sora2 & "', '" & sora3 & "', '" & sora4 & "', '" & sorh1 & "', '" & sorh2 & "', '" & sorh3 & "', '" & sorh4 & "', '" & sory1 & "', '" & sory2 & "', '" & cra3 & "', '" & cra4 & "', '" & cra5 & "', '" & cra6 & "', '" & cra8 & "', '" & cra9 & "', '" & cra10 & "', '" & cra11 & "', '" & cra12 & "', '" & cra13 & "', '" & cra14 & "', '" & cra15 & "', '" & cra16 & "', '" & cra17 & "', '" & cra18 & "', '" & cra19 & "', '" & cra20 & "', '" & cra21 & "', '" & cra22 & "', '" & cra23 & "', '" & cra24 & "', '" & cra25 & "', '" & cra26 & "', '" & cra27 & "', '" & cra28 & "', '" & cra29 & "', '" & cra30 & "', '" & cra31 & "', '" & cra32 & "', '" & cra33 & "', '" & cra34 & "', '" & cra35 & "', '" & cra36 & "', '" & cra37 & "', '" & cra38 & "', '" & cra39 & "', '" & crb3 & "', '" & crb4 & "', '" & crb5 & "', '" & crb6 & "', '" & crb8 & "', '" & crb9 & "', '" & crb10 & "', '" & crb11 & "', '" & crb12 & "', '" & crb13 & "', '" & crb14 & "', '" & crb15 & "', '" & crb16 & "', '" & crb17 & "', '" & crb18 & "', '" & crb19 & "', '" & crb20 & "', '" & crb21 & "', '" & crb22 & "', '" & crb23 & "', '" & crb24 & "', '" & crb25 & "', '" & crb26 & "', '" & crb27 & "', '" & crb28 & "', '" & crb29 & "', '" & crb30 & "', '" & crb31 & "', '" & crb32 & "', '" & crb33 & "', '" & crb34 & "', '" & crb35 & "', '" & crb36 & "', '" & crb37 & "', '" & crb38 & "', '" & crb39 & "')"
-
                 cnn.Execute(SQL)
             Next
         ElseIf rbn3F.Checked = True Then    '3階の登録
+            SQL = "DELETE FROM SHyo3 WHERE #" & DelYmd & "# <= Ymd and Ymd <= #" & DelYmdAdd7 & "#"
+            cnn.Execute(SQL)
+
             Dim ymd, nyuam1, nyuam2, nyupm1, nyupm2, tyaam1, tyaam2, tyapm1, tyapm2, tukam1, tukam2, tukam3, tukam4, tukampk, tukamp, tukpm1, tukpm2, tukpm3, tukpm4, tukpmpk, tukpmp, hanam1, hanam2, hanam3, hanam4, hanampk, hanamp, hanpm1, hanpm2, hanpm3, hanpm4, hanpmpk, hanpmp, umiam1, umiam2, umiam3, umiam4, umiampk, umiamp, umiampk2, umiamp2, umipm1, umipm2, umipm3, umipm4, umipmpk, umipmp, umipmpk2, umipmp2, yak1k, yak1, yak2k, yak2, sin1k, sin1, sin2k, sin2, gyo1, gyo2, gyo3, gyo4, gyo5, gyo6, gyo7, tuka1, tuka2, tuka3, tuka4, tukh1, tukh2, tukh3, tukh4, tukh5, tukh6, tuky1, tuky2, tuky3, tuky4, hana1, hana2, hana3, hana4, hanh1, hanh2, hanh3, hanh4, hanh5, hanh6, hany1, hany2, hany3, hany4, umia1, umia2, umih1, umih2, umih3, umih4, umiy1, umiy2 As String
-            Dim cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, cra40, cra41, cra42, cra43, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39, crb40, crb41, crb42, crb43 As Integer
 
             For dd As Integer = 0 To 6
                 If dd = 0 Then
@@ -1200,6 +1170,7 @@ Public Class 週間表
 
         Dim M As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         M = M.AddMonths(1)
+        Dim a As String = M.ToString("yyyy/MM/dd")
 
         SQL2 = "SELECT * FROM SNam"
         rs2.Open(SQL2, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
@@ -1212,7 +1183,7 @@ Public Class 週間表
             rs.Open(SQL, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
 
             If DataGridView1(2, 0).Value > 22 Then
-                SQLnextmonth = "SELECT * FROM KinD WHERE YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(M, 5, 2) & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) and Rdr = '' order by Seq"
+                SQLnextmonth = "SELECT * FROM KinD WHERE YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(a, 6, 2) & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) and Rdr = '' order by Seq"
                 rsnextmonth.Open(SQLnextmonth, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
             End If
 
@@ -1241,26 +1212,37 @@ Public Class 週間表
                         If partname(i) = "" Then
 
                         Else
-                            If partnamecheck(rs, rs2, partname(i)) = True Then
-                                Dim Hi As Integer = DataGridView1(4 * dd + 2, 0).Value
-                                If Val(DataGridView1(2, 0).Value) - Val(DataGridView1(4 * dd + 2, 0).Value) > 20 Then   '月またぎがある週
-                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(M, 5, 2) & "')"
-                                Else    '月またぎがない週
+                            Dim Hi As Integer = DataGridView1(4 * dd + 2, 0).Value
+                            If Val(DataGridView1(2, 0).Value) - Hi > 20 Then   '月が変わった日以降
+                                If partnamecheck(rsnextmonth, rs2, partname(i)) = True Then
+                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(a, 6, 2) & "')"
+                                    listSQL.Add(updateSQL)
+                                Else
+                                    If i = 0 OrElse i = 1 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：森：" & partname(i))
+                                    ElseIf i = 2 OrElse i = 3 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：星：" & partname(i))
+                                    ElseIf i >= 4 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：空：" & partname(i))
+                                    End If
+                                    Exit Sub
+                                End If
+                            Else    '同じ月
+                                If partnamecheck(rs, rs2, partname(i)) = True Then
                                     updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "')"
+                                    listSQL.Add(updateSQL)
+                                Else
+                                    If i = 0 OrElse i = 1 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：森：" & partname(i))
+                                    ElseIf i = 2 OrElse i = 3 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：星：" & partname(i))
+                                    ElseIf i >= 4 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：空：" & partname(i))
+                                    End If
+                                    Exit Sub
                                 End If
-                                listSQL.Add(updateSQL)
-                            Else
-                                If i = 0 OrElse i = 1 Then
-                                    MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：森：" & partname(i))
-                                ElseIf i = 2 OrElse i = 3 Then
-                                    MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：星：" & partname(i))
-                                ElseIf i >= 4 Then
-                                    MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：空：" & partname(i))
-                                End If
-                                Exit Sub
                             End If
                         End If
-
                     Next
 
                     'for each でのやり方
@@ -1287,6 +1269,11 @@ Public Class 週間表
 
             SQL = "SELECT * FROM KinD WHERE YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) and Rdr = '' order by Seq"
             rs.Open(SQL, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
+
+            If DataGridView1(2, 0).Value > 22 Then
+                SQLnextmonth = "SELECT * FROM KinD WHERE YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(a, 6, 2) & "' AND (Seq2='00' OR ('" & floar & "0' <= Seq2 AND Seq2 <= '" & floar & "9')) and Rdr = '' order by Seq"
+                rsnextmonth.Open(SQLnextmonth, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
+            End If
 
             If rs.RecordCount <= 1 Then
                 MsgBox("勤務割に該当月の登録データがありません")
@@ -1316,28 +1303,38 @@ Public Class 週間表
                         If partname(i) = "" Then
 
                         Else
-                            If partnamecheck(rs, rs2, partname(i)) = True Then
-                                Dim Hi As Integer = DataGridView1(4 * dd + 2, 0).Value
-                                If Val(DataGridView1(2, 0).Value) - Val(DataGridView1(4 * dd + 2, 0).Value) > 20 Then   '月またぎがある週
-                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(M, 5, 2) & "')"
-                                Else    '月またぎがない週
+                            Dim Hi As Integer = DataGridView1(4 * dd + 2, 0).Value
+                            If Val(DataGridView1(2, 0).Value) - Hi > 20 Then   '月が変わった日以降
+                                If partnamecheck(rsnextmonth, rs2, partname(i)) = True Then
+                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(a, 6, 2) & "')"
+                                    listSQL.Add(updateSQL)
+                                Else
+                                    If i = 0 OrElse i = 1 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：月：" & partname(i))
+                                    ElseIf i = 2 OrElse i = 3 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：花：" & partname(i))
+                                    ElseIf i >= 4 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：海：" & partname(i))
+                                    End If
+                                    Exit Sub
+                                End If
+                            Else    '同じ月
+                                If partnamecheck(rs, rs2, partname(i)) = True Then
                                     updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "')"
+                                    listSQL.Add(updateSQL)
+                                Else
+                                    If i = 0 OrElse i = 1 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：月：" & partname(i))
+                                    ElseIf i = 2 OrElse i = 3 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：花：" & partname(i))
+                                    ElseIf i >= 4 Then
+                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：海：" & partname(i))
+                                    End If
+                                    Exit Sub
                                 End If
-                                listSQL.Add(updateSQL)
-                            Else
-                                If i = 0 OrElse i = 1 Then
-                                    MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：月：" & partname(i))
-                                ElseIf i = 2 OrElse i = 3 Then
-                                    MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：花：" & partname(i))
-                                ElseIf i >= 4 Then
-                                    MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：海：" & partname(i))
-                                End If
-                                Exit Sub
                             End If
                         End If
-
                     Next
-
                 Next
 
                 For Each i As String In listSQL
@@ -1347,12 +1344,7 @@ Public Class 週間表
             End If
             cnn.Close()
 
-
         End If
-
-
-
-
     End Sub
 
     Private Function partnamecheck(rs As ADODB.Recordset, rs2 As ADODB.Recordset, Pname As String) As Boolean
