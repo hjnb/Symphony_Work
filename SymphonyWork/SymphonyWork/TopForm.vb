@@ -17,6 +17,7 @@ Public Class TopForm
     Private workForm As 勤務割
     Private weekForm As 週間表
     Private csvForm As CSV作成
+    Private dbDeleteForm As DB整理
 
     Private Sub TopForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         'データベース、エクセル、構成ファイルの存在チェック
@@ -78,6 +79,20 @@ Public Class TopForm
             csvForm = New CSV作成()
             csvForm.Owner = Me
             csvForm.Show()
+        End If
+    End Sub
+
+    Private Sub btnArrangementDB_Click(sender As System.Object, e As System.EventArgs) Handles btnArrangementDB.Click
+        'パスワードフォーム表示
+        Dim passForm As Form = New passwordForm(iniFilePath, 2)
+        If passForm.ShowDialog() <> Windows.Forms.DialogResult.OK Then
+            Return
+        End If
+
+        If IsNothing(dbDeleteForm) OrElse dbDeleteForm.IsDisposed Then
+            dbDeleteForm = New DB整理()
+            dbDeleteForm.Owner = Me
+            dbDeleteForm.Show()
         End If
     End Sub
 
