@@ -108,7 +108,7 @@ Public Class 週間表
 
         'DataGridView1の行の設定
         For r As Integer = 0 To 38
-            DataGridView1.Rows(r).Height = 15
+            DataGridView1.Rows(r).Height = 14
         Next
 
         'DataGridView2の設定
@@ -152,7 +152,7 @@ Public Class 週間表
 
         'DataGridView2の行の設定
         For r As Integer = 0 To 6
-            DataGridView2.Rows(r).Height = 15
+            DataGridView2.Rows(r).Height = 14
         Next
 
         KeyPreview = True
@@ -331,47 +331,47 @@ Public Class 週間表
         Next
 
         If rbn2F.Checked = True Then    '2階の情報を表示
-            Label52.Location = New Point(12, 74)
-            Label1.Location = New Point(12, 103)
-            Label2.Location = New Point(12, 134)
-            Label3.Location = New Point(12, 149)
-            Label4.Location = New Point(12, 223)
-            Label5.Location = New Point(12, 298)
-            Label6.Location = New Point(12, 373)
-            Label7.Location = New Point(12, 403)
-            Label8.Location = New Point(12, 478)
-            Label9.Location = New Point(12, 554)
+            Label52.Location = New Point(12, 72)
+            Label1.Location = New Point(12, 99)
+            Label2.Location = New Point(12, 128)
+            Label3.Location = New Point(12, 142)
+            Label4.Location = New Point(12, 211)
+            Label5.Location = New Point(12, 282)
+            Label6.Location = New Point(12, 352)
+            Label7.Location = New Point(12, 379)
+            Label8.Location = New Point(12, 450)
+            Label9.Location = New Point(12, 519)
 
             For i As Integer = 10 To 16
-                Controls("Label" & i).Size = New Size(2, 588)
+                Controls("Label" & i).Size = New Size(2, 549)
             Next
 
             DataGridView1.Location = New Point(12, 43)
-            DataGridView1.Size = New Size(1174, 588)
-            DataGridView2.Location = New Point(42, 630)
+            DataGridView1.Size = New Size(1174, 549)
+            DataGridView2.Location = New Point(42, 591)
 
             'DataGridView1行作成
             For i As Integer = 1 To 39
                 DGV1Table.Rows.Add(DGV1Table.NewRow())
             Next
         ElseIf rbn3F.Checked = True Then    '3階の情報を表示
-            Label52.Location = New Point(12, 72)
-            Label1.Location = New Point(12, 100)
-            Label2.Location = New Point(12, 128)
-            Label3.Location = New Point(12, 142)
-            Label4.Location = New Point(12, 212)
-            Label5.Location = New Point(12, 282)
-            Label6.Location = New Point(12, 365)
-            Label7.Location = New Point(12, 393)
-            Label8.Location = New Point(12, 491)
-            Label9.Location = New Point(12, 589)
+            Label52.Location = New Point(12, 70)
+            Label1.Location = New Point(12, 95)
+            Label2.Location = New Point(12, 121)
+            Label3.Location = New Point(12, 134)
+            Label4.Location = New Point(12, 199)
+            Label5.Location = New Point(12, 265)
+            Label6.Location = New Point(12, 343)
+            Label7.Location = New Point(12, 369)
+            Label8.Location = New Point(12, 459)
+            Label9.Location = New Point(12, 550)
             For i As Integer = 10 To 16
-                Controls("Label" & i).Size = New Size(2, 605)
+                Controls("Label" & i).Size = New Size(2, 562)
             Next
 
             DataGridView1.Location = New Point(12, 43)
-            DataGridView1.Size = New Size(1174, 605)
-            DataGridView2.Location = New Point(42, 647)
+            DataGridView1.Size = New Size(1174, 562)
+            DataGridView2.Location = New Point(42, 604)
 
             'DataGridView1行作成
             For i As Integer = 1 To 43
@@ -401,12 +401,12 @@ Public Class 週間表
         If rbn2F.Checked = True Then    '2階の情報を表示
             'DataGridView1行の設定
             For r As Integer = 0 To 38
-                DataGridView1.Rows(r).Height = 15
+                DataGridView1.Rows(r).Height = 14
             Next
         ElseIf rbn3F.Checked = True Then    '3階の情報を表示
             'DataGridView1行の設定
             For r As Integer = 0 To 42
-                DataGridView1.Rows(r).Height = 14
+                DataGridView1.Rows(r).Height = 13
             Next
         End If
 
