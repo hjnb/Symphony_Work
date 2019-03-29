@@ -11,6 +11,16 @@ Public Class 週間表
     Private Const HEISEI_Str As String = "H"
     Private Const NEXT_WAREKI As String = "X"
     Public cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, cra40, cra41, cra42, cra43, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39, crb40, crb41, crb42, crb43 As Integer
+    Private startday As String
+    Private floor As Integer
+
+    Public Sub New(startday As String, floor As Integer)
+        InitializeComponent()
+
+        Me.startday = startday
+        Me.floor = floor
+
+    End Sub
 
     Private Sub MadeStyle()
         '文字の大きさ指定
@@ -158,15 +168,21 @@ Public Class 週間表
         KeyPreview = True
 
         '日付の設定
-        Dim ymd As Date = Today
-        Dim weekNumber As DayOfWeek = ymd.DayOfWeek
-        For i As Integer = 0 To 6
-            If weekNumber = i Then
-                ymd = ymd.AddDays(-i)
-                lblYmd.Text = ChangeWareki(ymd)
-            End If
-        Next
-        lblYmd.Text = lblYmd.Text & "（日）"
+        If startday = "日付" OrElse startday = "" Then
+            Dim ymd As Date = Today
+            Dim weekNumber As DayOfWeek = ymd.DayOfWeek
+            For i As Integer = 0 To 6
+                If weekNumber = i Then
+                    ymd = ymd.AddDays(-i)
+                    lblYmd.Text = ChangeWareki(ymd)
+                End If
+            Next
+            lblYmd.Text = lblYmd.Text & "（日）"
+        Else
+            lblYmd.Text = startday
+        End If
+
+        TopForm.lblday.Text = lblYmd.Text
 
         '各セルのスタイルの設定
         With DataGridView1
@@ -238,6 +254,12 @@ Public Class 週間表
             DataGridView1(0, Gyo(n)).Value = Moji(n)
         Next
 
+        If floor = 2 Then
+
+        Else
+            rbn3F.Checked = True
+        End If
+
     End Sub
 
     Private Sub DataGridView_CellPainting(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellPaintingEventArgs) Handles DataGridView1.CellPainting, DataGridView2.CellPainting
@@ -252,6 +274,15 @@ Public Class 週間表
             Dim pParts As DataGridViewPaintParts = e.PaintParts And Not DataGridViewPaintParts.Background
             e.Paint(e.ClipBounds, pParts)
             e.Handled = True
+        End If
+    End Sub
+
+    Private Sub DataGridView1_CellEnter(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DataGridView1.CellEnter
+        Dim colnum As Integer = DataGridView1.CurrentCell.ColumnIndex
+        If (colnum + 2) Mod 2 = 1 Then
+            DataGridView1.ImeMode = Windows.Forms.ImeMode.Alpha
+        Else
+            DataGridView1.ImeMode = Windows.Forms.ImeMode.Hiragana
         End If
     End Sub
 
@@ -276,7 +307,7 @@ Public Class 週間表
         Return Result
     End Function
 
-    Public Function ChangeSeireki(ymd As String) As String
+    Public Shared Function ChangeSeireki(ymd As String) As String
         Dim Seireki As Integer
         If Strings.Left(ymd, 1) = "H" Then
             Seireki = Val(Strings.Mid(ymd, 2, 2) + 1988)
@@ -291,11 +322,18 @@ Public Class 週間表
         rbn2F.BackColor = Color.Yellow
         rbn3F.BackColor = SystemColors.Control
 
+        TopForm.lblday.Text = lblYmd.Text
+        TopForm.lblFloor.Text = "2"
+
+
     End Sub
 
     Private Sub rbn3F_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles rbn3F.CheckedChanged
         rbn2F.BackColor = SystemColors.Control
         rbn3F.BackColor = Color.Yellow
+
+        TopForm.lblday.Text = lblYmd.Text
+        TopForm.lblFloor.Text = "3"
 
         ChangeForm()
     End Sub
@@ -563,12 +601,14 @@ Public Class 週間表
         Dim ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         ymd = ymd.AddDays(7)
         lblYmd.Text = ChangeWareki(ymd) & "（日）"
+
     End Sub
 
     Private Sub btnDown_Click(sender As System.Object, e As System.EventArgs) Handles btnDown.Click
         Dim ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
         ymd = ymd.AddDays(-7)
         lblYmd.Text = ChangeWareki(ymd) & "（日）"
+
     End Sub
 
     Private Sub lblYmd_TextChanged(sender As Object, e As System.EventArgs) Handles lblYmd.TextChanged
@@ -650,113 +690,216 @@ Public Class 週間表
             Dim rs As New ADODB.Recordset
             Dim sql As String = "select * from SHyo WHERE #" & Ymd & "# <= Ymd and Ymd <= #" & YmdAdd7 & "# order by Ymd"
             cnn.Open(TopForm.DB_Work)
-            rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+            rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
 
-            'Datagridview1への表示
-            Dim ColumnsNo As Integer = 0
-            While Not rs.EOF
-                For RowNo As Integer = 2 To 38
-                    If RowNo <= 5 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
-                        If rs.Fields(RowNo + 88).Value = 1 Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
-                        Else
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
+            Dim rsrowcount As Integer = rs.RecordCount
+
+            If rsrowcount > 0 Then
+                'DataGridView3,4の中身を空にする
+                DataGridView3.Columns.Clear()
+                DataGridView4.Columns.Clear()
+                'Datagridview1への表示
+                Dim ColumnsNo As Integer = 0
+                While Not rs.EOF
+                    For RowNo As Integer = 2 To 38
+                        If RowNo <= 5 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
+                            If rs.Fields(RowNo + 88).Value = 1 Then
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
+                            Else
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
+                            End If
+                            If rs.Fields(RowNo + 124).Value = 1 Then
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
+                            Else
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
+                            End If
+                        ElseIf 7 <= RowNo And RowNo <= 10 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 2).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 8).Value
+                        ElseIf RowNo = 11 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 2).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 3).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 8).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 9).Value
+                        ElseIf 12 <= RowNo And RowNo <= 15 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 9).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 15).Value
+                        ElseIf RowNo = 16 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 9).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 10).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 15).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 16).Value
+                        ElseIf 17 <= RowNo And RowNo <= 20 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 16).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 22).Value
+                        ElseIf RowNo = 21 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 16).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 17).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 22).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 23).Value
+                        ElseIf RowNo = 22 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 23).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 24).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 25).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 26).Value
+                        ElseIf RowNo = 23 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 26).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 27).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 28).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 29).Value
+                        ElseIf RowNo = 24 Or RowNo = 25 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 36).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 38).Value
+                        ElseIf RowNo = 26 Or RowNo = 27 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 38).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 40).Value
+                        ElseIf RowNo = 28 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 40).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 41).Value
+                        ElseIf RowNo = 29 Or RowNo = 30 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 41).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 43).Value
+                        ElseIf RowNo = 31 Or RowNo = 32 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 43).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 45).Value
+                        ElseIf RowNo = 33 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 45).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 46).Value
+                        ElseIf RowNo = 34 Or RowNo = 35 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 46).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 48).Value
+                        ElseIf RowNo = 36 Or RowNo = 37 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 48).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 50).Value
+                        ElseIf RowNo = 38 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 50).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 51).Value
                         End If
-                        If rs.Fields(RowNo + 124).Value = 1 Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
-                        Else
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
+                        '色付け処理
+                        If RowNo >= 7 Then
+                            If rs.Fields(RowNo + 87).Value = "1" Then
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
+                            ElseIf rs.Fields(RowNo + 87).Value = "0" Then
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
+                            End If
+                            If rs.Fields(RowNo + 123).Value = "1" Then
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
+                            ElseIf rs.Fields(RowNo + 123).Value = "0" Then
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
+                            End If
                         End If
-                    ElseIf 7 <= RowNo And RowNo <= 10 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 2).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 8).Value
-                    ElseIf RowNo = 11 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 2).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 3).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 8).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 9).Value
-                    ElseIf 12 <= RowNo And RowNo <= 15 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 9).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 15).Value
-                    ElseIf RowNo = 16 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 9).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 10).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 15).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 16).Value
-                    ElseIf 17 <= RowNo And RowNo <= 20 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 16).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 22).Value
-                    ElseIf RowNo = 21 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 16).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 17).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 22).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 23).Value
-                    ElseIf RowNo = 22 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 23).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 24).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 25).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 26).Value
-                    ElseIf RowNo = 23 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 26).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 27).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 28).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 29).Value
-                    ElseIf RowNo = 24 Or RowNo = 25 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 36).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 38).Value
-                    ElseIf RowNo = 26 Or RowNo = 27 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 38).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 40).Value
-                    ElseIf RowNo = 28 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 40).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 41).Value
-                    ElseIf RowNo = 29 Or RowNo = 30 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 41).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 43).Value
-                    ElseIf RowNo = 31 Or RowNo = 32 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 43).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 45).Value
-                    ElseIf RowNo = 33 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 45).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 46).Value
-                    ElseIf RowNo = 34 Or RowNo = 35 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 46).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 48).Value
-                    ElseIf RowNo = 36 Or RowNo = 37 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 48).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 50).Value
-                    ElseIf RowNo = 38 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 50).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 51).Value
-                    End If
-                    '色付け処理
-                    If RowNo >= 7 Then
-                        If rs.Fields(RowNo + 87).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
-                        ElseIf rs.Fields(RowNo + 87).Value = "0" Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
+                    Next
+
+                    'Datagridview2への表示
+                    For rowno2 As Integer = 1 To 7
+                        DGV2Table.Rows(rowno2 - 1).Item("a" & ColumnsNo) = rs.Fields(rowno2 + 52).Value
+                    Next
+
+                    rs.MoveNext()
+
+                    ColumnsNo = ColumnsNo + 1
+                End While
+
+            Else
+                Dim Cn As New OleDbConnection(TopForm.DB_Work)
+                Dim SQLCm As OleDbCommand = Cn.CreateCommand
+                Dim Adapter As New OleDbDataAdapter(SQLCm)
+                Dim Table As New DataTable
+                'SQLCm.CommandText = "SELECT * FROM KinD WHERE YM='" & Strings.Left(Util.convWarekiStrToADStr(Strings.Left(lblYmd.Text, 9)), 7) & "' AND Unt <> '※' order by seq2, Seq"
+                SQLCm.CommandText = "SELECT * FROM KinD WHERE YM='" & Strings.Left(Util.convWarekiStrToADStr(Strings.Left(lblYmd.Text, 9)), 7) & "' order by seq2, Seq"
+                Adapter.Fill(Table)
+                DataGridView3.DataSource = Table
+
+                Dim SQLCm4 As OleDbCommand = Cn.CreateCommand
+                Dim Adapter4 As New OleDbDataAdapter(SQLCm4)
+                Dim Table4 As New DataTable
+                SQLCm4.CommandText = "SELECT * FROM SNam"
+                Adapter4.Fill(Table4)
+                DataGridView4.DataSource = Table4
+
+                Dim DGV3rowcount As Integer = DataGridView3.Rows.Count
+
+                For i As Integer = 1 To 31
+                    For week As Integer = 0 To 6
+                        If DataGridView1(week * 4 + 2, 0).Value = i Then
+                            Dim Hi As Integer = DataGridView1(4 * week + 2, 0).Value
+                            If Val(DataGridView1(2, 0).Value) - Hi > 20 Then   '月が替わった日以降
+
+                            Else
+                                For p As Integer = 0 To DGV3rowcount - 1
+                                    Dim firstnam As String = Util.checkDBNullValue(DataGridView3(5, p).Value)
+                                    For g As Integer = 0 To DataGridView4.Rows.Count - 1
+                                        If firstnam = DataGridView4(0, g).Value Then
+                                            firstnam = DataGridView4(1, g).Value
+                                        End If
+                                    Next
+                                    firstnam = firstnam.Replace(" ", "　")
+                                    firstnam = firstnam.Split("　")(0)
+                                    If DataGridView3(3, p).Value = "森" Then
+                                        If DataGridView3(i + 5, p).Value = "早" Then
+                                            DataGridView1(week * 4 + 2, 7).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "日早" Then
+                                            DataGridView1(week * 4 + 2, 8).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅" Then
+                                            DataGridView1(week * 4 + 4, 9).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅々" Then
+                                            DataGridView1(week * 4 + 4, 10).Value = firstnam
+                                        End If
+                                    ElseIf DataGridView3(3, p).Value = "星" Then
+                                        If DataGridView3(i + 5, p).Value = "早" Then
+                                            DataGridView1(week * 4 + 2, 12).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "日早" Then
+                                            DataGridView1(week * 4 + 2, 13).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅" Then
+                                            DataGridView1(week * 4 + 4, 14).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅々" Then
+                                            DataGridView1(week * 4 + 4, 15).Value = firstnam
+                                        End If
+                                    ElseIf DataGridView3(3, p).Value = "空" Then
+                                        If DataGridView3(i + 5, p).Value = "早" Then
+                                            DataGridView1(week * 4 + 2, 17).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "日早" Then
+                                            DataGridView1(week * 4 + 2, 18).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅" Then
+                                            DataGridView1(week * 4 + 4, 19).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅々" Then
+                                            DataGridView1(week * 4 + 4, 20).Value = firstnam
+                                        End If
+                                    End If
+                                    If DataGridView3(i + 5, p).Value = "深" Then
+                                        If DataGridView1(week * 4 + 2, 23).Value = "" Then
+                                            DataGridView1(week * 4 + 2, 23).Value = firstnam
+                                        Else
+                                            'DataGridView1(week * 4 + 4, 23).Value = firstnam
+                                            If DataGridView1(week * 4 + 4, 23).Value = "" Then
+                                                DataGridView1(week * 4 + 4, 23).Value = firstnam
+                                            Else
+
+                                            End If
+                                        End If
+                                    ElseIf DataGridView3(i + 5, p).Value = "夜" Then
+                                        If DataGridView1(week * 4 + 2, 22).Value = "" Then
+                                            DataGridView1(week * 4 + 2, 22).Value = firstnam
+                                        Else
+                                            'DataGridView1(week * 4 + 4, 22).Value = firstnam
+                                            If DataGridView1(week * 4 + 4, 22).Value = "" Then
+                                                DataGridView1(week * 4 + 4, 22).Value = firstnam
+                                            Else
+
+                                            End If
+                                        End If
+                                    End If
+                                Next
+                            End If
+                            
                         End If
-                        If rs.Fields(RowNo + 123).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
-                        ElseIf rs.Fields(RowNo + 123).Value = "0" Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
-                        End If
-                    End If
+                    Next
                 Next
 
-                'Datagridview2への表示
-                For rowno2 As Integer = 1 To 7
-                    DGV2Table.Rows(rowno2 - 1).Item("a" & ColumnsNo) = rs.Fields(rowno2 + 52).Value
-                Next
-
-                rs.MoveNext()
-
-                ColumnsNo = ColumnsNo + 1
-            End While
+            End If
             cnn.Close()
-
         ElseIf rbn3F.Checked = True Then    '3階
             Dim Ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
             Dim YmdAdd7 As Date = Ymd.AddDays(6)
@@ -765,116 +908,220 @@ Public Class 週間表
             Dim rs As New ADODB.Recordset
             Dim sql As String = "select * from SHyo3 WHERE #" & Ymd & "# <= Ymd and Ymd <= #" & YmdAdd7 & "# order by Ymd"
             cnn.Open(TopForm.DB_Work)
-            rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+            rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenStatic, ADODB.LockTypeEnum.adLockReadOnly)
 
-            'Datagridview1への表示
-            Dim ColumnsNo As Integer = 0
-            While Not rs.EOF
-                For RowNo As Integer = 2 To 42
-                    If RowNo <= 5 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
-                        If rs.Fields(RowNo + 98).Value = 1 Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
-                        Else
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
+            Dim rsrowcount As Integer = rs.RecordCount
+            If rsrowcount > 0 Then
+                'DataGridView3,4の中身を空にする
+                DataGridView3.Columns.Clear()
+                DataGridView4.Columns.Clear()
+                'Datagridview1への表示
+                Dim ColumnsNo As Integer = 0
+                While Not rs.EOF
+                    For RowNo As Integer = 2 To 42
+                        If RowNo <= 5 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
+                            If rs.Fields(RowNo + 98).Value = 1 Then
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
+                            Else
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
+                            End If
+                            If rs.Fields(RowNo + 138).Value = 1 Then
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
+                            Else
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
+                            End If
+                        ElseIf 7 <= RowNo And RowNo <= 10 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 2).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 8).Value
+                        ElseIf RowNo = 11 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 2).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 3).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 8).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 9).Value
+                        ElseIf 12 <= RowNo And RowNo <= 15 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 9).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 15).Value
+                        ElseIf RowNo = 16 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 9).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 10).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 15).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 16).Value
+                        ElseIf 17 <= RowNo And RowNo <= 20 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 16).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 24).Value
+                        ElseIf RowNo = 21 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 16).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 17).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 24).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 25).Value
+                        ElseIf RowNo = 22 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 17).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 18).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 25).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 26).Value
+                        ElseIf RowNo = 23 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 26).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 27).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 28).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 29).Value
+                        ElseIf RowNo = 24 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 29).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 30).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 31).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 32).Value
+                        ElseIf RowNo = 25 Or RowNo = 26 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 39).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 41).Value
+                        ElseIf RowNo = 27 Or RowNo = 28 Or RowNo = 29 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 41).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 44).Value
+                        ElseIf RowNo = 30 Or RowNo = 31 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 44).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 46).Value
+                        ElseIf RowNo = 32 Or RowNo = 33 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 46).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 48).Value
+                        ElseIf RowNo = 34 Or RowNo = 35 Or RowNo = 36 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 48).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 51).Value
+                        ElseIf RowNo = 37 Or RowNo = 38 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 51).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 53).Value
+                        ElseIf RowNo = 39 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 53).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 54).Value
+                        ElseIf RowNo = 40 Or RowNo = 41 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 54).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 56).Value
+                        ElseIf RowNo = 42 Then
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 56).Value
+                            DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 57).Value
                         End If
-                        If rs.Fields(RowNo + 138).Value = 1 Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
-                        Else
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
+                        '色付け処理
+                        If RowNo >= 7 Then
+                            If rs.Fields(RowNo + 97).Value = "1" Then
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
+                            ElseIf rs.Fields(RowNo + 97).Value = "0" Then
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
+                            End If
+                            If rs.Fields(RowNo + 137).Value = "1" Then
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
+                            ElseIf rs.Fields(RowNo + 137).Value = "0" Then
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
+                            End If
                         End If
-                    ElseIf 7 <= RowNo And RowNo <= 10 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 2).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 8).Value
-                    ElseIf RowNo = 11 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 2).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 3).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 8).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 9).Value
-                    ElseIf 12 <= RowNo And RowNo <= 15 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 9).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 15).Value
-                    ElseIf RowNo = 16 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 9).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 10).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 15).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 16).Value
-                    ElseIf 17 <= RowNo And RowNo <= 20 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 16).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 24).Value
-                    ElseIf RowNo = 21 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 16).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 17).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 24).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 25).Value
-                    ElseIf RowNo = 22 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 17).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 18).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 25).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 26).Value
-                    ElseIf RowNo = 23 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 26).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 27).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 28).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 29).Value
-                    ElseIf RowNo = 24 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 29).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 30).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 3) = rs.Fields(RowNo + 31).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 32).Value
-                    ElseIf RowNo = 25 Or RowNo = 26 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 39).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 41).Value
-                    ElseIf RowNo = 27 Or RowNo = 28 Or RowNo = 29 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 41).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 44).Value
-                    ElseIf RowNo = 30 Or RowNo = 31 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 44).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 46).Value
-                    ElseIf RowNo = 32 Or RowNo = 33 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 46).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 48).Value
-                    ElseIf RowNo = 34 Or RowNo = 35 Or RowNo = 36 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 48).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 51).Value
-                    ElseIf RowNo = 37 Or RowNo = 38 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 51).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 53).Value
-                    ElseIf RowNo = 39 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 53).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 54).Value
-                    ElseIf RowNo = 40 Or RowNo = 41 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 54).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 56).Value
-                    ElseIf RowNo = 42 Then
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo + 56).Value
-                        DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 57).Value
-                    End If
-                    '色付け処理
-                    If RowNo >= 7 Then
-                        If rs.Fields(RowNo + 97).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
-                        ElseIf rs.Fields(RowNo + 97).Value = "0" Then
-                            DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = whiteCellStyle
+                    Next
+
+                    'Datagridview2への表示
+                    For rowno2 As Integer = 1 To 7
+                        DGV2Table.Rows(rowno2 - 1).Item("a" & ColumnsNo) = rs.Fields(rowno2 + 56).Value
+                    Next
+
+                    rs.MoveNext()
+
+                    ColumnsNo = ColumnsNo + 1
+                End While
+
+            Else
+                Dim Cn As New OleDbConnection(TopForm.DB_Work)
+                Dim SQLCm As OleDbCommand = Cn.CreateCommand
+                Dim Adapter As New OleDbDataAdapter(SQLCm)
+                Dim Table As New DataTable
+                'SQLCm.CommandText = "SELECT * FROM KinD WHERE YM='" & Strings.Left(Util.convWarekiStrToADStr(Strings.Left(lblYmd.Text, 9)), 7) & "' AND Unt <> '※' order by seq2, Seq"
+                SQLCm.CommandText = "SELECT * FROM KinD WHERE YM='" & Strings.Left(Util.convWarekiStrToADStr(Strings.Left(lblYmd.Text, 9)), 7) & "' order by seq2, Seq"
+                Adapter.Fill(Table)
+                DataGridView3.DataSource = Table
+
+                Dim SQLCm4 As OleDbCommand = Cn.CreateCommand
+                Dim Adapter4 As New OleDbDataAdapter(SQLCm4)
+                Dim Table4 As New DataTable
+                SQLCm4.CommandText = "SELECT * FROM SNam"
+                Adapter4.Fill(Table4)
+                DataGridView4.DataSource = Table4
+
+                Dim DGV3rowcount As Integer = DataGridView3.Rows.Count
+
+                For i As Integer = 1 To 31
+                    For week As Integer = 0 To 6
+                        If DataGridView1(week * 4 + 2, 0).Value = i Then
+                            Dim Hi As Integer = DataGridView1(4 * week + 2, 0).Value
+                            If Val(DataGridView1(2, 0).Value) - Hi > 20 Then   '月が替わった日以降
+
+                            Else
+                                For p As Integer = 0 To DGV3rowcount - 1
+                                    Dim firstnam As String = Util.checkDBNullValue(DataGridView3(5, p).Value)
+                                    For g As Integer = 0 To DataGridView4.Rows.Count - 1
+                                        If firstnam = DataGridView4(0, g).Value Then
+                                            firstnam = DataGridView4(1, g).Value
+                                        End If
+                                    Next
+                                    firstnam = firstnam.Replace(" ", "　")
+                                    firstnam = firstnam.Split("　")(0)
+                                    If DataGridView3(3, p).Value = "月" Then
+                                        If DataGridView3(i + 5, p).Value = "早" Then
+                                            DataGridView1(week * 4 + 2, 7).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "日早" Then
+                                            DataGridView1(week * 4 + 2, 8).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅" Then
+                                            DataGridView1(week * 4 + 4, 9).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅々" Then
+                                            DataGridView1(week * 4 + 4, 10).Value = firstnam
+                                        End If
+                                    ElseIf DataGridView3(3, p).Value = "花" Then
+                                        If DataGridView3(i + 5, p).Value = "早" Then
+                                            DataGridView1(week * 4 + 2, 12).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "日早" Then
+                                            DataGridView1(week * 4 + 2, 13).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅" Then
+                                            DataGridView1(week * 4 + 4, 14).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅々" Then
+                                            DataGridView1(week * 4 + 4, 15).Value = firstnam
+                                        End If
+                                    ElseIf DataGridView3(3, p).Value = "海" Then
+                                        If DataGridView3(i + 5, p).Value = "早" Then
+                                            DataGridView1(week * 4 + 2, 17).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "日早" Then
+                                            DataGridView1(week * 4 + 2, 18).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅" Then
+                                            DataGridView1(week * 4 + 4, 19).Value = firstnam
+                                        ElseIf DataGridView3(i + 5, p).Value = "遅々" Then
+                                            DataGridView1(week * 4 + 4, 20).Value = firstnam
+                                        End If
+                                    End If
+                                    If DataGridView3(i + 5, p).Value = "深" Then
+                                        If DataGridView1(week * 4 + 2, 24).Value = "" Then
+                                            DataGridView1(week * 4 + 2, 24).Value = firstnam
+                                        Else
+                                            'DataGridView1(week * 4 + 4, 24).Value = firstnam
+                                            If DataGridView1(week * 4 + 4, 24).Value = "" Then
+                                                DataGridView1(week * 4 + 4, 24).Value = firstnam
+                                            Else
+
+                                            End If
+                                        End If
+                                    ElseIf DataGridView3(i + 5, p).Value = "夜" Then
+                                        If DataGridView1(week * 4 + 2, 23).Value = "" Then
+                                            DataGridView1(week * 4 + 2, 23).Value = firstnam
+                                        Else
+                                            'DataGridView1(week * 4 + 4, 23).Value = firstnam
+                                            If DataGridView1(week * 4 + 4, 23).Value = "" Then
+                                                DataGridView1(week * 4 + 4, 23).Value = firstnam
+                                            Else
+
+                                            End If
+                                        End If
+                                    End If
+                                Next
+                            End If
+                            
                         End If
-                        If rs.Fields(RowNo + 137).Value = "1" Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
-                        ElseIf rs.Fields(RowNo + 137).Value = "0" Then
-                            DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = whiteCellStyle
-                        End If
-                    End If
+                    Next
                 Next
 
-                'Datagridview2への表示
-                For rowno2 As Integer = 1 To 7
-                    DGV2Table.Rows(rowno2 - 1).Item("a" & ColumnsNo) = rs.Fields(rowno2 + 56).Value
-                Next
 
-                rs.MoveNext()
-
-                ColumnsNo = ColumnsNo + 1
-            End While
+            End If
             cnn.Close()
         End If
 
@@ -971,23 +1218,23 @@ Public Class 週間表
                 mora4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 25).Value)
                 morh1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 26).Value)
                 morh2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 27).Value)
-                morh3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 26).Value)
+                morh3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 26).Value)
                 morh4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 27).Value)
                 mory1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 28).Value)
-                mory2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 28).Value)
+                mory2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 28).Value)
                 hosa1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 29).Value)
                 hosa2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 30).Value)
                 hosa3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 29).Value)
                 hosa4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 30).Value)
                 hosh1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 31).Value)
                 hosh2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 32).Value)
-                hosh3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 31).Value)
+                hosh3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 31).Value)
                 hosh4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 32).Value)
                 hosy1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 33).Value)
-                hosy2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 33).Value)
+                hosy2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 33).Value)
                 sora1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 34).Value)
-                sora2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 35).Value)
-                sora3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 34).Value)
+                sora2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 35).Value)
+                sora3 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 34).Value)
                 sora4 = Util.checkDBNullValue(DataGridView1(dd * 4 + 4, 35).Value)
                 sorh1 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 36).Value)
                 sorh2 = Util.checkDBNullValue(DataGridView1(dd * 4 + 2, 37).Value)
@@ -1207,38 +1454,35 @@ Public Class 週間表
 
                     Dim partname() As String = {moriPname1, moriPname2, hosiPname1, hosiPname2, soraPname1, soraPname2}
                     Dim partwork() As String = {moriPwork1, moriPwork2, hosiPwork1, hosiPwork2, soraPwork1, soraPwork2}
+                    Dim unit As String = ""
+                    Dim reader As String = ""
 
                     For i As Integer = 0 To 5
+                        If i = 0 OrElse i = 1 Then
+                            unit = "森"
+                        ElseIf i = 2 OrElse i = 3 Then
+                            unit = "星"
+                        ElseIf i = 4 OrElse i = 5 Then
+                            unit = "空"
+                        End If
                         If partname(i) = "" Then
 
                         Else
                             Dim Hi As Integer = DataGridView1(4 * dd + 2, 0).Value
                             If Val(DataGridView1(2, 0).Value) - Hi > 20 Then   '月が変わった日以降
                                 If partnamecheck(rsnextmonth, rs2, partname(i)) = True Then
-                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(a, 6, 2) & "')"
+                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Unt = '" & unit & "') And (Rdr = '" & reader & "') AND (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(a, 6, 2) & "')"
                                     listSQL.Add(updateSQL)
                                 Else
-                                    If i = 0 OrElse i = 1 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：森：" & partname(i))
-                                    ElseIf i = 2 OrElse i = 3 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：星：" & partname(i))
-                                    ElseIf i >= 4 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：空：" & partname(i))
-                                    End If
+                                    MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：" & unit & "：" & partname(i))
                                     Exit Sub
                                 End If
                             Else    '同じ月
                                 If partnamecheck(rs, rs2, partname(i)) = True Then
-                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "')"
+                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Unt = '" & unit & "') And (Rdr = '" & reader & "') AND (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "')"
                                     listSQL.Add(updateSQL)
                                 Else
-                                    If i = 0 OrElse i = 1 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：森：" & partname(i))
-                                    ElseIf i = 2 OrElse i = 3 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：星：" & partname(i))
-                                    ElseIf i >= 4 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：空：" & partname(i))
-                                    End If
+                                    MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：" & unit & "：" & partname(i))
                                     Exit Sub
                                 End If
                             End If
@@ -1299,37 +1543,35 @@ Public Class 週間表
 
                     Dim partname() As String = {tukiPname1, tukiPname2, hanaPname1, hanaPname2, umiPname1, umiPname2, umiPname3, umiPname4}
                     Dim partwork() As String = {tukiPwork1, tukiPwork2, hanaPwork1, hanaPwork2, umiPwork1, umiPwork2, umiPwork3, umiPwork4}
+                    Dim unit As String = ""
+                    Dim reader As String = ""
+
                     For i As Integer = 0 To 7
+                        If i = 0 OrElse i = 1 Then
+                            unit = "月"
+                        ElseIf i = 2 OrElse i = 3 Then
+                            unit = "花"
+                        ElseIf i = 4 OrElse i = 5 OrElse i = 6 OrElse i = 7 Then
+                            unit = "海"
+                        End If
                         If partname(i) = "" Then
 
                         Else
                             Dim Hi As Integer = DataGridView1(4 * dd + 2, 0).Value
                             If Val(DataGridView1(2, 0).Value) - Hi > 20 Then   '月が変わった日以降
                                 If partnamecheck(rsnextmonth, rs2, partname(i)) = True Then
-                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(a, 6, 2) & "')"
+                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Unt = '" & unit & "') And (Rdr = '" & reader & "') AND (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(a, 6, 2) & "')"
                                     listSQL.Add(updateSQL)
                                 Else
-                                    If i = 0 OrElse i = 1 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：月：" & partname(i))
-                                    ElseIf i = 2 OrElse i = 3 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：花：" & partname(i))
-                                    ElseIf i >= 4 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：海：" & partname(i))
-                                    End If
+                                    MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：" & unit & "：" & partname(i))
                                     Exit Sub
                                 End If
                             Else    '同じ月
                                 If partnamecheck(rs, rs2, partname(i)) = True Then
-                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "')"
+                                    updateSQL = "UPDATE KinD SET Y" & Hi & " = '" & partwork(i) & "', J" & Hi & " = '" & partwork(i) & "' WHERE (Unt = '" & unit & "') And (Rdr = '" & reader & "') AND (Nam LIKE '%" & partname(i) & "%') And (YM='" & ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 2) & "')"
                                     listSQL.Add(updateSQL)
                                 Else
-                                    If i = 0 OrElse i = 1 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：月：" & partname(i))
-                                    ElseIf i = 2 OrElse i = 3 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：花：" & partname(i))
-                                    ElseIf i >= 4 Then
-                                        MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：海：" & partname(i))
-                                    End If
+                                    MsgBox("ﾊﾟｰﾄの勤務割が登録されていません。" & vbCrLf & DataGridView1(4 * dd + 2, 0).Value & "日：" & unit & "：" & partname(i))
                                     Exit Sub
                                 End If
                             End If
@@ -1773,6 +2015,17 @@ Public Class 週間表
             Else
                 MsgBox("出力するデータがありません")
             End If
+        End If
+
+    End Sub
+
+    Private Sub DataGridView1_EditingControlShowing(sender As Object, e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles DataGridView1.EditingControlShowing
+        Dim colnum As Integer = DataGridView1.CurrentCell.ColumnIndex
+
+        If (colnum + 2) Mod 2 = 1 Then
+            Dim tb As DataGridViewTextBoxEditingControl = CType(e.Control, DataGridViewTextBoxEditingControl)
+            tb.ImeMode = Windows.Forms.ImeMode.Alpha
+            tb.CharacterCasing = CharacterCasing.Upper '入力される文字を大文字に
         End If
 
     End Sub

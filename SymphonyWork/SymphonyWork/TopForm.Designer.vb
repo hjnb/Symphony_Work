@@ -29,6 +29,8 @@ Partial Class TopForm
         Me.rbtnPreview = New System.Windows.Forms.RadioButton()
         Me.rbtnPrintout = New System.Windows.Forms.RadioButton()
         Me.topPicture = New System.Windows.Forms.PictureBox()
+        Me.lblFloor = New System.Windows.Forms.Label()
+        Me.lblday = New System.Windows.Forms.Label()
         CType(Me.topPicture, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -108,11 +110,33 @@ Partial Class TopForm
         Me.topPicture.TabIndex = 6
         Me.topPicture.TabStop = False
         '
+        'lblFloor
+        '
+        Me.lblFloor.AutoSize = True
+        Me.lblFloor.Location = New System.Drawing.Point(794, 133)
+        Me.lblFloor.Name = "lblFloor"
+        Me.lblFloor.Size = New System.Drawing.Size(11, 12)
+        Me.lblFloor.TabIndex = 8
+        Me.lblFloor.Text = "2"
+        Me.lblFloor.Visible = False
+        '
+        'lblday
+        '
+        Me.lblday.AutoSize = True
+        Me.lblday.Location = New System.Drawing.Point(794, 107)
+        Me.lblday.Name = "lblday"
+        Me.lblday.Size = New System.Drawing.Size(29, 12)
+        Me.lblday.TabIndex = 7
+        Me.lblday.Text = "日付"
+        Me.lblday.Visible = False
+        '
         'TopForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(936, 654)
+        Me.Controls.Add(Me.lblFloor)
+        Me.Controls.Add(Me.lblday)
         Me.Controls.Add(Me.topPicture)
         Me.Controls.Add(Me.rbtnPrintout)
         Me.Controls.Add(Me.rbtnPreview)
@@ -134,5 +158,7 @@ Partial Class TopForm
     Friend WithEvents rbtnPreview As System.Windows.Forms.RadioButton
     Friend WithEvents rbtnPrintout As System.Windows.Forms.RadioButton
     Friend WithEvents topPicture As System.Windows.Forms.PictureBox
+    Friend WithEvents lblFloor As System.Windows.Forms.Label
+    Friend WithEvents lblday As System.Windows.Forms.Label
 
 End Class
