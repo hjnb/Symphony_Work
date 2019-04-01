@@ -9,7 +9,7 @@ Public Class 週間表
     Private whiteCellStyle As DataGridViewCellStyle
     Private pinkCellStyle As DataGridViewCellStyle
     Private Const HEISEI_Str As String = "H"
-    Private Const NEXT_WAREKI As String = "X"
+    Private Const NEXT_WAREKI As String = "R"
     Public cra3, cra4, cra5, cra6, cra8, cra9, cra10, cra11, cra12, cra13, cra14, cra15, cra16, cra17, cra18, cra19, cra20, cra21, cra22, cra23, cra24, cra25, cra26, cra27, cra28, cra29, cra30, cra31, cra32, cra33, cra34, cra35, cra36, cra37, cra38, cra39, cra40, cra41, cra42, cra43, crb3, crb4, crb5, crb6, crb8, crb9, crb10, crb11, crb12, crb13, crb14, crb15, crb16, crb17, crb18, crb19, crb20, crb21, crb22, crb23, crb24, crb25, crb26, crb27, crb28, crb29, crb30, crb31, crb32, crb33, crb34, crb35, crb36, crb37, crb38, crb39, crb40, crb41, crb42, crb43 As Integer
     Private startday As String
     Private floor As Integer
