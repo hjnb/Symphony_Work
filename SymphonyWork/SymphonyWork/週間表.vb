@@ -1656,10 +1656,10 @@ Public Class 週間表
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
                             If rs.Fields(RowNo + 98).Value = 1 Then
-                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
                             End If
                             If rs.Fields(RowNo + 138).Value = 1 Then
-                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
                             End If
                         ElseIf RowNo = 22 Then
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 27).Value
@@ -1708,10 +1708,10 @@ Public Class 週間表
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 2) = rs.Fields(RowNo - 1).Value
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 4) = rs.Fields(RowNo + 3).Value
                             If rs.Fields(RowNo + 88).Value = 1 Then
-                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                                DataGridView1(ColumnsNo * 4 + 2, RowNo).Style = pinkCellStyle
                             End If
                             If rs.Fields(RowNo + 124).Value = 1 Then
-                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style.BackColor = Color.FromArgb(255, 192, 255)
+                                DataGridView1(ColumnsNo * 4 + 4, RowNo).Style = pinkCellStyle
                             End If
                         ElseIf RowNo = 23 Then
                             DGV1Table.Rows(RowNo).Item("a" & ColumnsNo * 4 + 1) = rs.Fields(RowNo + 22).Value
