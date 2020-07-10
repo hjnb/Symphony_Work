@@ -70,7 +70,7 @@ Partial Class 週間表
         '
         'btnUp
         '
-        Me.btnUp.Location = New System.Drawing.Point(156, 3)
+        Me.btnUp.Location = New System.Drawing.Point(165, 3)
         Me.btnUp.Name = "btnUp"
         Me.btnUp.Size = New System.Drawing.Size(17, 19)
         Me.btnUp.TabIndex = 1
@@ -79,7 +79,7 @@ Partial Class 週間表
         '
         'btnDown
         '
-        Me.btnDown.Location = New System.Drawing.Point(156, 21)
+        Me.btnDown.Location = New System.Drawing.Point(165, 21)
         Me.btnDown.Name = "btnDown"
         Me.btnDown.Size = New System.Drawing.Size(17, 19)
         Me.btnDown.TabIndex = 2

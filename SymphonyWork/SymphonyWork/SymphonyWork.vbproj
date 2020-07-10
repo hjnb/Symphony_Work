@@ -49,6 +49,9 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ADBox2">
+      <HintPath>\\primergytx100s1\Hakojun\事務\さかもと\ADBox2\ADBox2.dll</HintPath>
+    </Reference>
     <Reference Include="SymphonyWork, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <ExecutableExtension>.exe</ExecutableExtension>
     </Reference>
