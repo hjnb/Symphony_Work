@@ -51,9 +51,9 @@ Partial Class 勤務割
         Me.Label20 = New System.Windows.Forms.Label()
         Me.Label21 = New System.Windows.Forms.Label()
         Me.Label22 = New System.Windows.Forms.Label()
-        Me.ymBox = New ymdBox.ymdBox()
         Me.wordPanel = New System.Windows.Forms.Panel()
         Me.dgvWork = New SymphonyWork.workDataGridView(Me.components)
+        Me.ymBox = New ADBox2.ADBox2()
         Me.wordPanel.SuspendLayout()
         CType(Me.dgvWork, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -61,7 +61,7 @@ Partial Class 勤務割
         'rbtn3F
         '
         Me.rbtn3F.AutoSize = True
-        Me.rbtn3F.Location = New System.Drawing.Point(152, 9)
+        Me.rbtn3F.Location = New System.Drawing.Point(158, 9)
         Me.rbtn3F.Name = "rbtn3F"
         Me.rbtn3F.Size = New System.Drawing.Size(43, 16)
         Me.rbtn3F.TabIndex = 1
@@ -71,7 +71,7 @@ Partial Class 勤務割
         'rbtn2F
         '
         Me.rbtn2F.AutoSize = True
-        Me.rbtn2F.Location = New System.Drawing.Point(152, 36)
+        Me.rbtn2F.Location = New System.Drawing.Point(158, 36)
         Me.rbtn2F.Name = "rbtn2F"
         Me.rbtn2F.Size = New System.Drawing.Size(43, 16)
         Me.rbtn2F.TabIndex = 2
@@ -338,19 +338,6 @@ Partial Class 勤務割
         Me.Label22.TabIndex = 25
         Me.Label22.Text = "31 ： 有休"
         '
-        'ymBox
-        '
-        Me.ymBox.boxType = 5
-        Me.ymBox.DateText = ""
-        Me.ymBox.EraLabelText = "H31"
-        Me.ymBox.EraText = ""
-        Me.ymBox.Location = New System.Drawing.Point(41, 9)
-        Me.ymBox.MonthLabelText = "02"
-        Me.ymBox.MonthText = ""
-        Me.ymBox.Name = "ymBox"
-        Me.ymBox.Size = New System.Drawing.Size(95, 40)
-        Me.ymBox.TabIndex = 31
-        '
         'wordPanel
         '
         Me.wordPanel.Controls.Add(Me.Label8)
@@ -389,13 +376,25 @@ Partial Class 勤務割
         Me.dgvWork.Size = New System.Drawing.Size(1044, 593)
         Me.dgvWork.TabIndex = 8
         '
+        'ymBox
+        '
+        Me.ymBox.dateText = ""
+        Me.ymBox.Location = New System.Drawing.Point(36, 7)
+        Me.ymBox.Mode = 32
+        Me.ymBox.monthText = ""
+        Me.ymBox.Name = "ymBox"
+        Me.ymBox.Size = New System.Drawing.Size(110, 46)
+        Me.ymBox.TabIndex = 31
+        Me.ymBox.textReadOnly = False
+        Me.ymBox.yearText = ""
+        '
         '勤務割
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1115, 754)
-        Me.Controls.Add(Me.wordPanel)
         Me.Controls.Add(Me.ymBox)
+        Me.Controls.Add(Me.wordPanel)
         Me.Controls.Add(Me.dgvWork)
         Me.Controls.Add(Me.btnDelete)
         Me.Controls.Add(Me.btnPrint)
@@ -443,6 +442,6 @@ Partial Class 勤務割
     Friend WithEvents Label20 As System.Windows.Forms.Label
     Friend WithEvents Label21 As System.Windows.Forms.Label
     Friend WithEvents Label22 As System.Windows.Forms.Label
-    Friend WithEvents ymBox As ymdBox.ymdBox
     Friend WithEvents wordPanel As System.Windows.Forms.Panel
+    Friend WithEvents ymBox As ADBox2.ADBox2
 End Class
