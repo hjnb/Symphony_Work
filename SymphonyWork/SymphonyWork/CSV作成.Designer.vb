@@ -22,24 +22,11 @@ Partial Class CSV作成
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.ymBox = New ymdBox.ymdBox()
         Me.btnExecution = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.saveCsvFileDialog = New System.Windows.Forms.SaveFileDialog()
+        Me.ymBox = New ADBox2.ADBox2()
         Me.SuspendLayout()
-        '
-        'ymBox
-        '
-        Me.ymBox.boxType = 7
-        Me.ymBox.DateText = ""
-        Me.ymBox.EraLabelText = "H31"
-        Me.ymBox.EraText = ""
-        Me.ymBox.Location = New System.Drawing.Point(110, 21)
-        Me.ymBox.MonthLabelText = "01"
-        Me.ymBox.MonthText = ""
-        Me.ymBox.Name = "ymBox"
-        Me.ymBox.Size = New System.Drawing.Size(120, 46)
-        Me.ymBox.TabIndex = 0
         '
         'btnExecution
         '
@@ -61,22 +48,34 @@ Partial Class CSV作成
         Me.Label1.TabIndex = 2
         Me.Label1.Text = "対象年月"
         '
+        'ymBox
+        '
+        Me.ymBox.dateText = ""
+        Me.ymBox.Location = New System.Drawing.Point(122, 21)
+        Me.ymBox.Mode = 32
+        Me.ymBox.monthText = ""
+        Me.ymBox.Name = "ymBox"
+        Me.ymBox.Size = New System.Drawing.Size(110, 46)
+        Me.ymBox.TabIndex = 0
+        Me.ymBox.textReadOnly = False
+        Me.ymBox.yearText = ""
+        '
         'CSV作成
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(449, 396)
+        Me.Controls.Add(Me.ymBox)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.btnExecution)
-        Me.Controls.Add(Me.ymBox)
         Me.Name = "CSV作成"
         Me.Text = "勤務割CSV作成"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents ymBox As ymdBox.ymdBox
     Friend WithEvents btnExecution As System.Windows.Forms.Button
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents saveCsvFileDialog As System.Windows.Forms.SaveFileDialog
+    Friend WithEvents ymBox As ADBox2.ADBox2
 End Class
