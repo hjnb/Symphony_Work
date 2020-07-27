@@ -582,10 +582,10 @@ Public Class 週間表
 
         '2階と3階で共通の部分
         For i As Integer = 0 To 6
-            DataGridView1(4 * i + 2, 0).Value = Val(Strings.Mid(lblYmd.Text, 8, 2)) + i
+            DataGridView1(4 * i + 2, 0).Value = Val(Strings.Mid(lblYmd.Text, 9, 2)) + i
         Next
 
-        Dim Getumatu As Integer = Date.DaysInMonth(ChangeSeireki(Strings.Left(lblYmd.Text, 9)), Val(Strings.Mid(lblYmd.Text, 5, 2)))
+        Dim Getumatu As Integer = Date.DaysInMonth(Strings.Left(lblYmd.Text, 4), Val(Strings.Mid(lblYmd.Text, 6, 2)))
 
         For i As Integer = 0 To 6
             If Val(DataGridView1(4 * i + 2, 0).Value) > Getumatu Then
@@ -601,14 +601,14 @@ Public Class 週間表
         Dim ymd As Date = Strings.Left(lblYmd.Text, 10)
         ymd = ymd.AddDays(7)
         lblYmd.Text = ymd & "（日）"
-
+        TopForm.lblday.Text = lblYmd.Text
     End Sub
 
     Private Sub btnDown_Click(sender As System.Object, e As System.EventArgs) Handles btnDown.Click
         Dim ymd As Date = Strings.Left(lblYmd.Text, 10)
         ymd = ymd.AddDays(-7)
         lblYmd.Text = ymd & "（日）"
-
+        TopForm.lblday.Text = lblYmd.Text
     End Sub
 
     Private Sub lblYmd_TextChanged(sender As Object, e As System.EventArgs) Handles lblYmd.TextChanged
@@ -616,7 +616,7 @@ Public Class 週間表
             Return
         End If
         For i As Integer = 0 To 6
-            DataGridView1(4 * i + 2, 0).Value = Val(Strings.Mid(lblYmd.Text, 8, 2)) + i
+            DataGridView1(4 * i + 2, 0).Value = Val(Strings.Mid(lblYmd.Text, 9, 2)) + i
         Next
 
         Dim Getumatu As Integer = Date.DaysInMonth(Strings.Left(lblYmd.Text, 4), Val(Strings.Mid(lblYmd.Text, 6, 2)))
@@ -901,7 +901,7 @@ Public Class 週間表
             End If
             cnn.Close()
         ElseIf rbn3F.Checked = True Then    '3階
-            Dim Ymd As Date = ChangeSeireki(Strings.Left(lblYmd.Text, 9)) & "/" & Strings.Mid(lblYmd.Text, 5, 5)
+            Dim Ymd As Date = Strings.Left(lblYmd.Text, 10)
             Dim YmdAdd7 As Date = Ymd.AddDays(6)
 
             Dim cnn As New ADODB.Connection
@@ -1134,9 +1134,9 @@ Public Class 週間表
 
         Dim cnn As New ADODB.Connection
         cnn.Open(TopForm.DB_Work)
-        Dim Honjitu As Date = lblYmd.Text
+        Dim Honjitu As Date = Strings.Left(lblYmd.Text, 10)
 
-        Dim DelYmd As Date = lblYmd.Text
+        Dim DelYmd As Date = Honjitu
         Dim DelYmdAdd7 As Date = DelYmd.AddDays(6)
         Dim SQL As String = ""
 
@@ -1415,7 +1415,7 @@ Public Class 週間表
         Dim SQL2 As String = ""
         Dim updateSQL As String = ""
 
-        Dim M As Date = lblYmd.Text
+        Dim M As Date = Strings.Left(lblYmd.Text, 10)
         M = M.AddMonths(1)
         Dim nextMonth As String = M.ToString("yyyy/MM/dd")
 
@@ -1910,7 +1910,7 @@ Public Class 週間表
                 oSheets = objWorkBook.Worksheets
                 oSheet = objWorkBook.Worksheets("週間食事表３改")
 
-                oSheet.Range("B2").Value = Strings.Mid(lblYmd.Text, 5, 2) & "月"
+                oSheet.Range("B2").Value = Strings.Mid(lblYmd.Text, 6, 2) & "月"
 
                 Dim Cell() As String = {"D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE"}
                 Dim ColumnsNo As Integer = 0
